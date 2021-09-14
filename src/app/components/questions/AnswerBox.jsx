@@ -1,0 +1,216 @@
+/* eslint-disable no-unused-vars */
+import React, { Component } from 'react';
+import Select  from "react-select";
+
+const customStyles = {
+  control: base => ({
+    ...base,
+    height: 35,
+    minHeight: 35,
+    borderRadius: 0,
+    border: 'none',
+    padding: 0,
+    color: '#444',
+    boxShadow: null
+  })
+};
+
+const _options = [
+  { value: 'NUMBER', label:  'Number'},
+  { value: 'TEXT', label: 'Text'},
+  { value: 'LENGTH', label: 'Length'},
+  { value: 'REGULAR_EXPRESSION', label: 'Regular expression'}
+]
+const _options_para = [
+  { value: 'LENGTH', label: 'Length'},
+  { value: 'REGULAR_EXPRESSION', label: 'Regular expression'}
+]
+const _IS_NUMBER = [
+  { value: 'GREATER_THAN', label:  'Greater Than'},
+  { value: 'GREATER_THAN_EQUAL_TO', label: 'Greater than or equal to'},
+  { value: 'LESS_THAN', label: 'Less than'},
+  { value: 'LESS_THAN_EQUAL_TO', label: 'Less than or equal to'},
+  { value: 'EQUAL_TO', label: 'Equal to'},
+  { value: 'NOT_EQUAL_TO', label: 'Not equal to'},
+  { value: 'BETWEEN', label: 'Between'},
+  { value: 'NOT_BETWEEN', label: 'Not between'},
+  { value: 'IS_NUMBER', label: 'Is number'},
+  { value: 'WHOLE_NUMBER', label: 'Whole number'},
+]
+const _IS_TEXT = [
+  { value: 'CONTAINS', label:  'Contains'},
+  { value: 'NOT_CONTAINS', label: `Doesn't contain`},
+  { value: 'EMAIL', label: 'Email'},
+  { value: 'URL', label: 'URL'}
+]
+const _IS_LENGTH = [
+  { value: 'MAX_CHAR_COUNT', label:  'Maximum character count'},
+  { value: 'MIN_CHAR_COUNT', label: `Minimum character count`}
+]
+
+const _IS_REGULAR_EXPRESSION = [
+  { value: 'CONTAINS', label:  'Contains'},
+  { value: 'NOT_CONTAINS', label: `Doesn't contain`},
+  { value: 'MATCHES', label:  'Matches'},
+  { value: 'NOT_MATCHES', label: `Doesn't match`},
+]
+const CustomSelect = ({options,onChange,value}) => {
+  return (
+    <Select
+      menuColor='red'
+      maxMenuHeight="1"
+      menuPlacement="auto"
+      isSearchable={false}
+      styles={customStyles}
+      value={value}
+      onChange={onChange}
+      components={{IndicatorSeparator: () => null }}
+      theme={theme => ({
+        ...theme,
+        borderRadius: 0,
+        colors: {
+          ...theme.colors,
+          primary25: '#F4F4F4',
+          primary: '#E39840',
+        },
+      })}
+      options={options} />
+  )
+}
+export default class AnswerBox extends Component {
+  state = {
+    dropdown_one: [], 
+    dropdown_two: [], 
+  }
+  handleClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    e.target.classList.toggle('ebs-btn-active');
+    const _rect = e.target.getBoundingClientRect();
+    const _wHeight = window.innerHeight;
+    const _position = _wHeight - (_rect.top + 168);
+    if (_position <= 0 ) {
+      e.target.classList.add('ebs-position-top');
+    } else {
+      e.target.classList.remove('ebs-position-top'); 
+    }
+  }
+  componentDidMount() {
+    let _data = this.props.data.data;
+    // eslint-disable-next-line no-eval
+    const _evaldropdown = eval(`_IS_${_data.options.type}`);
+      this.setState({
+        dropdown_one: _data.type === 'short_answer' ? _options : _options_para,
+        dropdown_two: _evaldropdown ? _evaldropdown : _IS_NUMBER
+      })
+    window.addEventListener('click',this.onBodyClick.bind(this), false)
+  }
+
+  onBodyClick = (e) => {
+  var _tooltip = document.querySelector('.ebs-more-option-panel .ebs-btn');
+  if (_tooltip) {
+    _tooltip.classList.remove('ebs-btn-active');
+  }
+  }
+
+  componentWillReceiveProps(nextProps) {
+      let _data = this.props.data.data;
+      // eslint-disable-next-line no-eval
+      const _evaldropdown = eval(`_IS_${_data.options.type}`);
+        this.setState({
+          dropdown_one: _data.type === 'short_answer' ? _options : _options_para,
+          dropdown_two: _evaldropdown ? _evaldropdown : _IS_NUMBER
+        })
+   }
+  componentWillUnmount () {
+    window.removeEventListener('click',this.onBodyClick.bind(this), false)
+  }
+  render() {
+    const {handleChangeValueOption} = this.props;
+    const {active, descVisible, options, required, type, index } = this.props.data.data;
+    return (
+      <React.Fragment>
+      <div className="ebs-answer-box">
+        <div className="ebs-answer-box-wrapper">
+          <div className="ebs-answer-ui">
+            <div className={`ebs-answer-ui-inner ${type === 'short_answer' ? 'size-md' : ''}`}>
+              {type === 'short_answer' ? 'Short answer text' : 'Long answer text'}
+            </div>
+          </div>
+          {options.responseValidation && <div className="ebs-validation-rule">
+            <div className="row d-flex">
+              <div className="col-3">
+              <CustomSelect
+                value={this.state.dropdown_one[this.state.dropdown_one.findIndex(x => x.value === options.type)]} 
+                onChange={(e) => handleChangeValueOption(e.value, 'RESPONSE_VALIDATION_SELECT_TYPE' ,`${index}`)}
+                options={this.state.dropdown_one} />
+              </div>
+              <div className="col-3">
+              <CustomSelect
+                value={this.state.dropdown_two[this.state.dropdown_two.findIndex(x => x.value === options.rule)]} 
+                onChange={(e) => handleChangeValueOption(e.value, 'RESPONSE_VALIDATION_SELECT_RULE' ,`${index}`)}
+                options={this.state.dropdown_two} />
+              </div>
+              <div className={options.type === 'NUMBER' || options.type === 'LENGTH' ? 'col-2' : 'col-3'}>
+                {(options.type === 'NUMBER' || options.type === 'LENGTH') &&
+                 <input 
+                  onChange={(e) => handleChangeValueOption(e.target.value, 'VALIDATION_FORM_FIELDS' ,`${index}`)}
+                  value={options.value} placeholder="Number" className="" type="text" />}
+                {options.type === 'TEXT' && <input
+                onChange={(e) => handleChangeValueOption(e.target.value, 'VALIDATION_FORM_FIELDS' ,`${index}`)}
+                 value={options.value} placeholder="Text" className="" type="text" />}
+                {options.type === 'REGULAR_EXPRESSION' && 
+                <input
+                 onChange={(e) => handleChangeValueOption(e.target.value, 'VALIDATION_FORM_FIELDS' ,`${index}`)}
+                 value={options.value} placeholder="Pattern" className="" type="text" />}
+              </div>
+              <div className={options.type === 'NUMBER' || options.type === 'LENGTH' ? 'col-4' : 'col-3'}>
+                <input
+                 onChange={(e) => handleChangeValueOption(e.target.value, 'VALIDATION_ERROR_FIELDS' ,`${index}`)}
+                 value={options.error} placeholder="Custom error text" type="text" />
+              </div>
+            </div>
+            <div onClick ={(e) => handleChangeValueOption(e.target, 'RESPONSE_VALIDATION' ,`${index}`)} className="ebs-close-validation"><i className="material-icons">close</i></div>
+          </div>}
+        </div>
+        </div>
+        {active && <div className="ebs-footer-wrapper">
+          <div className="ebs-left-area d-flex">
+            <span onClick ={(e) => {e.stopPropagation();handleChangeValueOption(e.target, 'CLONEQUESTION' ,`${index}`)}}  className="ebs-btn">
+              <i className="material-icons">content_copy</i>
+            </span>
+            <span onClick ={(e) => {e.stopPropagation();handleChangeValueOption(e.target, 'DELETEQUESTION' ,`${index}`)}}  className="ebs-btn">
+              <i className="material-icons">delete</i>
+            </span>
+          </div>
+         <div className="ebs-right-area d-flex">
+          <div className="ebs-isRequired">
+              <label className="ebs-custom-radio d-flex">
+                <span className="ebs-title-radio">Required</span>
+                <div className="ebs-radio-box">
+                  <input type="checkbox" onChange={(e) => handleChangeValueOption(e.target.checked, 'REQUIRED' ,`${index}`)} checked={required} />
+                  <div className="ebs-radio-toggle">
+                    <div className="ebs-handle"></div>
+                  </div>
+                </div>
+              </label>
+            </div>
+            <div className="ebs-more-option-panel">
+                <button  onClick={this.handleClick.bind(this)} className="ebs-btn tooltip-medium"><span style={{pointerEvents: 'none'}} className="material-icons">more_vert</span></button>
+                <div  className="ebs-app-tooltip">
+                  <div className="ebs-title-tooltip">Show</div>
+                  <div
+                    onClick ={(e) => handleChangeValueOption(e.target, 'DESCRIPTION' ,`${index}`)} 
+                  className={`ebs-tooltip-item ${descVisible ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><div className="ebs-title">Description</div></div>
+                  <div 
+                   onClick ={(e) => handleChangeValueOption(e.target, 'RESPONSE_VALIDATION' ,`${index}`)} 
+                  className={`ebs-tooltip-item ${options.responseValidation ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><span className="ebs-title">Response Valdiation</span></div>
+                </div>
+            </div>
+         </div>
+        </div>}
+     
+      </React.Fragment>
+    )
+  }
+}
