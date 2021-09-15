@@ -87,11 +87,11 @@ export default class Question extends Component {
     var _textdesc = document.querySelectorAll('.ebs-title-description');
     _text.forEach(element => {
       element.style.height = '42px'
-      element.style.height = element.scrollHeight+'px'
+      element.style.height = element.scrollHeight + 'px'
     });
     _textdesc.forEach(element => {
       element.style.height = '35px'
-      element.style.height = element.scrollHeight+'px'
+      element.style.height = element.scrollHeight + 'px'
     });
 
   }
@@ -103,11 +103,9 @@ export default class Question extends Component {
         onClick={(e) => {
           !active && this.context.handleChange(index);
         }}
-        className={`${
-          active ? "ebs-active-section" : ""
-        } ebs-question-wrapper ${
-          this.props.isDragging ? "ebs-isdragging" : ""
-        }`}
+        className={`${active ? "ebs-active-section" : ""
+          } ebs-question-wrapper ${this.props.isDragging ? "ebs-isdragging" : ""
+          }`}
       >
         <div className="ebs-question-top d-flex">
           <div className="ebs-drag-handle" {...this.props.dragHandle}>
@@ -175,11 +173,11 @@ export default class Question extends Component {
         {(type === "multiple_choice" ||
           type === "checkboxes" ||
           type === "drop_down") && (
-          <MultipleChoice
-            handleChangeValueOption={this.context.handleChangeValueOption}
-            data={this.props}
-          />
-        )}
+            <MultipleChoice
+              handleChangeValueOption={this.context.handleChangeValueOption}
+              data={this.props}
+            />
+          )}
         {(type === "short_answer" || type === "paragraph") && (
           <AnswerBox
             handleChangeValueOption={this.context.handleChangeValueOption}

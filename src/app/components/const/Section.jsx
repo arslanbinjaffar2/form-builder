@@ -1,19 +1,28 @@
-import React, {useState, useEffect} from 'react'
-
-const Section = ({onClick,value,data,index}) => {
- const [section, setSection] = useState(0);
- useEffect(() => {
-  setSection(data.findIndex(x => x.index === index))
- }, []);
+import React, { useState, useEffect, useContext } from 'react';
+import { CreateQuestionContext } from "app/contexts/CreateQuestionContext";
+function handleClick() {
+  const items = document.querySelectorAll('.ebs-textarea-title');
+  items.forEach(element => {
+    let _height = element.scrollHeight;
+    element.style.height = _height + 'px';
+  });
+}
+const Section = ({ onClick, value, data, index }) => {
+  const [section, setSection] = useState(0);
+  const {handleSectionArea} = useContext(CreateQuestionContext);
+  handleClick()
+  useEffect(() => {
+    setSection(data.findIndex(x => x.index === index))
+  }, []);
   return (
     <React.Fragment>
-      <div onClick={(e) => {!value.active && onClick(index)}} className={`ebs-section-wrapper ${data.length > 1 ? 'ebs-multi-section' : ''} ${value.active ? 'ebs-active-section' : ''}`}>
-        {data.length > 1 &&  <div className="ebs-section-counter">
-          Section {section+1} of {data.length}
+      <div onClick={(e) => { !value.active && onClick(index) }} className={`ebs-section-wrapper ${data.length > 1 ? 'ebs-multi-section' : ''} ${value.active ? 'ebs-active-section' : ''}`}>
+        {data.length > 1 && <div className="ebs-section-counter">
+          Section {section + 1} of {data.length}
         </div>}
         <div className="ebs-section-box">
-          <textarea placeholder="Untitled form" className="ebs-textarea-title" defaultValue={value.title}></textarea>
-          <textarea placeholder="Form Description" className="ebs-textarea-desc" defaultValue={value.desc}></textarea>
+          <textarea onChange={(e) => handleSectionArea(e.target,'title',index)} placeholder="Untitled form" className="ebs-textarea-title" value={value.title}></textarea>
+          <textarea onChange={(e) => handleSectionArea(e.target,'desc',index)} placeholder="Form Description" className="ebs-textarea-desc" value={value.desc}></textarea>
         </div>
       </div>
     </React.Fragment>

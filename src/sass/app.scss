@@ -111,8 +111,10 @@
       box-shadow: 0 2px 4px rgba($black, 0.3);
       textarea {
         border-color: $border;
+        min-height: 52px;
         &.ebs-textarea-desc {
           border-color: $border;
+          min-height: 28px;
         }
         &:focus {
           border-color: $borderhover;
@@ -881,4 +883,15 @@
       color: rgba($black, 0.7);
     }
   }
+}
+
+.ebs-list-box-wrapper {
+  width: 100%;
+  &.list-box-columns {
+    width: 60%;
+  }
+}
+.ebs-section-based {
+  width: 40%;
+  padding-left: 20px;
 }
