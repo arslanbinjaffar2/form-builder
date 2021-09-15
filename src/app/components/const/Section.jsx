@@ -2,7 +2,14 @@ import React, { useState, useEffect, useContext } from 'react';
 import { CreateQuestionContext } from "app/contexts/CreateQuestionContext";
 function handleClick() {
   const items = document.querySelectorAll('.ebs-textarea-title');
+  const desc = document.querySelectorAll('.ebs-textarea-desc');
   items.forEach(element => {
+    element.style.height = '52px';
+    let _height = element.scrollHeight;
+    element.style.height = _height + 'px';
+  });
+  desc.forEach(element => {
+    element.style.height = '28px';
     let _height = element.scrollHeight;
     element.style.height = _height + 'px';
   });

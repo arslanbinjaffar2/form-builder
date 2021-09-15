@@ -104,7 +104,23 @@
 .ebs-section-wrapper {
   margin-bottom: 25px;
   position: relative;
+  .ebs-drag-handle {
+    position: absolute;
+    left: 0;
+    top: 10px;
+    width: 100%;
+    text-align: center;
+    display: none;
+    span {
+      display: inline-block;
+      transform: rotate(90deg);
+      color: rgba($black, 0.5);
+    }
+  }
   &.ebs-active-section {
+    .ebs-drag-handle {
+      display: block;
+    }
     .ebs-section-box {
       padding-left: 54px;
       border-left: 7px solid $borderhover;
@@ -114,10 +130,19 @@
         min-height: 52px;
         &.ebs-textarea-desc {
           border-color: $border;
+          height: 28px;
           min-height: 28px;
         }
         &:focus {
           border-color: $borderhover;
+        }
+        &.ebs-textarea-alt-title {
+          height: 36px;
+          min-height: 36px;
+        }
+        &.ebs-textarea-alt-desc {
+          height: 28px;
+          min-height: 28px;
         }
       }
     }
@@ -152,6 +177,7 @@
       outline: none;
       box-shadow: none;
       padding: 0;
+      min-height: 52px;
       height: 52px;
       border-bottom: 1px solid transparent;
       font-size: 32px;
@@ -159,11 +185,25 @@
       &.ebs-textarea-desc {
         font-size: 14px;
         height: 28px;
+        min-height: 28px;
         margin-top: 8px;
         border-bottom: 1px dashed transparent;
       }
       &:focus {
         border-bottom-color: $borderhover;
+      }
+      &.ebs-textarea-alt-title {
+        font-size: 18px;
+        font-weight: 600;
+        height: 36px;
+        min-height: 36px;
+        margin-bottom: 15px;
+      }
+      &.ebs-textarea-alt-desc {
+        font-size: 14px;
+        font-weight: 400;
+        height: 26px;
+        min-height: 26px;
       }
     }
   }
@@ -894,4 +934,13 @@
 .ebs-section-based {
   width: 40%;
   padding-left: 20px;
+}
+
+.ebs-page-break-section {
+  padding-bottom: 60px;
+  padding-top: 10px;
+  .ebs-select {
+    width: 350px;
+    padding-left: 15px;
+  }
 }

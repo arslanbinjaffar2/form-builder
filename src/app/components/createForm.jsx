@@ -5,6 +5,7 @@ import Question from "./questions/Question";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { CreateQuestionContext } from "app/contexts/CreateQuestionContext";
 import Select from "react-select";
+import TextSection from "./questions/TextSection";
 
 const customStyles = {
   control: base => ({
@@ -15,7 +16,8 @@ const customStyles = {
     border: 'none',
     padding: 0,
     color: '#444',
-    boxShadow: null
+    boxShadow: null,
+    background: 'transparent'
   }),
   option: (styles) =>( {
     ...styles,
@@ -39,29 +41,31 @@ const PageBreak = ({data, index, onChange}) => {
     newArray.push(_new)
   });
   return (
-    <React.Fragment>
-      <div>After Section {item+1}</div>
-      <Select
-        menuColor='red'
-        maxMenuHeight="1"
-        menuPlacement="auto"
-        isSearchable={false}
-        styles={customStyles}
-        value={newArray[newArray.findIndex(x => x.value === data[item].nextSection)]}
-        onChange={(e) => onChange(e.value, data[item].index)}
-        components={{ IndicatorSeparator: () => null }}
-        theme={theme => ({
-          ...theme,
-          borderRadius: 0,
-          display: 'none',
-          colors: {
-            ...theme.colors,
-            primary25: '#F4F4F4',
-            primary: '#E39840',
-          },
-        })}
-        options={newArray} />
-    </React.Fragment>
+    <div className="ebs-page-break-section d-flex align-items-center">
+      <div className="ebs-title">After Section {item+1}</div>
+      <div className="ebs-select">
+        <Select
+          menuColor='red'
+          maxMenuHeight="1"
+          menuPlacement="auto"
+          isSearchable={false}
+          styles={customStyles}
+          value={newArray[newArray.findIndex(x => x.value === data[item].nextSection)]}
+          onChange={(e) => onChange(e.value, data[item].index)}
+          components={{ IndicatorSeparator: () => null }}
+          theme={theme => ({
+            ...theme,
+            borderRadius: 0,
+            display: 'none',
+            colors: {
+              ...theme.colors,
+              primary25: '#F4F4F4',
+              primary: '#E39840',
+            },
+          })}
+          options={newArray} />
+        </div>
+    </div>
   )
 }
 
@@ -69,6 +73,9 @@ export default class createForm extends Component {
   static contextType = CreateQuestionContext;
   state = {
     sectionTo: null,
+  }
+  onDragStart(result) {
+    document.activeElement.blur();
   }
   onDragEnd(result) {
     // dropped outside the list
@@ -111,7 +118,7 @@ export default class createForm extends Component {
                   </li>
                 </ul>
               </div>
-              <DragDropContext onDragEnd={this.onDragEnd.bind(this)}>
+              <DragDropContext onDragStart={this.onDragStart.bind(this)} onDragEnd={this.onDragEnd.bind(this)}>
                 <Droppable droppableId="droppable">
                   {(provided, snapshot) => (
                     <div {...provided.droppableProps} ref={provided.innerRef}>
@@ -164,7 +171,27 @@ export default class createForm extends Component {
                                 </Draggable>
                               </React.Fragment>
                             )}
-
+                            {item.type === 'TEXT_BLOCK' && 
+                            <Draggable
+                              key={item.index}
+                              isDragDisabled={this.context.data.length > 2 ? false : true}
+                              draggableId={`item-${item.index}`}
+                              index={k}>
+                              {(provided, snapshot) => (
+                                <div
+                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
+                                >
+                                  <TextSection
+                                    data={_newArray}
+                                    onClick={this.context.handleChange}
+                                    index={item.index}
+                                    value={item}
+                                    dragHandle={provided.dragHandleProps}
+                                  />
+                                </div>
+                              )}
+                            </Draggable>}
                             {(item.type === "multiple_choice" ||
                               item.type === "checkboxes" ||
                               item.type === "drop_down" ||

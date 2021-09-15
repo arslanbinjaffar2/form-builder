@@ -90,6 +90,14 @@ const _newsection = {
   active: false,
 
 };
+const _newtextarea = {
+  index: '',
+  type: 'TEXT_BLOCK',
+  title: 'Untitled Title',
+  desc: 'Form Description',
+  active: false,
+
+};
 const _data = [
   {
     index: 0,
@@ -162,6 +170,15 @@ export default class CreateQuestionContextProvider extends Component {
         });
         _data[_itemIndex + 1].active = true;
       }
+      if (type === 'ADD_TITLE_DESCRIPTION') {
+        let _clone = JSON.parse(JSON.stringify(_newtextarea));
+        _data.splice(_itemIndex + 1, 0, _clone);
+        _data.forEach((element, k) => {
+          element.index = k;
+          element.active = false;
+        });
+        _data[_itemIndex + 1].active = true;
+      }
       this.setState({
         data: _data
       })
@@ -202,6 +219,16 @@ export default class CreateQuestionContextProvider extends Component {
     }
     const handleSectionArea = (event, name, index) => {
       event.style.height = name === 'desc' ? '28px' : name === 'title' ? '52px' : '';
+      var _height = event.scrollHeight;
+      event.style.height = _height + 'px';
+      const _data = [...this.state.data];
+      _data[_data.findIndex(x => x.index === index)][name] = event.value;
+      this.setState({
+        data: _data
+      })
+    }
+    const handleTextArea = (event, name, index) => {
+      event.style.height = name === 'desc' ? '36px' : name === 'title' ? '26px' : '';
       var _height = event.scrollHeight;
       event.style.height = _height + 'px';
       const _data = [...this.state.data];
@@ -469,6 +496,7 @@ export default class CreateQuestionContextProvider extends Component {
           handleMultiChoiceGridReorder,
           handleSectionArea,
           handleChangeSectionSelect,
+          handleTextArea
         }}
       >
         {this.props.children}
