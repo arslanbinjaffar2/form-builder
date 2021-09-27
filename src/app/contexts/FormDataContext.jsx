@@ -1,34 +1,56 @@
 import React, { createContext, Component }  from 'react';
+import { withRouter } from 'react-router-dom';
 const data = [
   { 
-    id: 1,
+    id: 0,
     title: 'Event Registration',
     lastModified: '2021-08-17 11:00',
-    themeColor: '#03a9f4',
-    bodyColor: '#d9f2fd',
     screenShot: '',
-    published: true
+    published: true,
+    form:[]
   },{
-    id: 2,
+    id: 1,
     title: 'Party Invite',
     lastModified: '2021-04-11 15:00',
-    themeColor: '#673ab7',
-    bodyColor: '#f0ebf8',
     screenShot: '',
-    published: true
+    published: true,
+    form:[]
   }
 ];
-
 export const FormDataContext = createContext();
-export default class FormDataContextProvider extends Component {
+class FormDataContextProvider extends Component {
   state = {
     data: data,
   }
   render() {
+    const handleSave = (content,type) => {
+      const data = [...this.state.data];
+      const _question  = {
+        id: this.state.data.length,
+        title: content[0].title,
+        description: content[0].desc,
+        lastModified: new Date(),
+        screenShot: '',
+        published: true,
+        form: content,
+      }
+      data.push(JSON.parse(JSON.stringify(_question)));
+      this.setState({
+        data: data
+      },() => {
+        if (type === 'SAVE') {
+          this.props.history.push('/')
+        } else {
+          localStorage.setItem('id',this.state.data.length)
+          this.props.history.push('/form/view');
+        }
+      })
+    } 
     return (
-     <FormDataContext.Provider value={{...this.state}}>
+     <FormDataContext.Provider value={{...this.state,handleSave}}>
         {this.props.children}
      </FormDataContext.Provider>
     )
   }
 }
+export default withRouter(FormDataContextProvider)

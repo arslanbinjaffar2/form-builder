@@ -95,6 +95,7 @@ const _newtextarea = {
   type: 'TEXT_BLOCK',
   title: 'Untitled Title',
   desc: 'Form Description',
+  descVisible: true,
   active: false,
 
 };
@@ -264,6 +265,40 @@ export default class CreateQuestionContextProvider extends Component {
         data: _data
       })
     }
+    const handleSectionPanel = (value, type, id) => {
+      let _data = [...this.state.data];
+      let _section = [];
+      const _id = id;
+      for (let i = _id; i < _data.length; i++) {
+        const element = _data[i];
+        if (i !== _id && element.type === "SECTION") {
+          break;
+        } else {
+          _section.push(element);
+        }
+      }
+      if (type === "DELETE") {
+        _data = _data.filter((el) => !_section.includes(el));
+      }
+      if (type === "DUPLICATE") {
+        _data.splice(_id, 0, ..._section);
+        _data = JSON.parse(JSON.stringify(_data));
+      }
+      if (type === 'MERGE') {
+        _data.splice(_id, 1);
+        _data = JSON.parse(JSON.stringify(_data));
+      }
+      _data.forEach((el, k) => {
+        el.index = k;
+        el.active = false;
+      });
+      console.log(_data);
+      _data[type === "DELETE" || type === 'MERGE' ? 0 : _id].active = true;
+
+      this.setState({
+        data: _data,
+      });
+    };
     const handleLinerChange = (value, type, id) => {
       const _data = [...this.state.data];
       const _query = _data[_data.findIndex((x) => x.index === id * 1)];
@@ -496,7 +531,8 @@ export default class CreateQuestionContextProvider extends Component {
           handleMultiChoiceGridReorder,
           handleSectionArea,
           handleChangeSectionSelect,
-          handleTextArea
+          handleTextArea,
+          handleSectionPanel
         }}
       >
         {this.props.children}

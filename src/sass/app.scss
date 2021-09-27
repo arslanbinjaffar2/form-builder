@@ -28,7 +28,7 @@
 .ebs-template-box {
   background: $lightgray;
   padding: 30px 40px;
-  .ebs-form-title {
+  .ebs-form-title-home {
     font-size: 21px;
     margin-bottom: 25px;
   }
@@ -74,11 +74,13 @@
     border-radius: 12px;
     overflow: hidden;
     cursor: pointer;
+    margin-bottom: 40px;
     .ebs-box-image {
       min-height: 230px;
       display: flex;
       align-items: center;
       justify-content: center;
+      background: rgba($black,0.05);
       img {
         max-width: 100%;
         max-height: 100%;
@@ -86,6 +88,7 @@
     }
     .ebs-desc-box {
       padding: 15px 20px;
+      background: $white;
       h3 {
         margin: 0;
         white-space: nowrap;
@@ -762,6 +765,8 @@
       }
       &.ebs-linear-caption {
         max-width: 35%;
+        word-wrap: break-word;
+        word-break: break-word;
         .ebs-value {
           color: $black;
         }
@@ -770,6 +775,7 @@
   }
 }
 .ebs-question-grid {
+  overflow: hidden;
   .ebs-question-grid-wrapper {
     padding-bottom: 35px;
     .ebs-title {
@@ -942,5 +948,226 @@
   .ebs-select {
     width: 350px;
     padding-left: 15px;
+  }
+}
+
+.ebs-form-preview {
+  padding: 40px 0;
+  .ebs-form-preview-wrapper {
+    width: 100%;
+    padding: 0 15px;
+    max-width: 950px;
+    margin: auto;
+  }
+}
+.ebs-form-title,.ebs-sub-section {
+  background: $white;
+  border-radius: 6px;
+  padding: 15px;
+  padding-bottom: 30px;
+  border-top: 8px solid $primary;
+  margin-bottom: 25px;
+  .ebs-title {
+    font-size: 32px;
+    font-weight: 600;
+    color: $black;
+    padding-bottom: 8px;
+  }
+  .ebs-description {
+    font-size: 14px;
+  }
+}
+.ebs-sub-section {
+  border-top: none;
+  .ebs-title {
+    font-size: 20px;
+    padding-bottom: 8px;
+  }
+  .ebs-description {
+    font-size: 12px;
+  }
+}
+
+.ebs-formview-mulitple {
+    transition: background-color 200ms cubic-bezier(0,0,0.2,1);
+    background-color: $white;
+    border: 1px solid $border;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    padding: 24px;
+    page-break-inside: avoid;
+    word-wrap: break-word;
+    .form-view-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: rgba($black, 0.8);
+      span {
+        color: $color-danger;
+      }
+    }
+    .form-view-description {
+      padding-top: 6px;
+      font-size: 13px;
+    }
+    .ebs-options-view {
+      padding-top: 15px;
+      .ebs-option-list {
+        position: relative;
+        margin: 0;
+        padding: 8px 0 8px 30px;
+       
+
+
+        .ebs-title {
+          font-size: 13px;
+          &.ebs-add-another {
+            width: 50px;
+            min-width: 50px;
+          }
+        }
+        .ebs-input-field {
+          width: 100%;
+          input[type="text"] {
+            width: 100%;
+            border: none;
+            height: 24px;
+            padding: 0;
+            border-bottom: 1px solid $border;
+            &:focus {
+              box-shadow: none;
+              outline: none;
+              border-bottom: 1px solid $borderhover;
+            }  
+          }
+        }
+      }
+    }
+}
+
+.ebs-option {
+  margin: 0;
+  position: absolute;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  left: 0;
+  top: 6px;
+  color: rgba($black, 0.4);
+  border-radius: 100%;
+  input[type="radio"] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    &:checked ~ .material-icons{
+      color: $borderhover;
+    }
+    & ~ .material-icons::before {
+      font-family: "Material Icons";
+      content: "\e836";
+    }
+    &:checked ~ .material-icons::before {
+      content: "\e837";
+    }
+  }
+  input[type="checkbox"] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    &:checked ~ .material-icons{
+      color: $borderhover;
+    }
+    & ~ .material-icons::before {
+      font-family: "Material Icons";
+      content: "\e835";
+    }
+    &:checked ~ .material-icons::before {
+      content: "\e834";
+    }
+  }
+  &:hover {
+    box-shadow: 0 0 0 5px rgba($text, 0.1);
+  }
+}
+
+.ebs-options-view {
+  .ebs-linear-view {
+    .ebs-linear-box {
+    .ebs-value {
+      pointer-events: unset;
+    }
+    .ebs-option {
+      position: static;
+    }
+  }
+  }
+}
+.ebs-input-response {
+  padding: 0 0 20px 0;
+  input[type="text"],textarea {
+    border: none;
+    width: 100%;
+    max-width: 350px;
+    border-bottom: 2px solid $border;
+    height: 35px;
+    font-size: 13px;
+    &:focus {
+      box-shadow: none;
+      outline: none;
+      border-bottom-color: $borderhover;
+    }
+  }
+  textarea {
+    max-width: 90%;
+    resize: none;
+    overflow: hidden;
+    padding: 0 0 5px 0;
+    font-size: 14px;
+    min-height: 35px;
+  }
+}
+
+.ebs-options-view {
+  .ebs-question-grid-view {
+    overflow-x:auto;
+    pointer-events: unset;
+    .ebs-question-grid-wrapp {
+      pointer-events: unset;
+      border-spacing: 0 2px;
+      border-collapse: separate;
+      .ebs-question-grid-header:first-child {
+        background: transparent;
+        .ebs-question-grid-th {
+          vertical-align: top;
+          &.ebs-grid-title {
+            background: $white;
+          }
+        }
+      }
+      .ebs-question-grid-header:not(:first-child ) {
+        .ebs-question-grid-th {
+          background: $lightgray;
+        }
+      }
+      .ebs-question-grid-th {
+        white-space: unset;
+        text-overflow: unset;
+        min-width: 80px;
+        .ebs-option {
+          position: static;
+        }
+        &.ebs-grid-title {
+          padding-left: 15px;
+          position: sticky;
+          left: 0;
+          top: 0;
+        }
+      }
+    }
   }
 }

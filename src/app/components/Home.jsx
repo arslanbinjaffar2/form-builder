@@ -13,7 +13,7 @@ class Home extends React.Component {
       <main className="ebs-main" role="main">
         <div className="ebs-template-box">
           <div className="container">
-          <div className="ebs-form-title">Start a new form</div>
+          <div className="ebs-form-title-home">Start a new form</div>
           <div className="row d-flex">
             <div className="col-2">
               <Link to="/form/create" className="ebs-btn-add"></Link>

@@ -1,5 +1,6 @@
 import * as React from 'react';
-import RouterOutlet from 'router/RouterOutlet.jsx'
+import RouterOutlet from 'router/RouterOutlet.jsx';
+import {withRouter} from 'react-router-dom';
 import 'bootstrap/dist/js/bootstrap';
 import FormDataContextProvider from './contexts/FormDataContext';
 import CreateQuestionContextProvider from './contexts/CreateQuestionContext';
@@ -17,4 +18,4 @@ class App extends React.Component {
   }
 }
 
-export default App;
+export default withRouter(App);

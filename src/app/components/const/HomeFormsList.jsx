@@ -41,14 +41,14 @@ const HomeFormsList = () => {
                 {stateData.map((item,k) => 
                   <div key={k} className="col-lg-3 col-md-4">
                     <div className="ebs-form-box">
-                      <div style={{backgroundColor: item.bodyColor}} className="ebs-box-image">
+                      <div className="ebs-box-image">
                         <img src={item.screenShot ? item.screenShot : require('img/template.svg') } alt="" />
                       </div>
                       <div className="ebs-desc-box">
                         <h3>{item.title ? item.title : 'Untitled form'}</h3>
                         <div className="ebs-bottom-panel">
                           <div className="ebs-timedate">
-                          <span style={{color: item.themeColor}} className="material-icons">description</span>
+                          <span style={{color: 'rgba($black,0.1)'}} className="material-icons">description</span>
                           Opened {lastModified(item.lastModified)}</div>
                           
                         </div>

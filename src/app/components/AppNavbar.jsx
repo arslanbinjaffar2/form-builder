@@ -1,5 +1,10 @@
-import * as React from 'react';
+import React, { useContext } from 'react';
+import { withRouter } from 'react-router-dom'
+import { CreateQuestionContext } from "app/contexts/CreateQuestionContext";
+import { FormDataContext } from "app/contexts/FormDataContext";
 const AppNavbar = ({...props}) => {
+	const {data} = useContext(CreateQuestionContext);
+	const {handleSave} = useContext(FormDataContext);
 	return (
 		<header className="ebs-header">
 			<div className="container">
@@ -9,8 +14,9 @@ const AppNavbar = ({...props}) => {
 					</div>
 					{props.showpanel && <div className="col-5 d-flex justify-content-end">
 						<div className="ebs-panel-settings">
-							<span className="ebs-btn"><img src={require('img/ico-preview.svg')} alt="" /></span>
+							<span onClick={() => handleSave(data,'PREVIEW')} className="ebs-btn"><img src={require('img/ico-preview.svg')} alt="" /></span>
 							<span className="ebs-btn"><img src={require('img/ico-settings.svg')} alt="" /></span>
+							<span onClick={() => handleSave(data,'SAVE')} className="ebs-btn"><i className="material-icons">save</i></span>
 						</div>
 					</div>}
 				</div>
@@ -18,4 +24,4 @@ const AppNavbar = ({...props}) => {
 		</header>
 	)
 }
-export default AppNavbar
+export default withRouter(AppNavbar)
