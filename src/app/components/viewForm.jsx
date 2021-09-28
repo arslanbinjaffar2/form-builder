@@ -8,6 +8,8 @@ import FormShortAnswer from './views/FormShortAnswer';
 import FormLongAnswer from './views/FormLongAnswer';
 import FormRadioGrid from './views/FormRadioGrid';
 import FormTickGrid from './views/FormTickGrid';
+import FormTimebox from './views/FormTimebox';
+import FormDatebox from './views/FormDatebox';
 
 class viewForm extends Component {
   static contextType = FormDataContext;
@@ -100,6 +102,12 @@ class viewForm extends Component {
                 )}
                 {element.type === "tick_box_grid" && (
                   <FormTickGrid data={element} />
+                )}
+                {element.type === "time" && (
+                  <FormTimebox data={element} />
+                )}
+                {element.type === "date" && (
+                  <FormDatebox data={element} />
                 )}
               </div>
             ))}

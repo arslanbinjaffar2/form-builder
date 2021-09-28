@@ -1171,3 +1171,50 @@
     }
   }
 }
+.ebs-options-view {
+  .ebs-time-form-view {
+    padding-top: 10px;
+    padding-bottom: 20px;
+    h4 {
+      font-size: 13px;
+      color: $text;
+      line-height: 1.2;
+      margin-bottom: 10px;
+    }
+    .ebs-time-grid {
+      .ebs-box-sep {
+        padding: 0 10px;
+        line-height: 35px;
+      }
+      .ebs-title {
+        font-size: 13px;
+        color: $text;
+        margin-bottom: 10px;
+        line-height: 1.2;
+      }
+      .ebs-box {
+        width: 25px;
+        input[type="text"] {
+          width: 100%;
+          border: none;
+          height: 35px;
+          padding: 0;
+          text-align: center;
+          border-bottom: 1px solid $border;
+          &:focus {
+            box-shadow: none;
+            outline: none;
+          }
+        }
+      }
+      .ebs-select {
+        width: 85px;
+      }
+      &.ebs-duration-grid {
+        .ebs-box-sep {
+          padding-top: 26px;
+        }
+      }
+    }
+  }
+}
