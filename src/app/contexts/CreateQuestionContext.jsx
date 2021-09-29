@@ -292,7 +292,6 @@ export default class CreateQuestionContextProvider extends Component {
         el.index = k;
         el.active = false;
       });
-      console.log(_data);
       _data[type === "DELETE" || type === 'MERGE' ? 0 : _id].active = true;
 
       this.setState({
@@ -453,9 +452,11 @@ export default class CreateQuestionContextProvider extends Component {
         _query.required = a;
       }
       if (b === 'DELETEQUESTION') {
+       
         let _ind = _data.findIndex(x => x.index === c * 1);
         _data.splice(_ind, 1);
-        _data.forEach((item, k) => item.index = k)
+        _data.forEach((item, k) => item.index = k);
+        _data[Number(c) >= 1 ? Number(c) - 1 : 0].active = true;
       }
       if (b === 'RESPONSE_VALIDATION') {
         _query.options.responseValidation = !_query.options.responseValidation;

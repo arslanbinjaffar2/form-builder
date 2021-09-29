@@ -79,8 +79,10 @@ export default class Question extends Component {
     _textarea.style.height = _height + "px";
 
     var _textarea2 = this.textDescRef.current;
-    var _height2 = _textarea2.scrollHeight;
-    _textarea2.style.height = _height2 + "px";
+    if (_textarea2) {
+      var _height2 = _textarea2.scrollHeight;
+      _textarea2.style.height = _height2 + "px";
+    }
   }
   componentDidUpdate(prevProps, prevState) {
     var _text = document.querySelectorAll(".ebs-title-textarea");

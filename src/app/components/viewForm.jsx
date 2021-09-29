@@ -10,6 +10,7 @@ import FormRadioGrid from './views/FormRadioGrid';
 import FormTickGrid from './views/FormTickGrid';
 import FormTimebox from './views/FormTimebox';
 import FormDatebox from './views/FormDatebox';
+import FormTextBlock from './views/FormTextBlock';
 
 class viewForm extends Component {
   static contextType = FormDataContext;
@@ -109,15 +110,18 @@ class viewForm extends Component {
                 {element.type === "date" && (
                   <FormDatebox data={element} />
                 )}
+                {element.type === "TEXT_BLOCK" && (
+                  <FormTextBlock data={element} />
+                )}
               </div>
             ))}
           {sections && sections.length === 1 && (
-            <div>
-              <button className="btn btn-default">Submit</button>
+            <div className="ebs-footer-form">
+              <button className="btn btn-default btn-submit">Submit</button>
             </div>
           )}
           {sections && sections.length > 1 && active !== sections.length - 1 && (
-            <div>
+            <div className="ebs-footer-form">
               {active > 0 && (
                 <button
                   className="btn btn-default"
@@ -135,14 +139,14 @@ class viewForm extends Component {
             </div>
           )}
           {sections && sections.length > 1 && active === sections.length - 1 && (
-            <div>
+            <div className="ebs-footer-form">
               <button
                 className="btn btn-default"
                 onClick={() => this.setState({ active: active - 1 })}
               >
                 Back
               </button>
-              <button className="btn btn-default">Submit</button>
+              <button className="btn btn-default btn-submit">Submit</button>
             </div>
           )}
         </div>

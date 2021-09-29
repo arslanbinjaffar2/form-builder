@@ -1218,3 +1218,18 @@
     }
   }
 }
+.ebs-footer-form {
+  padding-top: 30px;
+  .btn {
+    margin-right: 15px;
+    box-shadow: 0 2px 1px -1px rgba($black,0.2),0 1px 1px 0 rgba($black,0.141),0 1px 3px 0 rgba($black,0.122);
+    background: $white;
+    font-weight: 700;
+    color: $color-secondary;
+    text-transform: uppercase;
+    &.btn-submit {
+      color: $white;
+      background: $color-secondary;
+    }
+  }
+}
