@@ -6,6 +6,7 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { CreateQuestionContext } from "app/contexts/CreateQuestionContext";
 import Select from "react-select";
 import TextSection from "./questions/TextSection";
+import SortSection from "./SortSection";
 
 const customStyles = {
   control: base => ({
@@ -94,6 +95,7 @@ export default class createForm extends Component {
     return (
       <React.Fragment>
         <AppNavbar showpanel />
+        {this.context.sortSection && <SortSection />}
         <main className="ebs-main" role="main">
           <div className="container-form">
             <div className="ebs-newform-wrapper">

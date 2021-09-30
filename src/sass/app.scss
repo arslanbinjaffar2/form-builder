@@ -1233,3 +1233,62 @@
     }
   }
 }
+
+.ebs-popup-wrapper {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 99;
+  background: rgba($black, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .ebs-popup-container {
+    width: 100%;
+    max-width: 450px;
+    background: $white;
+    border-radius: 6px;
+    box-shadow: 0 2px 1px -1px rgba($black,0.2),0 1px 1px 0 rgba($black,0.141),0 1px 3px 0 rgba($black,0.122);
+    .ebs-header-popup {
+      h5 {
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 24px;
+        margin: 18px 24px 16px 24px;
+      }
+    }
+    .ebs-listing-section {
+      .ebs-sortlist {
+        border-top: 1px solid $border;
+        padding: 15px 50px;
+        background: $white;
+        h4 {
+          margin: 0 0 5px;
+          font-size: 14px;
+        }
+        p {
+          margin: 0;
+          font-size: 13px;
+          color: $text;
+        }
+      }
+    }
+    .ebs-footer-popup {
+      padding: 18px 24px 16px 24px;
+      border-top: 1px solid $border;
+      text-align: right;
+      .btn {
+        margin-left: 15px;
+        padding: 6px 20px;
+        box-shadow: 0 2px 1px -1px rgba($black,0.2),0 1px 1px 0 rgba($black,0.141),0 1px 3px 0 rgba($black,0.122);
+        background: $color-secondary;
+        font-weight: 600;
+        color: $white;
+        text-transform: uppercase;
+        cursor: pointer;
+      }
+    }
+  }
+}

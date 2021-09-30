@@ -134,6 +134,7 @@ export const CreateQuestionContext = createContext();
 export default class CreateQuestionContextProvider extends Component {
   state = {
     data: _data,
+    sortSection: false,
   }
   render() {
     const handleChange = (id) => {
@@ -149,7 +150,45 @@ export default class CreateQuestionContextProvider extends Component {
         data: _data
       })
     }
-
+    const handleSectionSortGrid = (section) => {
+      let _section = [];
+      var counter = 0;
+      const _data = [...this.state.data];
+      _data.forEach(element => {
+        if (element.type === 'SECTION') {
+          counter = element.index === 0 ? 0 : counter + 1;
+          let items = {
+            section: []
+          }
+          items.section.push(element);
+          _section.push(items);
+        } else {
+          _section[counter].section.push(element); 
+        }
+      });
+      const _sortdata = [];
+      section.forEach(element => {
+        const _index = element.index;
+        _section.forEach((el,i) => {
+          let _get = el.section.findIndex(x => x.index === _index);
+          if (_get === 0) {
+            _sortdata.push(..._section[i].section)
+            return false;
+          }
+        });
+      });
+      
+      _sortdata.forEach((item, k) => item.index = k);
+      this.setState({
+        data: _sortdata,
+        sortSection: false
+      })
+    }
+    const handleSectionSort = () => {
+      this.setState({
+        sortSection: !this.state.sortSection
+      })
+    }
     const handleTooltip = (type) => {
       const _data = [...this.state.data];
       let _itemIndex = _data[_data.findIndex(x => x.active === true)].index;
@@ -533,7 +572,9 @@ export default class CreateQuestionContextProvider extends Component {
           handleSectionArea,
           handleChangeSectionSelect,
           handleTextArea,
-          handleSectionPanel
+          handleSectionPanel,
+          handleSectionSort,
+          handleSectionSortGrid
         }}
       >
         {this.props.children}

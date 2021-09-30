@@ -16,7 +16,7 @@ function handleClick() {
 }
 const Section = ({ onClick, value, data, index }) => {
   const [section, setSection] = useState(0);
-  const {handleSectionArea,handleSectionPanel} = useContext(CreateQuestionContext);
+  const {handleSectionArea,handleSectionPanel,handleSectionSort} = useContext(CreateQuestionContext);
   handleClick()
   useEffect(() => {
     setSection(data.findIndex(x => x.index === index))
@@ -56,7 +56,7 @@ const Section = ({ onClick, value, data, index }) => {
                       Duplicate Section
                     </div>
                     <div
-                      onClick={(e) => handleSectionPanel(e.target, 'MOVE', index)}
+                      onClick={handleSectionSort}
                       className="ebs-tooltip-item">
                         Move Section
                     </div>
