@@ -16,12 +16,9 @@ function handleClick() {
   });
 }
 const Section = ({ onClick, value, data, index,  }) => {
-  const [section, setSection] = useState(0);
+  const [section, setSection] = useState(index);
   const {handleSectionArea,handleSectionPanel,handleSectionSort, saveSection} = useContext(CreateQuestionContext);
   handleClick()
-  useEffect(() => {
-    setSection(data.findIndex(x => x.id === index))
-  }, []);
   const handlebtnClick = (e) => {
     e.preventDefault();
     e.stopPropagation();

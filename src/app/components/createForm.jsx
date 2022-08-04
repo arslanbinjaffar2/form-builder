@@ -31,8 +31,9 @@ const customStyles = {
 };
 
 
-const PageBreak = ({data, itemId, onChange}) => {
-  const item =  data.findIndex((x)=>(x.id === itemId));
+const PageBreak = ({data, index, onChange}) => {
+  console.log(data);
+  const item =  index;
   var newArray = [{ value: 'CONTINUE', label: 'Continue to next section' },
   { value: 'SUBMIT', label: 'Submit form' }];
   data.forEach((element, key) => {
@@ -44,7 +45,7 @@ const PageBreak = ({data, itemId, onChange}) => {
   });
   return (
     <div className="ebs-page-break-section d-flex align-items-center">
-      <div className="ebs-title">After Section {item+1}</div>
+      <div className="ebs-title">After Section {item}</div>
       <div className="ebs-select">
         <Select
           menuColor='red'
@@ -86,8 +87,8 @@ const createForm = (props) => {
   
 
   useEffect(() => {
-    if(data && data){
-      setSection([...data.filter((item)=>((item.type === "SECTION")))]);
+    if(data && data.sections){
+      setSection([...data.sections]);
     }
     return () => {
     }
@@ -134,15 +135,15 @@ const createForm = (props) => {
                 </li>
               </ul>
             </div>
-             {data &&
+             {data && data.sections &&
                 <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
                   <Droppable droppableId="droppable">
                     {(provided, snapshot) => (
                       <div {...provided.droppableProps} ref={provided.innerRef}>
-                        {data && 
-                          data.map((item, k) => (
+                        {data && data.sections &&
+                          data.sections.map((item, k) => (
                             <React.Fragment key={k}>
-                              {item.type === "SECTION" && k === 0 && (
+                              {k === 0 && (
                                 <Section
                                   data={sections}
                                   onClick={handleChange}
@@ -150,7 +151,7 @@ const createForm = (props) => {
                                   value={item}
                                 />
                               )}
-                              {item.type === "SECTION" && k > 0 && (
+                              {k > 0 && (
                                 <React.Fragment key={k}>
                                   <Draggable
                                     isDragDisabled={true}
@@ -162,7 +163,7 @@ const createForm = (props) => {
                                         {...provided.draggableProps}
                                         {...provided.dragHandleProps}
                                       >
-                                      <PageBreak onChange={handleChangeSectionSelect} data={sections} itemId={item.id} />
+                                      <PageBreak onChange={handleChangeSectionSelect} data={sections} index={k} />
                                       </div>
                                     )}
                                   </Draggable>
@@ -209,34 +210,38 @@ const createForm = (props) => {
                                   </div>
                                 )}
                               </Draggable>}
-                              {(item.type === "multiple_choice" ||
-                                item.type === "checkboxes" ||
-                                item.type === "drop_down" ||
-                                item.type === "short_answer" ||
-                                item.type === "paragraph" ||
-                                item.type === "linear_scale" ||
-                                item.type === "multiple_choice_grid" ||
-                                item.type === "tick_box_grid" ||
-                                item.type === "date" ||
-                                item.type === "time") && (
-                                  <Draggable
-                                    key={k}
-                                    isDragDisabled={data.length > 2 ? false : true}
-                                    draggableId={`item-${k}`}
-                                    index={k}>
-                                    {(provided, snapshot) => (
-                                      <div
-                                        ref={provided.innerRef}
-                                        {...provided.draggableProps}>
-                                        <Question
-                                          isDragging={snapshot.isDragging}
-                                          dragHandle={provided.dragHandleProps}
-                                          data={item}
-                                        />
-                                      </div>
+                              {item.questions && item.questions.map((question)=>(
+                                <React.Fragment>
+                                  {(question.type === "multiple_choice" ||
+                                    question.type === "checkboxes" ||
+                                    question.type === "drop_down" ||
+                                    question.type === "short_answer" ||
+                                    question.type === "paragraph" ||
+                                    question.type === "linear_scale" ||
+                                    question.type === "multiple_choice_grid" ||
+                                    question.type === "tick_box_grid" ||
+                                    question.type === "date" ||
+                                    question.type === "time") && (
+                                      <Draggable
+                                        key={k}
+                                        isDragDisabled={item.questions.length > 2 ? false : true}
+                                        draggableId={`item-${k}`}
+                                        index={k}>
+                                        {(provided, snapshot) => (
+                                          <div
+                                            ref={provided.innerRef}
+                                            {...provided.draggableProps}>
+                                            <Question
+                                              isDragging={snapshot.isDragging}
+                                              dragHandle={provided.dragHandleProps}
+                                              data={question}
+                                            />
+                                          </div>
+                                        )}
+                                      </Draggable>
                                     )}
-                                  </Draggable>
-                                )}
+                                </React.Fragment>
+                              ))}
                             </React.Fragment>
                           ))}
                         {provided.placeholder}

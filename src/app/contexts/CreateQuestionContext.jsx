@@ -82,13 +82,11 @@ const _newquestion = {
   }
 };
 const _newsection = {
-  index: '',
-  type: 'SECTION',
   title: 'Untitled Section',
-  desc: 'Form Description',
+  description: 'Form Description',
   nextSection: 'CONTINUE',
   active: false,
-
+  sort_order: 0,
 };
 const _newtextarea = {
   index: '',
@@ -156,7 +154,7 @@ export default class CreateQuestionContextProvider extends Component {
         if(response.data.status === 1){
             this.setState({
               loading:false,
-              data:response.data.data,
+              data:{...response.data.data, sections:response.data.data.sections.map((item, i)=>({...item, active: i === 0 ? true : false}))},
             })
         }
         else{
@@ -314,8 +312,8 @@ export default class CreateQuestionContextProvider extends Component {
 
     const handleChange = (id) => {
       var _sections = [...this.state.data.sections];
-      _sections.forEach(element => {
-        if (element.id === id) {
+      _sections.forEach((element, k) => {
+        if (k === id) {
           element.active = true;
         } else {
           element.active = false;
@@ -365,8 +363,10 @@ export default class CreateQuestionContextProvider extends Component {
       })
     }
     const handleTooltip = (type) => {
-      const _data = [...this.state.data];
-      let _itemIndex = _data[_data.findIndex(x => x.active === true)].index;
+      let _data= [];
+      let _itemIndex = 0;
+      const _section = [...this.state.data.sections];
+      let _sectionIndex = _section.findIndex(x => x.active === true) !== -1 ? _section.findIndex(x => x.active === true) : 0;
       if (type === 'ADD_QUESTION') {
         let _clone = JSON.parse(JSON.stringify(_newquestion));
         _data.splice(_itemIndex + 1, 0, _clone);
@@ -378,13 +378,16 @@ export default class CreateQuestionContextProvider extends Component {
       }
       if (type === 'ADD_SECTION') {
         let _clone = JSON.parse(JSON.stringify(_newsection));
-        _data.splice(_itemIndex + 1, 0, _clone);
-        _data.forEach((element, k) => {
-          element.index = k;
+        _section.forEach((element, k) => {
           element.active = false;
         });
-        _data[_itemIndex + 1].active = true;
-      }
+        _section.splice(_sectionIndex + 1, 0, _clone);
+        _section[_sectionIndex + 1].active = true;
+        _section.forEach((element, k) => {
+          element.sort_order = k;
+        });
+        console.log(_section);
+            }
       if (type === 'ADD_TITLE_DESCRIPTION') {
         let _clone = JSON.parse(JSON.stringify(_newtextarea));
         _data.splice(_itemIndex + 1, 0, _clone);
@@ -395,7 +398,7 @@ export default class CreateQuestionContextProvider extends Component {
         _data[_itemIndex + 1].active = true;
       }
       this.setState({
-        data: _data
+        data: {...this.state.data, sections:_section}
       })
     };
     const handleReorder = (startIndex, endIndex) => {
@@ -437,7 +440,7 @@ export default class CreateQuestionContextProvider extends Component {
       var _height = event.scrollHeight;
       event.style.height = _height + 'px';
       const _sections = [...this.state.data.sections];
-      _sections[_sections.findIndex(x => x.id === index)][name] = event.value;
+      _sections[index][name] = event.value;
       this.setState({
         data: {...this.state.data, sections:_sections}
       })
