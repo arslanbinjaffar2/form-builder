@@ -47,7 +47,7 @@ class viewForm extends Component {
           sections: _section
         })
       } else {
-        this.props.history.push('/form/create');
+        this.props.history.push('/');
       }
     }
   }

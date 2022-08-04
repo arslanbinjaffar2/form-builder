@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { CreateQuestionContext } from "app/contexts/CreateQuestionContext";
+import SaveBtn from '../ui/SaveBtn';
 function handleClick() {
   const items = document.querySelectorAll('.ebs-textarea-title');
   const desc = document.querySelectorAll('.ebs-textarea-desc');
@@ -14,12 +15,12 @@ function handleClick() {
     element.style.height = _height + 'px';
   });
 }
-const Section = ({ onClick, value, data, index }) => {
+const Section = ({ onClick, value, data, index,  }) => {
   const [section, setSection] = useState(0);
-  const {handleSectionArea,handleSectionPanel,handleSectionSort} = useContext(CreateQuestionContext);
+  const {handleSectionArea,handleSectionPanel,handleSectionSort, saveSection} = useContext(CreateQuestionContext);
   handleClick()
   useEffect(() => {
-    setSection(data.findIndex(x => x.index === index))
+    setSection(data.findIndex(x => x.id === index))
   }, []);
   const handlebtnClick = (e) => {
     e.preventDefault();
@@ -75,7 +76,8 @@ const Section = ({ onClick, value, data, index }) => {
               </div>
             </div>}
           </div>
-          <textarea onChange={(e) => handleSectionArea(e.target,'desc',index)} placeholder="Form Description" className="ebs-textarea-desc" value={value.desc} />
+          <textarea onChange={(e) => handleSectionArea(e.target,'description',index)} placeholder="Form Description" className="ebs-textarea-desc" value={value.description} />
+          <SaveBtn onClick={()=>{saveSection(value)}}>Save Section</SaveBtn>
         </div>
       </div>
     </React.Fragment>

@@ -1,5 +1,5 @@
 import React, { createContext, Component } from 'react';
-
+import axios from 'axios'
 const _answerboxshort = {
   responseValidation: false,
   customError: '',
@@ -99,55 +99,230 @@ const _newtextarea = {
   active: false,
 
 };
-const _data = [
-  {
-    index: 0,
-    type: 'SECTION',
-    title: 'Form Title',
-    desc: 'Form Description',
-    nextSection: 'CONTINUE',
-    active: true,
+// const _data = [
+//   {
+//     index: 0,
+//     type: 'SECTION',
+//     title: 'Form Title',
+//     desc: 'Form Description',
+//     nextSection: 'CONTINUE',
+//     active: true,
 
-  }, {
-    index: 1,
-    title: 'Question',
-    type: 'multiple_choice',
-    required: false,
-    description: '',
-    descVisible: true,
-    active: false,
-    options: {
-      addOther: false,
-      sectionBased: false,
-      response: null,
-      choices: [
-        {
-          label: 'Option 1',
-          nextSection: 'CONTINUE'
-        }
-      ]
-    }
-  }
-]
+//   }, {
+//     index: 1,
+//     title: 'Question',
+//     type: 'multiple_choice',
+//     required: false,
+//     description: '',
+//     descVisible: true,
+//     active: false,
+//     options: {
+//       addOther: false,
+//       sectionBased: false,
+//       response: null,
+//       choices: [
+//         {
+//           label: 'Option 1',
+//           nextSection: 'CONTINUE'
+//         }
+//       ]
+//     }
+//   }
+// ]
 
 export const CreateQuestionContext = createContext();
 export default class CreateQuestionContextProvider extends Component {
   state = {
-    data: _data,
+    data: [],
+    loading:false,
+    loadingError:null,
+    updating:false,
+    updatingError:null,
     sortSection: false,
   }
   render() {
+    const CancelToken = axios.CancelToken;
+    const signal = CancelToken.source();
+
+    const getFormData = async (form_id) => {
+      console.log(form_id);
+      this.setState({
+        loading:true,
+        loadingError:null,
+      })
+      try {
+        const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/getForm/11`, {form_id:form_id}, {cancelToken: signal.token});
+        console.log(response.data.data);
+        if(response.data.status === 1){
+            this.setState({
+              loading:false,
+              data:response.data.data,
+            })
+        }
+        else{
+          this.setState({
+            loading:false,
+            loadingError:response.data.message
+          })
+        }
+       
+      } catch (error) {
+        console.error(error);
+        this.setState({
+          loading:false,
+          loadingError:error.message
+        })
+      }
+    }
+    const saveSection = async (data) => {
+      console.log(data);
+      // this.setState({
+      //   loading:true,
+      //   loadingError:null,
+      // })
+      // try {
+      //   const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/saveSection/11`, data, {cancelToken: signal.token});
+      //   console.log(response.data.data);
+      //   if(response.data.status === 1){
+      //       this.setState({
+      //         loading:false,
+      //         data:response.data.data,
+      //       })
+      //   }
+      //   else{
+      //     this.setState({
+      //       loading:false,
+      //       loadingError:response.data.message
+      //     })
+      //   }
+       
+      // } catch (error) {
+      //   console.error(error);
+      //   this.setState({
+      //     loading:false,
+      //     loadingError:error.message
+      //   })
+      // }
+    }
+    
+    const saveQuestion = async (data) => {
+      console.log(data);
+      // this.setState({
+      //   loading:true,
+      //   loadingError:null,
+      // })
+      // try {
+      //   const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/saveSection/11`, data, {cancelToken: signal.token});
+      //   console.log(response.data.data);
+      //   if(response.data.status === 1){
+      //       this.setState({
+      //         loading:false,
+      //         data:response.data.data,
+      //       })
+      //   }
+      //   else{
+      //     this.setState({
+      //       loading:false,
+      //       loadingError:response.data.message
+      //     })
+      //   }
+       
+      // } catch (error) {
+      //   console.error(error);
+      //   this.setState({
+      //     loading:false,
+      //     loadingError:error.message
+      //   })
+      // }
+    }
+
+    const saveSectionSort = async (data) => {
+      console.log(data);
+      // this.setState({
+      //   loading:true,
+      //   loadingError:null,
+      // })
+      // try {
+      //   const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/saveSection/11`, data, {cancelToken: signal.token});
+      //   console.log(response.data.data);
+      //   if(response.data.status === 1){
+      //       this.setState({
+      //         loading:false,
+      //         data:response.data.data,
+      //       })
+      //   }
+      //   else{
+      //     this.setState({
+      //       loading:false,
+      //       loadingError:response.data.message
+      //     })
+      //   }
+       
+      // } catch (error) {
+      //   console.error(error);
+      //   this.setState({
+      //     loading:false,
+      //     loadingError:error.message
+      //   })
+      // }
+    }
+
+    const saveQuestionSort = async (data) => {
+      console.log(data);
+      // this.setState({
+      //   loading:true,
+      //   loadingError:null,
+      // })
+      // try {
+      //   const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/saveSection/11`, data, {cancelToken: signal.token});
+      //   console.log(response.data.data);
+      //   if(response.data.status === 1){
+      //       this.setState({
+      //         loading:false,
+      //         data:response.data.data,
+      //       })
+      //   }
+      //   else{
+      //     this.setState({
+      //       loading:false,
+      //       loadingError:response.data.message
+      //     })
+      //   }
+       
+      // } catch (error) {
+      //   console.error(error);
+      //   this.setState({
+      //     loading:false,
+      //     loadingError:error.message
+      //   })
+      // }
+    }
+
+
+
+    const cancelAllRequests = () => {
+      signal.cancel();
+      this.setState({
+        data: [],
+        loading:false,
+        loadingError:null,
+        updating:false,
+        updatingError:null,
+        sortSection: false,
+      })
+    }
+
     const handleChange = (id) => {
-      var _data = [...this.state.data];
-      _data.forEach(element => {
-        if (element.index === id) {
+      var _sections = [...this.state.data.sections];
+      _sections.forEach(element => {
+        if (element.id === id) {
           element.active = true;
         } else {
           element.active = false;
         }
       });
       this.setState({
-        data: _data
+        data:{...this.state.data, sections:_sections}
       })
     }
     const handleSectionSortGrid = (section) => {
@@ -261,10 +436,10 @@ export default class CreateQuestionContextProvider extends Component {
       event.style.height = name === 'desc' ? '28px' : name === 'title' ? '52px' : '';
       var _height = event.scrollHeight;
       event.style.height = _height + 'px';
-      const _data = [...this.state.data];
-      _data[_data.findIndex(x => x.index === index)][name] = event.value;
+      const _sections = [...this.state.data.sections];
+      _sections[_sections.findIndex(x => x.id === index)][name] = event.value;
       this.setState({
-        data: _data
+        data: {...this.state.data, sections:_sections}
       })
     }
     const handleTextArea = (event, name, index) => {
@@ -305,11 +480,11 @@ export default class CreateQuestionContextProvider extends Component {
       })
     }
     const handleSectionPanel = (value, type, id) => {
-      let _data = [...this.state.data];
+      let _sections = [...this.state.data.sections];
       let _section = [];
       const _id = id;
-      for (let i = _id; i < _data.length; i++) {
-        const element = _data[i];
+      for (let i = _id; i < _sections.length; i++) {
+        const element = _sections[i];
         if (i !== _id && element.type === "SECTION") {
           break;
         } else {
@@ -317,24 +492,24 @@ export default class CreateQuestionContextProvider extends Component {
         }
       }
       if (type === "DELETE") {
-        _data = _data.filter((el) => !_section.includes(el));
+        _sections = _sections.filter((el) => !_section.includes(el));
       }
       if (type === "DUPLICATE") {
-        _data.splice(_id, 0, ..._section);
-        _data = JSON.parse(JSON.stringify(_data));
+        _sections.splice(_id, 0, ..._section);
+        _sections = JSON.parse(JSON.stringify(_sections));
       }
       if (type === 'MERGE') {
-        _data.splice(_id, 1);
-        _data = JSON.parse(JSON.stringify(_data));
+        _sections.splice(_id, 1);
+        _sections = JSON.parse(JSON.stringify(_sections));
       }
-      _data.forEach((el, k) => {
+      _sections.forEach((el, k) => {
         el.index = k;
         el.active = false;
       });
-      _data[type === "DELETE" || type === 'MERGE' ? 0 : _id].active = true;
+      _sections[type === "DELETE" || type === 'MERGE' ? 0 : _id].active = true;
 
       this.setState({
-        data: _data,
+        data: {...this.state.data, sections:_sections},
       });
     };
     const handleLinerChange = (value, type, id) => {
@@ -555,6 +730,7 @@ export default class CreateQuestionContextProvider extends Component {
         data: _data
       })
     }
+
     return (
       <CreateQuestionContext.Provider
         value={{
@@ -574,7 +750,10 @@ export default class CreateQuestionContextProvider extends Component {
           handleTextArea,
           handleSectionPanel,
           handleSectionSort,
-          handleSectionSortGrid
+          handleSectionSortGrid,
+          getFormData,
+          cancelAllRequests,
+          saveSection
         }}
       >
         {this.props.children}

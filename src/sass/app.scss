@@ -1292,3 +1292,60 @@
     }
   }
 }
+
+.ebs-create-form-modal-backdrop{
+  position: fixed;
+  background-color: #4040407d;
+  width: 100%;
+  height: 100vh;
+  top: 0;
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+.ebs-create-form-modal-content{
+  width: 50%;
+  max-width: 550px;
+  background: #fff;
+  border-radius: 8px;
+}
+
+.ebs-create-form-modal-head{
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  h4{
+      margin-bottom: 0;
+  }
+}
+
+.ebs-create-form-modal-body{
+  padding: 16px;
+}
+.ebs-loader-wrapper{
+  padding: 5px;
+  width: 65px;
+  border-radius: 8px;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+}
+.ebs-loader {
+  border: 5px solid #cdcdcd; /* Light grey */
+  border-top: 5px solid #F4821F; /* Blue */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

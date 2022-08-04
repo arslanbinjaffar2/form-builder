@@ -9,7 +9,7 @@ class RouterOutlet extends React.Component {
     return (
         <Switch>
           <Route path="/" component={Home} exact/>
-          <Route path="/form/create" component={createForm} exact/>
+          <Route path="/form/update/:id" component={createForm} exact/>
           <Route path="/form/view" component={viewForm} exact/>
           <Route component={Error404}/>
         </Switch>

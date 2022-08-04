@@ -6,16 +6,18 @@ const lastModified = (date) => {
   return moment(date).format('DD MMM, YYYY');
 }
 const HomeFormsList = () => {
-  const { data } = useContext(FormDataContext);
-  const [stateData, setstateData] = useState(null);
-  useEffect( () => {
-    setstateData(data);
-  })
+  const { data, getForms, processing, cancelAllRequests, setCurrentForm } = useContext(FormDataContext);
+  useEffect(() => {
+    getForms();
+    return () => {
+          cancelAllRequests();
+    }
+  }, [])
   
     return (
       <React.Fragment>
-        {!stateData && <div>Loading...</div>}
-        {stateData && <div className="ebs-all-forms">
+        {data.length <= 0 && processing && <div>Loading...</div>}
+        {data && !processing && <div className="ebs-all-forms">
           <div className="ebs-top-panel">
             <div className="container">
             <div className="row d-flex">
@@ -38,8 +40,8 @@ const HomeFormsList = () => {
           <div className="ebs-form-list">
             <div className="container">
               <div className="row d-flex align-items center">
-                {stateData.map((item,k) => 
-                  <div key={k} className="col-lg-3 col-md-4">
+                {data.map((item,k) => 
+                  <div key={k} className="col-lg-3 col-md-4" onClick={()=>{ setCurrentForm(item.id) }}>
                     <div className="ebs-form-box">
                       <div className="ebs-box-image">
                         <img src={item.screenShot ? item.screenShot : require('img/template.svg') } alt="" />
@@ -49,7 +51,7 @@ const HomeFormsList = () => {
                         <div className="ebs-bottom-panel">
                           <div className="ebs-timedate">
                           <span style={{color: 'rgba($black,0.1)'}} className="material-icons">description</span>
-                          Opened {lastModified(item.lastModified)}</div>
+                          Opened {lastModified(item.updated_at)}</div>
                           
                         </div>
                       </div>
