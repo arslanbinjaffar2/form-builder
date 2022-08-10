@@ -32,7 +32,6 @@ const customStyles = {
 
 
 const PageBreak = ({data, index, onChange}) => {
-  console.log(data);
   const item =  index;
   var newArray = [{ value: 'CONTINUE', label: 'Continue to next section' },
   { value: 'SUBMIT', label: 'Submit form' }];
@@ -54,7 +53,7 @@ const PageBreak = ({data, index, onChange}) => {
           isSearchable={false}
           styles={customStyles}
           value={newArray[newArray.findIndex(x => x.value === data[item].nextSection)]}
-          onChange={(e) => onChange(e.value, data[item].index)}
+          onChange={(e) => onChange(e.value, item)}
           components={{ IndicatorSeparator: () => null }}
           theme={theme => ({
             ...theme,
@@ -94,21 +93,28 @@ const createForm = (props) => {
     }
   }, [data]);
   
-
   const onDragStart = (result) => {
     document.activeElement.blur();
   }
   const onDragEnd = (result) => {
     // dropped outside the list
+    console.log(result);
     if (!result.destination) {
       return;
     }
-    handleReorder(result.source.index, result.destination.index);
+    const { source, destination } = result;
+    // console.log(source, 'source');
+    // console.log(destination, 'destination');
+    handleReorder(source, destination);
   }
   return (
     <React.Fragment>
       <AppNavbar showpanel />
-      {loading && data.length <= 0 && <span>loading...</span>}
+      {loading && data.length <= 0 &&  <div className="ebs-loader-backdrop">
+          <div className="ebs-loader-wrapper">
+            <div className="ebs-loader"></div>
+          </div>
+        </div>}
       {sortSection && <SortSection />}
       {!loading && sections.length > 0 &&
       <main className="ebs-main" role="main">
@@ -137,123 +143,96 @@ const createForm = (props) => {
             </div>
              {data && data.sections &&
                 <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
-                  <Droppable droppableId="droppable">
-                    {(provided, snapshot) => (
-                      <div {...provided.droppableProps} ref={provided.innerRef}>
-                        {data && data.sections &&
-                          data.sections.map((item, k) => (
+                    {data && data.sections &&
+                      data.sections.map((item, k) => (
+                        <React.Fragment key={k}>
+                          {k === 0 && (
+                            <Section
+                              data={sections}
+                              onClick={handleChange}
+                              index={k}
+                              value={item}
+                            />
+                          )}
+                          {k > 0 && (
                             <React.Fragment key={k}>
-                              {k === 0 && (
-                                <Section
-                                  data={sections}
-                                  onClick={handleChange}
-                                  index={k}
-                                  value={item}
-                                />
-                              )}
-                              {k > 0 && (
-                                <React.Fragment key={k}>
-                                  <Draggable
-                                    isDragDisabled={true}
-                                    draggableId={`item-${k}`}
-                                    index={k}>
-                                    {(provided, snapshot) => (
-                                      <div
-                                        ref={provided.innerRef}
-                                        {...provided.draggableProps}
-                                        {...provided.dragHandleProps}
-                                      >
-                                      <PageBreak onChange={handleChangeSectionSelect} data={sections} index={k} />
-                                      </div>
-                                    )}
-                                  </Draggable>
-                                  <Draggable
-                                    isDragDisabled={true}
-                                    key={k}
-                                    draggableId={`item-${k}`}
-                                    index={k}>
-                                    {(provided, snapshot) => (
-                                      <div
-                                        ref={provided.innerRef}
-                                        {...provided.draggableProps}
-                                        {...provided.dragHandleProps}
-                                      >
-                                        <Section
-                                          data={sections}
-                                          onClick={handleChange}
-                                          index={k}
-                                          value={item}
-                                        />
-                                      </div>
-                                    )}
-                                  </Draggable>
-                                </React.Fragment>
-                              )}
-                              {item.type === 'TEXT_BLOCK' && 
-                              <Draggable
-                                key={item.sort_order}
-                                isDragDisabled={data.length > 2 ? false : true}
-                                draggableId={`item-${item.sort_order}`}
-                                index={k}>
-                                {(provided, snapshot) => (
                                   <div
-                                    ref={provided.innerRef}
-                                    {...provided.draggableProps}
+                                   
                                   >
-                                    <TextSection
+                                  <PageBreak onChange={handleChangeSectionSelect} data={[...data.sections]} index={k} />
+                                  </div>
+                                  <div
+                                   
+                                  >
+                                    <Section
                                       data={sections}
                                       onClick={handleChange}
-                                      index={item.id}
+                                      index={k}
                                       value={item}
-                                      dragHandle={provided.dragHandleProps}
                                     />
                                   </div>
-                                )}
-                              </Draggable>}
-                              {item.questions && item.questions.map((question)=>(
-                                <React.Fragment>
-                                  {(question.type === "multiple_choice" ||
-                                    question.type === "checkboxes" ||
-                                    question.type === "drop_down" ||
-                                    question.type === "short_answer" ||
-                                    question.type === "paragraph" ||
-                                    question.type === "linear_scale" ||
-                                    question.type === "multiple_choice_grid" ||
-                                    question.type === "tick_box_grid" ||
-                                    question.type === "date" ||
-                                    question.type === "time") && (
-                                      <Draggable
-                                        key={k}
-                                        isDragDisabled={item.questions.length > 2 ? false : true}
-                                        draggableId={`item-${k}`}
-                                        index={k}>
-                                        {(provided, snapshot) => (
-                                          <div
-                                            ref={provided.innerRef}
-                                            {...provided.draggableProps}>
-                                            <Question
-                                              isDragging={snapshot.isDragging}
-                                              dragHandle={provided.dragHandleProps}
-                                              data={question}
-                                            />
-                                          </div>
-                                        )}
-                                      </Draggable>
-                                    )}
-                                </React.Fragment>
-                              ))}
                             </React.Fragment>
-                          ))}
-                        {provided.placeholder}
-                      </div>
-                    )}
-                  </Droppable>
+                          )}
+                          {item.type === 'TEXT_BLOCK' && 
+                              <div key={k}>
+                                <TextSection
+                                  data={sections}
+                                  onClick={handleChange}
+                                  index={item.id}
+                                  value={item}
+                                />
+                              </div>  
+                          }
+                          <Droppable droppableId={`${k}`} key={`droppable-section-${k}`}>
+                            {(provided, snapshot) => (
+                              <div {...provided.droppableProps} ref={provided.innerRef}>
+                                  {item.questions && item.questions.map((question, j)=>(
+                                    
+                                    <React.Fragment key={j}>
+                                      {(question.type === "multiple_choice" ||
+                                        question.type === "checkboxes" ||
+                                        question.type === "drop_down" ||
+                                        question.type === "short_answer" ||
+                                        question.type === "paragraph" ||
+                                        question.type === "linear_scale" ||
+                                        question.type === "multiple_choice_grid" ||
+                                        question.type === "tick_box_grid" ||
+                                        question.type === "date" ||
+                                        question.type === "time") && (
+                                          <Draggable
+                                            key={j}
+                                            // isDragDisabled={item.questions.length > 2 ? false : true}
+                                            draggableId={`item-${j}`}
+                                            index={j}>
+                                            {(provided, snapshot) => (
+                                              <div
+                                                ref={provided.innerRef}
+                                                {...provided.draggableProps}>
+                                                <Question
+                                                  isDragging={snapshot.isDragging}
+                                                  dragHandle={provided.dragHandleProps}
+                                                  data={question}
+                                                  sectionIndex={k}
+                                                  questionIndex={j}
+                                                />
+                                              </div>
+                                            )}
+                                          </Draggable>
+                                        )}
+                                    </React.Fragment>
+                                  ))}
+                                {provided.placeholder}
+                              </div>
+                            )}
+                          </Droppable>
+                        </React.Fragment>
+                      ))}
                 </DragDropContext>
             }
           </div>
         </div>
       </main>}
-      {updating && <div className="ebs-loader-wrapper">
+      {updating && <div className="ebs-updating-wrapper">
         <div className="ebs-loader"></div>
       </div>}
     </React.Fragment>

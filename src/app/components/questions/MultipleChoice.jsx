@@ -68,12 +68,8 @@ export default class MultipleChoice extends Component {
   generateSelect = () => {
     var newArray = [{ value: 'CONTINUE', label: 'Continue to next section' },
     { value: 'SUBMIT', label: 'Submit form' }];
-    var _arraysection = [];
-    this.context.data.forEach(element => {
-      if (element.type === 'SECTION') {
-        _arraysection.push(element);
-      }
-    });
+    var _arraysection = [...this.context.data.sections];
+  
     _arraysection.forEach((element, key) => {
       const _new = {
         value: `SECTION_${key}`,
@@ -95,7 +91,24 @@ export default class MultipleChoice extends Component {
     window.removeEventListener('click', this.onBodyClick.bind(this), false)
   }
   render() {
-    const { handleChangeValueOption } = this.props;
+    const { 
+       cloneQuestion, 
+       deleteQuestion, 
+       changeQuestionRequiredStatus, 
+       setSectionBase, 
+       setChoicesOnBlur, 
+       setChoicesOnChange, 
+       deleteChoices, 
+       setNextSection, 
+       removeOther, 
+       addOther, 
+       setResponseValidation,
+       setResponseValidationCheckBoxError,
+       setResponseValidationCheckBoxType,
+       setResponseValidationCheckBoxValue,
+       addChoices,
+       setDescription,
+       } = this.context;
     const { active, options, descVisible, type, required, index } = this.props.data.data;
     return (
       <React.Fragment>
@@ -124,13 +137,13 @@ export default class MultipleChoice extends Component {
                               </div>
                               <div className="ebs-input-area">
                                 <input
-                                  onChange={(e) => handleChangeValueOption(e.target.value, 'CHANGE', index, k)}
-                                  onBlur={(e) => handleChangeValueOption(e.target.value, 'BLUR', index, k)}
+                                  onChange={(e) => setChoicesOnChange(this.props.sectionIndex, this.props.questionIndex,e.target.value)}
+                                  onBlur={(e) => setChoicesOnBlur(this.props.sectionIndex, this.props.questionIndex, e.target.value)}
                                   type="text" value={element.label} />
                               </div>
                               {options.choices.length > 1 && active && <div className="ebs-remove-icon">
                                 <span
-                                  onClick={(e) => handleChangeValueOption(e.target, 'DELETE', index)}
+                                  onClick={(e) => deleteChoices(this.props.sectionIndex, this.props.questionIndex, k)}
                                   className="material-icons">close</span></div>}
                             </div>
                             {type !== 'checkboxes' && options.sectionBased && active && this.state.sectionTo && <div className="ebs-section-based">
@@ -141,7 +154,7 @@ export default class MultipleChoice extends Component {
                                 isSearchable={false}
                                 styles={customStyles}
                                 value={this.state.sectionTo[this.state.sectionTo.findIndex(x => x.value === element.nextSection)]}
-                                onChange={(e) => handleChangeValueOption(e.value, 'SECTION_BASED_SELECT', index, k)}
+                                onChange={(e) => setNextSection(this.props.sectionIndex, this.props.questionIndex, e.value)}
                                 components={{ IndicatorSeparator: () => null }}
                                 theme={theme => ({
                                   ...theme,
@@ -172,7 +185,7 @@ export default class MultipleChoice extends Component {
               </div>
               <div className="ebs-input-area"><div className="ebs-othertext">Other...</div></div>
               {active && <div className="ebs-remove-icon"><span
-                onClick={(e) => handleChangeValueOption(e.target, 'REMOVEOTHER', `${index}`)}
+                onClick={(e) => removeOther(this.props.sectionIndex, this.props.questionIndex, e.target)}
                 className="material-icons">close</span></div>}
             </div>}
 
@@ -183,10 +196,10 @@ export default class MultipleChoice extends Component {
             </div>
             <div className="ebs-other-input ebs-btn-box">
               <span
-                onClick={(e) => handleChangeValueOption(e.target, 'ADD', `${index}`)}
+                onClick={(e) => addChoices(this.props.sectionIndex, this.props.questionIndex, e.target)}
                 className="ebs-addoption">Add Option </span>
               {!options.addOther && type !== 'drop_down' && <React.Fragment>or <strong
-                onClick={(e) => handleChangeValueOption(e.target, 'ADDOTHER', `${index}`)}
+                onClick={(e) => addOther(this.props.sectionIndex, this.props.questionIndex, e.target)}
                 className="ebs-addother">add "Other"</strong></React.Fragment>} </div>
           </div>}
           {type === 'checkboxes' && active && options.response.responseValidation && <div style={{ padding: '25px 25px 0' }} className="">
@@ -200,7 +213,7 @@ export default class MultipleChoice extends Component {
                     isSearchable={false}
                     styles={customStyles}
                     value={_options[_options.findIndex(x => x.value === options.response.type)]}
-                    onChange={(e) => handleChangeValueOption(e.value, 'CHECKBOX_RESPONSE_VALIDATION_SELECT_TYPE', `${index}`)}
+                    onChange={(e) => setResponseValidationCheckBoxType(this.props.sectionIndex, this.props.questionIndex, e.target)}
                     components={{ IndicatorSeparator: () => null }}
                     theme={theme => ({
                       ...theme,
@@ -215,25 +228,25 @@ export default class MultipleChoice extends Component {
                 </div>
                 <div className="col-3">
                   <input type="text" value={options.response.value}
-                    onChange={(e) => handleChangeValueOption(e.target.value, 'CHECKBOX_RESPONSE_VALUE', `${index}`)} placeholder="Number" />
+                    onChange={(e) => setResponseValidationCheckBoxValue(this.props.sectionIndex, this.props.questionIndex, e.target.value)} placeholder="Number" />
                 </div>
                 <div className="col-6">
                   <input type="text" value={options.response.error}
-                    onChange={(e) => handleChangeValueOption(e.target.value, 'CHECKBOX_RESPONSE_ERROR', `${index}`)}
+                    onChange={(e) => setResponseValidationCheckBoxError(this.props.sectionIndex, this.props.questionIndex, e.target.value)}
                     placeholder="Custom error validation" />
                 </div>
               </div>
-              <div onClick={(e) => handleChangeValueOption(e.target, 'CHECKBOX_VALIDATION', `${index}`)} className="ebs-close-validation"><i className="material-icons">close</i></div>
+              <div onClick={(e) => setResponseValidation(this.props.sectionIndex, this.props.questionIndex,  e.target)} className="ebs-close-validation"><i className="material-icons">close</i></div>
             </div>
           </div>}
         </div>
 
         {active && <div className="ebs-footer-wrapper">
           <div className="ebs-left-area d-flex">
-            <span onClick={(e) => { e.stopPropagation(); handleChangeValueOption(e.target, 'CLONEQUESTION', `${index}`) }} className="ebs-btn">
+            <span onClick={(e) => { e.stopPropagation(); cloneQuestion(this.props.sectionIndex, this.props.questionIndex, e.target) }} className="ebs-btn">
               <i className="material-icons">content_copy</i>
             </span>
-            <span onClick={(e) => { e.stopPropagation(); handleChangeValueOption(e.target, 'DELETEQUESTION', `${index}`) }} className="ebs-btn">
+            <span onClick={(e) => { e.stopPropagation(); deleteQuestion(this.props.sectionIndex, this.props.questionIndex, e.target) }} className="ebs-btn">
               <i className="material-icons">delete</i>
             </span>
           </div>
@@ -242,7 +255,7 @@ export default class MultipleChoice extends Component {
               <label className="ebs-custom-radio d-flex">
                 <span className="ebs-title-radio">Required</span>
                 <div className="ebs-radio-box">
-                  <input type="checkbox" onChange={(e) => handleChangeValueOption(e.target.checked, 'REQUIRED', `${index}`)} checked={required} />
+                  <input type="checkbox" onChange={(e) => changeQuestionRequiredStatus(this.props.sectionIndex, this.props.questionIndex, e.target.checked)} checked={required} />
                   <div className="ebs-radio-toggle">
                     <div className="ebs-handle"></div>
                   </div>
@@ -254,15 +267,15 @@ export default class MultipleChoice extends Component {
               <div className="ebs-app-tooltip">
                 <div className="ebs-title-tooltip">Show</div>
                 <div
-                  onClick={(e) => handleChangeValueOption(e.target, 'DESCRIPTION', `${index}`)}
+                  onClick={(e) => setDescription(this.props.sectionIndex, this.props.questionIndex, e.target)}
                   className={`ebs-tooltip-item ${descVisible ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><div className="ebs-title">Description</div></div>
 
                 {type !== 'checkboxes' && <div
-                  onClick={(e) => handleChangeValueOption(e.target, 'SECTION_BASE', `${index}`)}
+                  onClick={(e) => setSectionBase(this.props.sectionIndex, this.props.questionIndex, e.target)}
                   className={`ebs-tooltip-item ${options.sectionBased ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><span className="ebs-title">Go to Section baseed on answer</span></div>}
 
                 {type === 'checkboxes' && <div
-                  onClick={(e) => handleChangeValueOption(e.target, 'CHECKBOX_VALIDATION', `${index}`)}
+                  onClick={(e) => setResponseValidation(this.props.sectionIndex, this.props.questionIndex,  e.target)}
                   className={`ebs-tooltip-item ${options.response.responseValidation ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><span className="ebs-title">Response Validation</span></div>}
               </div>
             </div>

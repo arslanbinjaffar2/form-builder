@@ -102,7 +102,7 @@ export default class Question extends Component {
     return (
       <div
         onClick={(e) => {
-          !active && this.context.handleChange(index);
+          !active && this.context.handleQuestionChange(this.props.sectionIndex, this.props.questionIndex);
         }}
         className={`${
           active ? "ebs-active-section" : ""
@@ -120,7 +120,7 @@ export default class Question extends Component {
             )}
             <textarea
               onChange={(e) =>
-                this.context.handleChangeValue(e.target, index, "title")
+                this.context.handleChangeValue(this.props.sectionIndex, this.props.questionIndex, e.target, "title")
               }
               placeholder="Question"
               ref={this.textRef}
@@ -138,7 +138,7 @@ export default class Question extends Component {
                 styles={customStyles}
                 value={options[options.findIndex((x) => x.value === type)]}
                 onChange={(e) =>
-                  this.context.handleChangeValueOption(e.value, "TYPE", index)
+                  this.context.changeQuestionType(this.props.sectionIndex, this.props.questionIndex, e.value)
                 }
                 components={{
                   IndicatorSeparator: () => null,
@@ -179,20 +179,32 @@ export default class Question extends Component {
           <MultipleChoice
             handleChangeValueOption={this.context.handleChangeValueOption}
             data={this.props}
+            sectionIndex={this.props.sectionIndex}
+            questionIndex={this.props.questionIndex}
           />
         )}
         {(type === "short_answer" || type === "paragraph") && (
           <AnswerBox
             handleChangeValueOption={this.context.handleChangeValueOption}
             data={this.props}
+            sectionIndex={this.props.sectionIndex}
+            questionIndex={this.props.questionIndex}
           />
         )}
         {type === "linear_scale" && <LinearScale data={this.props} />}
         {(type === "multiple_choice_grid" || type === "tick_box_grid") && (
-          <MutipleChoiceGrid data={this.props} />
+          <MutipleChoiceGrid
+           data={this.props} 
+           sectionIndex={this.props.sectionIndex}
+           questionIndex={this.props.questionIndex} 
+          />
         )}
         {(type === "date" || type === "time") && (
-          <DateTimeModule data={this.props} />
+          <DateTimeModule 
+          data={this.props} 
+          sectionIndex={this.props.sectionIndex}
+          questionIndex={this.props.questionIndex} 
+          />
         )}
       </div>
     );

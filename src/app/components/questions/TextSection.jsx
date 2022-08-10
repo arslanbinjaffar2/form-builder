@@ -69,7 +69,7 @@ export default class TextSection extends Component {
                     <div className="ebs-app-tooltip">
                       <div className="ebs-title-tooltip">Show</div>
                       <div
-                        onClick={(e) => this.context.handleChangeValueOption(e.target, 'DESCRIPTION', `${index}`)}
+                        onClick={(e) => this.context.setDescription(this.props.sectionIndex, this.props.questionIndex, e.target)}
                         className={`ebs-tooltip-item ${value.descVisible ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><div className="ebs-title">Description</div></div>
                       
                     </div>

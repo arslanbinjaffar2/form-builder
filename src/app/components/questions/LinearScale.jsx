@@ -148,10 +148,10 @@ export default class LinearScale extends Component {
         </div>
         {active && <div className="ebs-footer-wrapper">
           <div className="ebs-left-area d-flex">
-            <span onClick ={(e) => {e.stopPropagation();this.context.handleChangeValueOption(e.target, 'CLONEQUESTION' ,`${index}`)}}  className="ebs-btn">
+            <span onClick ={(e) => {e.stopPropagation();this.context.cloneQuestion(this.props.sectionIndex, this.props.questionIndex, e.target)}}  className="ebs-btn">
               <i className="material-icons">content_copy</i>
             </span>
-            <span onClick ={(e) => {e.stopPropagation();this.context.handleChangeValueOption(e.target, 'DELETEQUESTION' ,`${index}`)}}  className="ebs-btn">
+            <span onClick ={(e) => {e.stopPropagation();this.context.deleteQuestion(this.props.sectionIndex, this.props.questionIndex, e.target)}}  className="ebs-btn">
               <i className="material-icons">delete</i>
             </span>
           </div>
@@ -160,7 +160,7 @@ export default class LinearScale extends Component {
               <label className="ebs-custom-radio d-flex">
                 <span className="ebs-title-radio">Required</span>
                 <div className="ebs-radio-box">
-                  <input type="checkbox" onChange={(e) => this.context.handleChangeValueOption(e.target.checked, 'REQUIRED' ,`${index}`)} checked={required} />
+                  <input type="checkbox" onChange={(e) => this.context.changeQuestionRequiredStatus(this.props.sectionIndex, this.props.questionIndex, e.target.checked)} checked={required} />
                   <div className="ebs-radio-toggle">
                     <div className="ebs-handle"></div>
                   </div>
@@ -172,7 +172,7 @@ export default class LinearScale extends Component {
                 <div  className="ebs-app-tooltip">
                   <div className="ebs-title-tooltip">Show</div>
                   <div
-                    onClick ={(e) => this.context.handleChangeValueOption(e.target, 'DESCRIPTION' ,`${index}`)} 
+                    onClick ={(e) => this.context.setDescription(this.props.sectionIndex, this.props.questionIndex, e.target)} 
                   className={`ebs-tooltip-item ${descVisible ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><div className="ebs-title">Description</div></div>
                 </div>
             </div>

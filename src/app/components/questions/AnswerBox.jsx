@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
 import Select  from "react-select";
+import { CreateQuestionContext } from "app/contexts/CreateQuestionContext";
 
 const customStyles = {
   control: base => ({
@@ -78,6 +79,8 @@ const CustomSelect = ({options,onChange,value}) => {
   )
 }
 export default class AnswerBox extends Component {
+  static contextType = CreateQuestionContext;
+
   state = {
     dropdown_one: [], 
     dropdown_two: [], 
@@ -126,7 +129,17 @@ export default class AnswerBox extends Component {
     window.removeEventListener('click',this.onBodyClick.bind(this), false)
   }
   render() {
-    const {handleChangeValueOption} = this.props;
+    const {
+      cloneQuestion, 
+      deleteQuestion, 
+      setResponseValidationType, 
+      setResponseValidationRule,
+      setResponseValidationFeildValue,
+      setQuestionResponseValidation,
+      changeQuestionRequiredStatus,
+      setDescription,
+      setResponseValidation
+    } = this.context;
     const {active, descVisible, options, required, type, index } = this.props.data.data;
     return (
       <React.Fragment>
@@ -142,44 +155,44 @@ export default class AnswerBox extends Component {
               <div className="col-3">
               <CustomSelect
                 value={this.state.dropdown_one[this.state.dropdown_one.findIndex(x => x.value === options.type)]} 
-                onChange={(e) => handleChangeValueOption(e.value, 'RESPONSE_VALIDATION_SELECT_TYPE' ,`${index}`)}
+                onChange={(e) => setResponseValidationType(this.props.sectionIndex, this.props.questionIndex, e.value)}
                 options={this.state.dropdown_one} />
               </div>
               <div className="col-3">
               <CustomSelect
                 value={this.state.dropdown_two[this.state.dropdown_two.findIndex(x => x.value === options.rule)]} 
-                onChange={(e) => handleChangeValueOption(e.value, 'RESPONSE_VALIDATION_SELECT_RULE' ,`${index}`)}
+                onChange={(e) => setResponseValidationRule(this.props.sectionIndex, this.props.questionIndex, e.value)}
                 options={this.state.dropdown_two} />
               </div>
               <div className={options.type === 'NUMBER' || options.type === 'LENGTH' ? 'col-2' : 'col-3'}>
                 {(options.type === 'NUMBER' || options.type === 'LENGTH') &&
                  <input 
-                  onChange={(e) => handleChangeValueOption(e.target.value, 'VALIDATION_FORM_FIELDS' ,`${index}`)}
+                  onChange={(e) => setResponseValidationFeildValue(this.props.sectionIndex, this.props.questionIndex, e.target.value)}
                   value={options.value} placeholder="Number" className="" type="text" />}
                 {options.type === 'TEXT' && <input
-                onChange={(e) => handleChangeValueOption(e.target.value, 'VALIDATION_FORM_FIELDS' ,`${index}`)}
+                onChange={(e) => setResponseValidationFeildValue(this.props.sectionIndex, this.props.questionIndex, e.target.value)}
                  value={options.value} placeholder="Text" className="" type="text" />}
                 {options.type === 'REGULAR_EXPRESSION' && 
                 <input
-                 onChange={(e) => handleChangeValueOption(e.target.value, 'VALIDATION_FORM_FIELDS' ,`${index}`)}
+                 onChange={(e) => setResponseValidationFeildValue(this.props.sectionIndex, this.props.questionIndex, e.target.value)}
                  value={options.value} placeholder="Pattern" className="" type="text" />}
               </div>
               <div className={options.type === 'NUMBER' || options.type === 'LENGTH' ? 'col-4' : 'col-3'}>
                 <input
-                 onChange={(e) => handleChangeValueOption(e.target.value, 'VALIDATION_ERROR_FIELDS' ,`${index}`)}
+                 onChange={(e) => setResponseValidationFeildValue(this.props.sectionIndex, this.props.questionIndex, e.target.value)}
                  value={options.error} placeholder="Custom error text" type="text" />
               </div>
             </div>
-            <div onClick ={(e) => handleChangeValueOption(e.target, 'RESPONSE_VALIDATION' ,`${index}`)} className="ebs-close-validation"><i className="material-icons">close</i></div>
+            <div onClick ={(e) => setQuestionResponseValidation(this.props.sectionIndex, this.props.questionIndex, e.target)} className="ebs-close-validation"><i className="material-icons">close</i></div>
           </div>}
         </div>
         </div>
         {active && <div className="ebs-footer-wrapper">
           <div className="ebs-left-area d-flex">
-            <span onClick ={(e) => {e.stopPropagation();handleChangeValueOption(e.target, 'CLONEQUESTION' ,`${index}`)}}  className="ebs-btn">
+            <span onClick ={(e) => {e.stopPropagation();cloneQuestion(this.props.sectionIndex, this.props.questionIndex, e.target)}}  className="ebs-btn">
               <i className="material-icons">content_copy</i>
             </span>
-            <span onClick ={(e) => {e.stopPropagation();handleChangeValueOption(e.target, 'DELETEQUESTION' ,`${index}`)}}  className="ebs-btn">
+            <span onClick ={(e) => {e.stopPropagation();deleteQuestion(this.props.sectionIndex, this.props.questionIndex, e.target)}}  className="ebs-btn">
               <i className="material-icons">delete</i>
             </span>
           </div>
@@ -188,7 +201,7 @@ export default class AnswerBox extends Component {
               <label className="ebs-custom-radio d-flex">
                 <span className="ebs-title-radio">Required</span>
                 <div className="ebs-radio-box">
-                  <input type="checkbox" onChange={(e) => handleChangeValueOption(e.target.checked, 'REQUIRED' ,`${index}`)} checked={required} />
+                  <input type="checkbox" onChange={(e) => changeQuestionRequiredStatus(this.props.sectionIndex, this.props.questionIndex, e.target.checked)} checked={required} />
                   <div className="ebs-radio-toggle">
                     <div className="ebs-handle"></div>
                   </div>
@@ -200,10 +213,10 @@ export default class AnswerBox extends Component {
                 <div  className="ebs-app-tooltip">
                   <div className="ebs-title-tooltip">Show</div>
                   <div
-                    onClick ={(e) => handleChangeValueOption(e.target, 'DESCRIPTION' ,`${index}`)} 
+                    onClick ={(e) => {setDescription(this.props.sectionIndex, this.props.questionIndex)}} 
                   className={`ebs-tooltip-item ${descVisible ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><div className="ebs-title">Description</div></div>
                   <div 
-                   onClick ={(e) => handleChangeValueOption(e.target, 'RESPONSE_VALIDATION' ,`${index}`)} 
+                   onClick ={(e) => setResponseValidation(this.props.sectionIndex, this.props.questionIndex, e.target)} 
                   className={`ebs-tooltip-item ${options.responseValidation ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><span className="ebs-title">Response Valdiation</span></div>
                 </div>
             </div>

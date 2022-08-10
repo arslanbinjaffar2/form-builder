@@ -16,7 +16,13 @@ const HomeFormsList = () => {
   
     return (
       <React.Fragment>
-        {data.length <= 0 && processing && <div>Loading...</div>}
+        {data.length <= 0 && processing && 
+        <div className="ebs-loader-backdrop">
+          <div className="ebs-loader-wrapper">
+            <div className="ebs-loader"></div>
+          </div>
+        </div>
+      }
         {data && !processing && <div className="ebs-all-forms">
           <div className="ebs-top-panel">
             <div className="container">

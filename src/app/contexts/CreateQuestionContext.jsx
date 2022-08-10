@@ -84,7 +84,8 @@ const _newquestion = {
 const _newsection = {
   title: 'Untitled Section',
   description: 'Form Description',
-  nextSection: 'CONTINUE',
+  next_section: 'CONTINUE',
+  form_builder_form_id:0,
   active: false,
   sort_order: 0,
 };
@@ -174,34 +175,70 @@ export default class CreateQuestionContextProvider extends Component {
     }
     const saveSection = async (data) => {
       console.log(data);
-      // this.setState({
-      //   loading:true,
-      //   loadingError:null,
-      // })
-      // try {
-      //   const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/saveSection/11`, data, {cancelToken: signal.token});
-      //   console.log(response.data.data);
-      //   if(response.data.status === 1){
-      //       this.setState({
-      //         loading:false,
-      //         data:response.data.data,
-      //       })
-      //   }
-      //   else{
-      //     this.setState({
-      //       loading:false,
-      //       loadingError:response.data.message
-      //     })
-      //   }
+      this.setState({
+        updating:true,
+        updatingError:null,
+      })
+      try {
+        const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/saveSection/11`, data, {cancelToken: signal.token});
+        console.log(response.data.data);
+        if(response.data.status === 1){
+          if(data.id === undefined){
+            this.setState({
+              updating:false,
+              data:{...this.state.data, sections:this.state.data.sections.map((item)=> item.sort_order === data.sort_order ? { ...item, id:response.data.data.section_id} : item)},
+            })
+            saveSectionSortBackend(this.state.data.sections.reduce((ack, item)=>({...ack,[item.id]:item.sort_order}), {}));
+          }else{
+            this.setState({
+              updating:false,
+            })
+          }
+        }
+        else{
+          this.setState({
+            updating:false,
+            updatingError:response.data.message
+          })
+        }
        
-      // } catch (error) {
-      //   console.error(error);
-      //   this.setState({
-      //     loading:false,
-      //     loadingError:error.message
-      //   })
-      // }
+      } catch (error) {
+        console.error(error);
+        this.setState({
+          updating:false,
+          updatingError:error.message
+        })
+      }
     }
+
+    const saveSectionSortBackend = async (data) => {
+      this.setState({
+        updating:true,
+        updatingError:null,
+      })
+      try {
+        const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/saveSectionSort/11`, data, {cancelToken: signal.token});
+        console.log(response.data.data);
+        if(response.data.status === 1){
+            this.setState({
+              updating:false,
+            })
+        }
+        else{
+          this.setState({
+            updating:false,
+            updatingError:response.data.message
+          })
+        }
+       
+      } catch (error) {
+        console.error(error);
+        this.setState({
+          updating:false,
+          updatingError:error.message
+        })
+      }
+    } 
     
     const saveQuestion = async (data) => {
       console.log(data);
@@ -310,15 +347,33 @@ export default class CreateQuestionContextProvider extends Component {
       })
     }
 
-    const handleChange = (id) => {
+    const handleChange = (sectionIndex) => {
+      var _sections = [...this.state.data.sections];
+        _sections.forEach((element, k) => {
+          element.active = false;
+          if(element.questions){
+            element.questions.forEach((q)=>{
+              q.active = false;
+            });
+          }
+      });
+      _sections[sectionIndex].active = true;
+      this.setState({
+        data:{...this.state.data, sections:_sections}
+      })
+    }
+    
+    const handleQuestionChange = (sectionIndex, questionIndex) => {
       var _sections = [...this.state.data.sections];
       _sections.forEach((element, k) => {
-        if (k === id) {
-          element.active = true;
-        } else {
           element.active = false;
-        }
+          if(element.questions){
+            element.questions.forEach((q)=>{
+              q.active = false;
+            });
+          }
       });
+      _sections[sectionIndex].questions[questionIndex].active = true;
       this.setState({
         data:{...this.state.data, sections:_sections}
       })
@@ -362,27 +417,34 @@ export default class CreateQuestionContextProvider extends Component {
         sortSection: !this.state.sortSection
       })
     }
-    const handleTooltip = (type) => {
+    const handleTooltip = (type, form_id) => {
       let _data= [];
       let _itemIndex = 0;
       const _section = [...this.state.data.sections];
       let _sectionIndex = _section.findIndex(x => x.active === true) !== -1 ? _section.findIndex(x => x.active === true) : 0;
       if (type === 'ADD_QUESTION') {
-        let _clone = JSON.parse(JSON.stringify(_newquestion));
-        _data.splice(_itemIndex + 1, 0, _clone);
-        _data.forEach((element, k) => {
-          element.index = k;
-          element.active = false;
-        });
-        _data[_itemIndex + 1].active = true;
+          let _questionIndex = 0;
+          let _clone = JSON.parse(JSON.stringify(_newquestion));
+
+          if(_section[_sectionIndex].questions === undefined){
+            _section[_sectionIndex].questions = [_clone];
+            _section[_sectionIndex].questions[0].active = true;
+          }else{
+            _questionIndex = _section[_sectionIndex].questions.findIndex(x => x.active === true) !== -1 ? _section[_sectionIndex].questions.findIndex(x => x.active === true) : 0;
+            _section[_sectionIndex].questions.splice(_questionIndex + 1, 0, _clone);
+            _section[_sectionIndex].questions[_questionIndex].active = false;
+            _section[_sectionIndex].questions[_questionIndex + 1].active = true;
+            _section[_sectionIndex].questions.forEach((element, k) => {
+              element.sort_order = k;
+            });          
+          }
       }
       if (type === 'ADD_SECTION') {
         let _clone = JSON.parse(JSON.stringify(_newsection));
-        _section.forEach((element, k) => {
-          element.active = false;
-        });
         _section.splice(_sectionIndex + 1, 0, _clone);
+        _section[_sectionIndex].active = false;
         _section[_sectionIndex + 1].active = true;
+        _section[_sectionIndex + 1].form_builder_form_id = parseInt(form_id);
         _section.forEach((element, k) => {
           element.sort_order = k;
         });
@@ -401,14 +463,33 @@ export default class CreateQuestionContextProvider extends Component {
         data: {...this.state.data, sections:_section}
       })
     };
-    const handleReorder = (startIndex, endIndex) => {
-      const result = [...this.state.data];
-      const [removed] = result.splice(startIndex, 1);
-      result.splice(endIndex, 0, removed);
-      result.forEach((item, k) => item.index = k)
+    const handleReorder = (source, destination) => {
+      const _sections = [...this.state.data.sections];
+      
+      if (source.droppableId !== destination.droppableId) {
+        const sourceSection = _sections[parseInt(source.droppableId)];
+        const destSection = _sections[parseInt(destination.droppableId)];
+        const sourceQuestions = [...sourceSection.questions];
+        const destQuestion = destSection.questions ? [...destSection.questions] : [];
+        const [removed] = sourceQuestions.splice(source.index, 1);
+        destQuestion.splice(destination.index, 0, removed);
+        _sections[parseInt(source.droppableId)].questions = sourceQuestions;
+        _sections[parseInt(destination.droppableId)].questions = destQuestion;
+        // save in backend
+      }
+      else{
+        const section = _sections[source.droppableId];
+        const copiedQuestions = [...section.questions];
+        const [removed] = copiedQuestions.splice(source.index, 1);
+        copiedQuestions.splice(destination.index, 0, removed);
+        _sections[source.droppableId].questions = copiedQuestions;
+        // save in backend
+      }
+
       this.setState({
-        data: result
+        data: {...this.state.data, sections:_sections}
       })
+      handleQuestionChange(parseInt(destination.droppableId), destination.index);
     }
     const handleMultiChoiceReorder = (index, startIndex, endIndex) => {
       const result = [...this.state.data];
@@ -455,14 +536,14 @@ export default class CreateQuestionContextProvider extends Component {
         data: _data
       })
     }
-    const handleChangeValue = (event, id, name) => {
+    const handleChangeValue = (sectionIndex, questionIndex, event, name) => {
       event.style.height = name === 'description' ? '35px' : name === 'title' ? '42px' : '';
       var _height = event.scrollHeight;
       event.style.height = _height + 'px';
-      const _data = [...this.state.data];
-      _data[_data.findIndex(x => x.index === id)][name] = event.value;
+      const _sections = [...this.state.data.sections];
+      _sections[sectionIndex].questions[questionIndex][name] = event.value;
       this.setState({
-        data: _data
+        data: {...this.state.data, sections:_sections}
       })
 
     }
@@ -572,175 +653,518 @@ export default class CreateQuestionContextProvider extends Component {
         data: _data
       })
     };
-    const handleChangeSectionSelect = (event,index) => {
-      const _data = [...this.state.data];
-      _data[_data.findIndex(x => x.index === index)].nextSection = event;
+    const handleChangeSectionSelect = (event, index) => {
+      const _sections = [...this.state.data.sections];
+      _sections[index].nextSection = event;
       this.setState({
-        data: _data
+        data: {...this.state.data, sections:_sections}
       })
     }
-    const handleChangeValueOption = (a, b, c, key) => {
-      const _data = [...this.state.data];
-      const _query = _data[_data.findIndex((x) => x.index === c * 1)];
-      if (b === 'SECTION_BASED_SELECT') {
-        _query.options.choices[key].nextSection = a;
-      }
-      if (b === 'CHANGE') {
-        _query.options.choices[key].label = a;
-      }
-      if (b === 'BLUR') {
-        if (a.replace(/\s/g, '') === '') {
-          _query.options.choices[key].label = `Option ${key + 1}`;
-        } else {
-          return false;
-        }
-      }
-      if (b === 'DELETE') {
-        _query.options.choices.splice(key, 1)
-      }
-      if (b === 'ADD') {
-        let _number = _query.options.choices.length + 1;
-        const _option = {
-          label: `Option ${_number}`,
-          nextSection: 'CONTINUE'
-        }
-        _query.options.choices.push(_option);
-      }
-      if (b === 'REMOVEOTHER') {
-        _query.options.addOther = false;
-      }
-      if (b === 'ADDOTHER') {
-        _query.options.addOther = true;
-      }
-      if (b === 'CHECKBOX_VALIDATION') {
-        _query.options.response.responseValidation = !_query.options.response.responseValidation;
-      }
-      if (b === 'DESCRIPTION') {
-        _query.descVisible = !_query.descVisible;
+    // const handleChangeValueOption = (a, b, c, key) => {
+      // const _data = [...this.state.data];
+      // const _query = _data[_data.findIndex((x) => x.index === c * 1)];
+      // if (b === 'SECTION_BASED_SELECT') {
+      //   _query.options.choices[key].nextSection = a;
+      // }
+      // if (b === 'CHANGE') {
+      //   _query.options.choices[key].label = a;
+      // }
+      // if (b === 'BLUR') {
+      //   if (a.replace(/\s/g, '') === '') {
+      //     _query.options.choices[key].label = `Option ${key + 1}`;
+      //   } else {
+      //     return false;
+      //   }
+      // }
+      // if (b === 'DELETE') {
+      //   _query.options.choices.splice(key, 1)
+      // }
+      // if (b === 'ADD') {
+      //   let _number = _query.options.choices.length + 1;
+      //   const _option = {
+      //     label: `Option ${_number}`,
+      //     nextSection: 'CONTINUE'
+      //   }
+      //   _query.options.choices.push(_option);
+      // }
+      // if (b === 'REMOVEOTHER') {
+      //   _query.options.addOther = false;
+      // }
+      // if (b === 'ADDOTHER') {
+      //   _query.options.addOther = true;
+      // }
+      // if (b === 'CHECKBOX_VALIDATION') {
+      //   _query.options.response.responseValidation = !_query.options.response.responseValidation;
+      // }
+      // if (b === 'DESCRIPTION') {
+      //   _query.descVisible = !_query.descVisible;
 
-        if (!_query.descVisible) {
-          _query.description = '';
-        }
+      //   if (!_query.descVisible) {
+      //     _query.description = '';
+      //   }
 
-      }
-      if (b === 'TYPE') {
-        const _prevType = _query.type;
-        _query.type = a;
-        if (a === 'time' && _prevType !== 'time') {
+      // }
+      // if (b === 'TYPE') {
+      //   const _prevType = _query.type;
+      //   _query.type = a;
+      //   if (a === 'time' && _prevType !== 'time') {
+      //     _query.options = JSON.parse(JSON.stringify(_timemodule));
+      //   }
+      //   if (a === 'date' && _prevType !== 'date') {
+      //     _query.options = JSON.parse(JSON.stringify(_datemodule));
+      //   }
+      //   if (a === 'linear_scale' && _prevType !== 'linear_scale') {
+      //     _query.options = JSON.parse(JSON.stringify(_linearscale));
+      //   }
+      //   if (a === 'multiple_choice_grid' && _prevType !== 'multiple_choice_grid' && _prevType !== 'tick_box_grid') {
+      //     _query.options = JSON.parse(JSON.stringify(_mulitplechoicegrid));
+      //   }
+      //   if (a === 'tick_box_grid' && _prevType !== 'tick_box_grid' && _prevType !== 'multiple_choice_grid') {
+      //     _query.options = JSON.parse(JSON.stringify(_mulitplechoicegrid));
+      //   }
+      //   if (a === 'short_answer' && _prevType !== 'short_answer') {
+      //     _query.options = JSON.parse(JSON.stringify(_answerboxshort));
+      //   }
+      //   if (a === 'paragraph' && _prevType !== 'paragraph') {
+      //     _query.options = JSON.parse(JSON.stringify(_answerboxpara));
+      //   }
+      //   if ((a === 'multiple_choice' || a === 'checkboxes' || a === 'drop_down') && _prevType !== 'multiple_choice' && _prevType !== 'checkboxes' && _prevType !== 'drop_down') {
+      //     _query.options = JSON.parse(JSON.stringify(_mulitplechoiceOptions));
+      //   }
+      //   if ((a === 'multiple_choice' || a === 'drop_down') && (_prevType !== 'multiple_choice' || _prevType !== 'drop_down')) {
+      //     _query.options.sectionBased = false;
+      //   }
+      //   if ((a === 'multiple_choice' || a === 'drop_down') && _prevType === 'checkboxes') {
+      //     _query.options.response = null;
+
+      //   }
+      //   if (a === 'checkboxes' && _prevType !== 'checkboxes') {
+      //     _query.options.sectionBased = false;
+      //     _query.options.response = JSON.parse(JSON.stringify(_checkboxvalidation));
+      //     _query.options.choices.forEach(element => {
+      //       element.nextSection = 'CONTINUE'
+      //     });
+      //   }
+      // }
+      // if (b === 'REQUIRED') {
+      //   _query.required = a;
+      // }
+      // if (b === 'DELETEQUESTION') {
+       
+      //   let _ind = _data.findIndex(x => x.index === c * 1);
+      //   _data.splice(_ind, 1);
+      //   _data.forEach((item, k) => item.index = k);
+      //   _data[Number(c) >= 1 ? Number(c) - 1 : 0].active = true;
+      // }
+      // if (b === 'RESPONSE_VALIDATION') {
+      //   _query.options.responseValidation = !_query.options.responseValidation;
+      // }
+      // if (b === 'CLONEQUESTION') {
+      //   let _itemIndex = _data.findIndex((x) => x.index === c * 1)
+      //   const _clone = JSON.parse(JSON.stringify(_query));
+      //   _data.splice(_itemIndex, 0, _clone);
+      //   _data.forEach((element, k) => {
+      //     element.index = k;
+      //     element.active = false;
+      //   });
+      //   _data[_itemIndex + 1].active = true;
+
+      // }
+      // if (b === 'SECTION_BASE') {
+      //   _query.options.sectionBased = !_query.options.sectionBased;
+      // }
+      // if (b === 'CHECKBOX_RESPONSE_VALUE') {
+      //   _query.options.response.value = a;
+      // }
+      // if (b === 'CHECKBOX_RESPONSE_ERROR') {
+      //   _query.options.response.error = a;
+      // }
+      // if (b === 'CHECKBOX_RESPONSE_VALIDATION_SELECT_TYPE') {
+      //   _query.options.response.type = a;
+      // }
+      // if (b === 'RESPONSE_VALIDATION_SELECT_TYPE') {
+      //   _query.options.type = a;
+      //   if (a === 'NUMBER') {
+      //     _query.options.rule = 'GREATER_THAN';
+      //   }
+      //   if (a === 'TEXT') {
+      //     _query.options.rule = 'CONTAINS';
+      //   }
+      //   if (a === 'LENGTH') {
+      //     _query.options.rule = 'MAX_CHAR_COUNT';
+      //   }
+      //   if (a === 'REGULAR_EXPRESSION') {
+      //     _query.options.rule = 'CONTAINS';
+      //   }
+      //   _query.options.value = '';
+      //   _query.options.error = '';
+      // }
+      // if (b === 'RESPONSE_VALIDATION_SELECT_RULE') {
+      //   _query.options.rule = a;
+      //   _query.options.value = '';
+      //   _query.options.error = '';
+      // }
+      // if (b === 'VALIDATION_FORM_FIELDS') {
+      //   _query.options.value = a;
+      // }
+      // if (b === 'VALIDATION_ERROR_FIELDS') {
+      //   _query.options.error = a;
+      // }
+      // this.setState({
+      //   data: _data
+      // })
+    // }
+
+    const changeQuestionType = async (sectionIndex, questionIndex, type) => {
+      const _sections = [...this.state.data.sections];
+      const _query = _sections[sectionIndex].questions[questionIndex];
+      const _prevType = _query.type;
+        _query.type = type;
+        if (type === 'time' && _prevType !== 'time') {
           _query.options = JSON.parse(JSON.stringify(_timemodule));
         }
-        if (a === 'date' && _prevType !== 'date') {
+        if (type === 'date' && _prevType !== 'date') {
           _query.options = JSON.parse(JSON.stringify(_datemodule));
         }
-        if (a === 'linear_scale' && _prevType !== 'linear_scale') {
+        if (type === 'linear_scale' && _prevType !== 'linear_scale') {
           _query.options = JSON.parse(JSON.stringify(_linearscale));
         }
-        if (a === 'multiple_choice_grid' && _prevType !== 'multiple_choice_grid' && _prevType !== 'tick_box_grid') {
+        if (type === 'multiple_choice_grid' && _prevType !== 'multiple_choice_grid' && _prevType !== 'tick_box_grid') {
           _query.options = JSON.parse(JSON.stringify(_mulitplechoicegrid));
         }
-        if (a === 'tick_box_grid' && _prevType !== 'tick_box_grid' && _prevType !== 'multiple_choice_grid') {
+        if (type === 'tick_box_grid' && _prevType !== 'tick_box_grid' && _prevType !== 'multiple_choice_grid') {
           _query.options = JSON.parse(JSON.stringify(_mulitplechoicegrid));
         }
-        if (a === 'short_answer' && _prevType !== 'short_answer') {
+        if (type === 'short_answer' && _prevType !== 'short_answer') {
           _query.options = JSON.parse(JSON.stringify(_answerboxshort));
         }
-        if (a === 'paragraph' && _prevType !== 'paragraph') {
+        if (type === 'paragraph' && _prevType !== 'paragraph') {
           _query.options = JSON.parse(JSON.stringify(_answerboxpara));
         }
-        if ((a === 'multiple_choice' || a === 'checkboxes' || a === 'drop_down') && _prevType !== 'multiple_choice' && _prevType !== 'checkboxes' && _prevType !== 'drop_down') {
+        if ((type === 'multiple_choice' || type === 'checkboxes' || type === 'drop_down') && _prevType !== 'multiple_choice' && _prevType !== 'checkboxes' && _prevType !== 'drop_down') {
           _query.options = JSON.parse(JSON.stringify(_mulitplechoiceOptions));
         }
-        if ((a === 'multiple_choice' || a === 'drop_down') && (_prevType !== 'multiple_choice' || _prevType !== 'drop_down')) {
+        if ((type === 'multiple_choice' || type === 'drop_down') && (_prevType !== 'multiple_choice' || _prevType !== 'drop_down')) {
           _query.options.sectionBased = false;
         }
-        if ((a === 'multiple_choice' || a === 'drop_down') && _prevType === 'checkboxes') {
+        if ((type === 'multiple_choice' || type === 'drop_down') && _prevType === 'checkboxes') {
           _query.options.response = null;
 
         }
-        if (a === 'checkboxes' && _prevType !== 'checkboxes') {
+        if (type === 'checkboxes' && _prevType !== 'checkboxes') {
           _query.options.sectionBased = false;
           _query.options.response = JSON.parse(JSON.stringify(_checkboxvalidation));
           _query.options.choices.forEach(element => {
             element.nextSection = 'CONTINUE'
           });
         }
-      }
-      if (b === 'REQUIRED') {
-        _query.required = a;
-      }
-      if (b === 'DELETEQUESTION') {
-       
-        let _ind = _data.findIndex(x => x.index === c * 1);
-        _data.splice(_ind, 1);
-        _data.forEach((item, k) => item.index = k);
-        _data[Number(c) >= 1 ? Number(c) - 1 : 0].active = true;
-      }
-      if (b === 'RESPONSE_VALIDATION') {
-        _query.options.responseValidation = !_query.options.responseValidation;
-      }
-      if (b === 'CLONEQUESTION') {
-        let _itemIndex = _data.findIndex((x) => x.index === c * 1)
-        const _clone = JSON.parse(JSON.stringify(_query));
-        _data.splice(_itemIndex, 0, _clone);
-        _data.forEach((element, k) => {
-          element.index = k;
-          element.active = false;
-        });
-        _data[_itemIndex + 1].active = true;
 
-      }
-      if (b === 'SECTION_BASE') {
-        _query.options.sectionBased = !_query.options.sectionBased;
-      }
-      if (b === 'CHECKBOX_RESPONSE_VALUE') {
-        _query.options.response.value = a;
-      }
-      if (b === 'CHECKBOX_RESPONSE_ERROR') {
-        _query.options.response.error = a;
-      }
-      if (b === 'CHECKBOX_RESPONSE_VALIDATION_SELECT_TYPE') {
-        _query.options.response.type = a;
-      }
-      if (b === 'RESPONSE_VALIDATION_SELECT_TYPE') {
-        _query.options.type = a;
-        if (a === 'NUMBER') {
-          _query.options.rule = 'GREATER_THAN';
-        }
-        if (a === 'TEXT') {
-          _query.options.rule = 'CONTAINS';
-        }
-        if (a === 'LENGTH') {
-          _query.options.rule = 'MAX_CHAR_COUNT';
-        }
-        if (a === 'REGULAR_EXPRESSION') {
-          _query.options.rule = 'CONTAINS';
-        }
-        _query.options.value = '';
-        _query.options.error = '';
-      }
-      if (b === 'RESPONSE_VALIDATION_SELECT_RULE') {
-        _query.options.rule = a;
-        _query.options.value = '';
-        _query.options.error = '';
-      }
-      if (b === 'VALIDATION_FORM_FIELDS') {
-        _query.options.value = a;
-      }
-      if (b === 'VALIDATION_ERROR_FIELDS') {
-        _query.options.error = a;
-      }
-      this.setState({
-        data: _data
-      })
+        this.setState({
+          data: {...this.state.data, sections:_sections}
+        })
+    
     }
+
+    const changeQuestionRequiredStatus = async (sectionIndex, questionIndex, status) => {
+      const _sections = [...this.state.data.sections];
+      const _query = _sections[sectionIndex].questions[questionIndex];
+        _query.required = status;
+        this.setState({
+          data: {...this.state.data, sections:_sections}
+        })
+    }
+    
+    const deleteQuestion = async (sectionIndex, questionIndex, status) => {
+      const _sections = [...this.state.data.sections];
+
+      _sections[sectionIndex].questions.splice(questionIndex, 1);
+      _sections[sectionIndex].questions.forEach((item, k) => item.index = k);
+      _sections[sectionIndex].questions[Number(questionIndex) >= 1 ? Number(questionIndex) - 1 : 0].active = true;
+
+        this.setState({
+          data: {...this.state.data, sections:_sections}
+        })
+    }
+    
+    const setQuestionResponseValidation = async (sectionIndex, questionIndex, status) => {
+      const _sections = [...this.state.data.sections];
+      const _query = _sections[sectionIndex].questions[questionIndex];
+        _query.options.responseValidation = !_query.options.responseValidation;
+        this.setState({
+          data: {...this.state.data, sections:_sections}
+        })
+    }
+    
+    const cloneQuestion = async (sectionIndex, questionIndex, status) => {
+      const _sections = [...this.state.data.sections];
+      const _query = _sections[sectionIndex].questions[questionIndex];
+
+      const _clone = JSON.parse(JSON.stringify(_query));
+      _sections[sectionIndex].questions.splice(questionIndex, 0, _clone);
+      _sections[sectionIndex].questions.forEach((element, k) => {
+        element.index = k;
+        element.active = false;
+      });
+      
+      _sections[sectionIndex].questions[questionIndex + 1].active = true;
+
+        this.setState({
+          data: {...this.state.data, sections:_sections}
+        })
+    }
+    
+    const setSectionBase = async (sectionIndex, questionIndex, status) => {
+      const _sections = [...this.state.data.sections];
+      const _query = _sections[sectionIndex].questions[questionIndex];
+
+        _query.options.sectionBased = !_query.options.sectionBased;
+
+        this.setState({
+          data: {...this.state.data, sections:_sections}
+        })
+
+    }
+    
+    const setResponseValidationType = async (sectionIndex, questionIndex, type) => {
+      const _sections = [...this.state.data.sections];
+      const _query = _sections[sectionIndex].questions[questionIndex];
+
+      _query.options.type = type;
+      if (type === 'NUMBER') {
+        _query.options.rule = 'GREATER_THAN';
+      }
+      if (type === 'TEXT') {
+        _query.options.rule = 'CONTAINS';
+      }
+      if (type === 'LENGTH') {
+        _query.options.rule = 'MAX_CHAR_COUNT';
+      }
+      if (type === 'REGULAR_EXPRESSION') {
+        _query.options.rule = 'CONTAINS';
+      }
+      _query.options.value = '';
+      _query.options.error = '';
+
+        this.setState({
+          data: {...this.state.data, sections:_sections}
+        })
+
+    }
+
+    const setResponseValidationRule = async (sectionIndex, questionIndex, type) => {
+      const _sections = [...this.state.data.sections];
+      const _query = _sections[sectionIndex].questions[questionIndex];
+
+        _query.options.rule = type;
+        _query.options.value = '';
+        _query.options.error = '';
+     
+        this.setState({
+          data: {...this.state.data, sections:_sections}
+        })
+
+    }
+    
+    const setResponseValidationFeildValue = async (sectionIndex, questionIndex, type) => {
+      const _sections = [...this.state.data.sections];
+      const _query = _sections[sectionIndex].questions[questionIndex];
+
+        _query.options.value = type;
+     
+        this.setState({
+          data: {...this.state.data, sections:_sections}
+        })
+
+    }
+    
+    const setResponseValidationFeildError = async (sectionIndex, questionIndex, type) => {
+      const _sections = [...this.state.data.sections];
+      const _query = _sections[sectionIndex].questions[questionIndex];
+
+        _query.options.error = type;
+     
+        this.setState({
+          data: {...this.state.data, sections:_sections}
+        })
+
+    }
+    
+    
+    const setResponseValidationCheckBoxValue = async (sectionIndex, questionIndex, value) => {
+      const _sections = [...this.state.data.sections];
+      const _query = _sections[sectionIndex].questions[questionIndex];
+
+        _query.options.response.value = value;
+
+        this.setState({
+          data: {...this.state.data, sections:_sections}
+        })
+
+    }
+    
+    const setResponseValidationCheckBoxError = async (sectionIndex, questionIndex, error) => {
+      const _sections = [...this.state.data.sections];
+      const _query = _sections[sectionIndex].questions[questionIndex];
+
+        _query.options.response.error = error;
+
+
+        this.setState({
+          data: {...this.state.data, sections:_sections}
+        })
+
+    }
+    
+    
+    const setResponseValidationCheckBoxType = async (sectionIndex, questionIndex, type) => {
+      const _sections = [...this.state.data.sections];
+      const _query = _sections[sectionIndex].questions[questionIndex];
+
+        _query.options.response.type = type;
+
+        this.setState({
+          data: {...this.state.data, sections:_sections}
+        })
+
+    }
+    
+    const setNextSection = async (sectionIndex, questionIndex, type, key) => {
+      const _sections = [...this.state.data.sections];
+      const _query = _sections[sectionIndex].questions[questionIndex];
+
+            _query.options.choices[key].nextSection = type;
+
+          this.setState({
+          data: {...this.state.data, sections:_sections}
+        })
+
+    }
+    
+    
+    const setChoicesOnChange = async (sectionIndex, questionIndex, type, key) => {
+      const _sections = [...this.state.data.sections];
+      const _query = _sections[sectionIndex].questions[questionIndex];
+
+          _query.options.choices[key].label = type;
+
+          this.setState({
+          data: {...this.state.data, sections:_sections}
+        })
+
+    }
+    
+    const setChoicesOnBlur = async (sectionIndex, questionIndex, type, key) => {
+      const _sections = [...this.state.data.sections];
+      const _query = _sections[sectionIndex].questions[questionIndex];
+
+            if (type.replace(/\s/g, '') === '') {
+              _query.options.choices[key].label = `Option ${key + 1}`;
+            } else {
+              return false;
+            }
+          this.setState({
+          data: {...this.state.data, sections:_sections}
+        })
+
+    }
+    
+    const deleteChoices = async (sectionIndex, questionIndex, type, key) => {
+      const _sections = [...this.state.data.sections];
+      const _query = _sections[sectionIndex].questions[questionIndex];
+
+      _query.options.choices.splice(key, 1)
+          this.setState({
+          data: {...this.state.data, sections:_sections}
+        })
+
+    }
+    
+    const addChoices = async (sectionIndex, questionIndex, type) => {
+      const _sections = [...this.state.data.sections];
+      const _query = _sections[sectionIndex].questions[questionIndex];
+
+      let _number = _query.options.choices.length + 1;
+      const _option = {
+        label: `Option ${_number}`,
+        nextSection: 'CONTINUE'
+      }
+      _query.options.choices.push(_option);
+
+          this.setState({
+          data: {...this.state.data, sections:_sections}
+        })
+
+    }
+   
+    const removeOther = async (sectionIndex, questionIndex, type, key) => {
+      const _sections = [...this.state.data.sections];
+      const _query = _sections[sectionIndex].questions[questionIndex];
+
+      _query.options.addOther = false;
+
+
+      _query.options.choices.splice(key, 1)
+          this.setState({
+          data: {...this.state.data, sections:_sections}
+        })
+
+    }
+    
+    const addOther = async (sectionIndex, questionIndex, type, key) => {
+      const _sections = [...this.state.data.sections];
+      const _query = _sections[sectionIndex].questions[questionIndex];
+
+      _query.options.addOther = true;
+
+
+      _query.options.choices.splice(key, 1)
+          this.setState({
+          data: {...this.state.data, sections:_sections}
+        })
+
+    }
+    const setResponseValidation = async (sectionIndex, questionIndex, type, key) => {
+      const _sections = [...this.state.data.sections];
+      const _query = _sections[sectionIndex].questions[questionIndex];
+
+      _query.options.response.responseValidation = !_query.options.response.responseValidation;
+
+      _query.options.choices.splice(key, 1)
+          this.setState({
+          data: {...this.state.data, sections:_sections}
+        })
+
+    }
+    
+    const setDescription = async (sectionIndex, questionIndex) => {
+      console.log(sectionIndex);
+      const _sections = [...this.state.data.sections];
+      const _query = _sections[sectionIndex].questions[questionIndex];
+
+      _query.descVisible = !_query.descVisible;
+
+      if (!_query.descVisible) {
+        _query.description = '';
+      }
+
+          this.setState({
+          data: {...this.state.data, sections:_sections}
+        })
+
+    }
+    
+
+
+
+
 
     return (
       <CreateQuestionContext.Provider
         value={{
           ...this.state,
           handleChange,
+          handleQuestionChange,
           handleChangeValue,
-          handleChangeValueOption,
           handleLinerChange,
           handleGridChoice,
           handleChangeDateTime,
@@ -754,6 +1178,28 @@ export default class CreateQuestionContextProvider extends Component {
           handleSectionPanel,
           handleSectionSort,
           handleSectionSortGrid,
+          changeQuestionType,
+          changeQuestionRequiredStatus,
+          deleteQuestion,
+          setQuestionResponseValidation,
+          cloneQuestion,
+          setSectionBase,
+          setResponseValidationType,
+          setResponseValidationRule,
+          setResponseValidationFeildValue,
+          setResponseValidationFeildError,
+          setResponseValidationCheckBoxValue,
+          setResponseValidationCheckBoxError,
+          setResponseValidationCheckBoxType,
+          setNextSection,
+          setChoicesOnChange,
+          setChoicesOnBlur,
+          deleteChoices,
+          addChoices,
+          removeOther,
+          addOther,
+          setResponseValidation,
+          setDescription,
           getFormData,
           cancelAllRequests,
           saveSection
