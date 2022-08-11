@@ -80,7 +80,7 @@ export default class DateTimeModule extends Component {
                   <div className="ebs-title-tooltip">Show</div>
                   <div
                   onClick ={(e) => this.context.setDescription(this.props.sectionIndex, this.props.questionIndex, e.target)} 
-                  className={`ebs-tooltip-item ${descVisible ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><div className="ebs-title">Description</div></div>
+                  className={`ebs-tooltip-item ${options.description_visible ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><div className="ebs-title">Description</div></div>
                   {type === 'date' && <React.Fragment> <div
                    onClick ={(e) => this.context.handleChangeDateTime(e.target, 'INCLUDE_TIME' ,`${index}`)} 
                    className={`ebs-tooltip-item ${options.time ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><div className="ebs-title">Include time</div></div>

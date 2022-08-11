@@ -101,7 +101,7 @@ export default class AnswerBox extends Component {
   componentDidMount() {
     let _data = this.props.data.data;
     // eslint-disable-next-line no-eval
-    const _evaldropdown = eval(`_IS_${_data.options.type}`);
+    const _evaldropdown = eval(`_IS_${_data.validation.type}`);
       this.setState({
         dropdown_one: _data.type === 'short_answer' ? _options : _options_para,
         dropdown_two: _evaldropdown ? _evaldropdown : _IS_NUMBER
@@ -119,7 +119,7 @@ export default class AnswerBox extends Component {
   componentWillReceiveProps(nextProps) {
       let _data = this.props.data.data;
       // eslint-disable-next-line no-eval
-      const _evaldropdown = eval(`_IS_${_data.options.type}`);
+      const _evaldropdown = eval(`_IS_${_data.validation.type}`);
         this.setState({
           dropdown_one: _data.type === 'short_answer' ? _options : _options_para,
           dropdown_two: _evaldropdown ? _evaldropdown : _IS_NUMBER
@@ -135,12 +135,13 @@ export default class AnswerBox extends Component {
       setResponseValidationType, 
       setResponseValidationRule,
       setResponseValidationFeildValue,
+      setResponseValidationFeildError,
       setQuestionResponseValidation,
       changeQuestionRequiredStatus,
       setDescription,
       setResponseValidation
     } = this.context;
-    const {active, descVisible, options, required, type, index } = this.props.data.data;
+    const {active,  options, required, type, validation } = this.props.data.data;
     return (
       <React.Fragment>
       <div className="ebs-answer-box">
@@ -150,7 +151,7 @@ export default class AnswerBox extends Component {
               {type === 'short_answer' ? 'Short answer text' : 'Long answer text'}
             </div>
           </div>
-          {options.responseValidation && <div className="ebs-validation-rule">
+          {options.response_validation && <div className="ebs-validation-rule">
             <div className="row d-flex">
               <div className="col-3">
               <CustomSelect
@@ -168,19 +169,19 @@ export default class AnswerBox extends Component {
                 {(options.type === 'NUMBER' || options.type === 'LENGTH') &&
                  <input 
                   onChange={(e) => setResponseValidationFeildValue(this.props.sectionIndex, this.props.questionIndex, e.target.value)}
-                  value={options.value} placeholder="Number" className="" type="text" />}
+                  value={validation.value} placeholder="Number" className="" type="text" />}
                 {options.type === 'TEXT' && <input
                 onChange={(e) => setResponseValidationFeildValue(this.props.sectionIndex, this.props.questionIndex, e.target.value)}
-                 value={options.value} placeholder="Text" className="" type="text" />}
+                 value={validation.value} placeholder="Text" className="" type="text" />}
                 {options.type === 'REGULAR_EXPRESSION' && 
                 <input
                  onChange={(e) => setResponseValidationFeildValue(this.props.sectionIndex, this.props.questionIndex, e.target.value)}
-                 value={options.value} placeholder="Pattern" className="" type="text" />}
+                 value={validation.value} placeholder="Pattern" className="" type="text" />}
               </div>
               <div className={options.type === 'NUMBER' || options.type === 'LENGTH' ? 'col-4' : 'col-3'}>
                 <input
-                 onChange={(e) => setResponseValidationFeildValue(this.props.sectionIndex, this.props.questionIndex, e.target.value)}
-                 value={options.error} placeholder="Custom error text" type="text" />
+                 onChange={(e) => setResponseValidationFeildError(this.props.sectionIndex, this.props.questionIndex, e.target.value)}
+                 value={validation.custom_error} placeholder="Custom error text" type="text" />
               </div>
             </div>
             <div onClick ={(e) => setQuestionResponseValidation(this.props.sectionIndex, this.props.questionIndex, e.target)} className="ebs-close-validation"><i className="material-icons">close</i></div>
@@ -214,10 +215,10 @@ export default class AnswerBox extends Component {
                   <div className="ebs-title-tooltip">Show</div>
                   <div
                     onClick ={(e) => {setDescription(this.props.sectionIndex, this.props.questionIndex)}} 
-                  className={`ebs-tooltip-item ${descVisible ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><div className="ebs-title">Description</div></div>
+                  className={`ebs-tooltip-item ${options.description_visible ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><div className="ebs-title">Description</div></div>
                   <div 
                    onClick ={(e) => setResponseValidation(this.props.sectionIndex, this.props.questionIndex, e.target)} 
-                  className={`ebs-tooltip-item ${options.responseValidation ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><span className="ebs-title">Response Valdiation</span></div>
+                  className={`ebs-tooltip-item ${options.response_validation ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><span className="ebs-title">Response Valdiation</span></div>
                 </div>
             </div>
          </div>

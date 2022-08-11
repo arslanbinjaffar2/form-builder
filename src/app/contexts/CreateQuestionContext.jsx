@@ -1,85 +1,93 @@
 import React, { createContext, Component } from 'react';
 import axios from 'axios'
-const _answerboxshort = {
-  responseValidation: false,
+const _answerboxshortOption = {
+  response_validation: false,
+};
+const _answerboxshortValidation = {
   customError: '',
   type: 'NUMBER',
   rule: 'GREATER_THAN',
   value: '',
-  error: '',
 };
-const _answerboxpara = {
-  responseValidation: false,
-  customError: '',
+const _answerboxparaOption = {
+  response_validation: false,
+};
+const _answerboxparaValidation = {
+  custom_error: '',
   type: 'LENGTH',
   rule: 'MAX_CHAR_COUNT',
   value: '',
-  error: '',
+};
+
+const _checkboxOption = {
+  response_validation: false,
 };
 
 const _checkboxvalidation = {
-  responseValidation: false,
   type: 'AT_LEAST',
   value: '',
-  error: '',
 };
 
-const _linearscale = {
+const _linearscaleOption = {
   min: '1',
   max: '5',
-  minLabel: '',
-  maxLabel: '',
+  min_label: '',
+  max_label: '',
 }
+
 const _mulitplechoiceOptions = {
-  addOther: false,
-  sectionBased: false,
-  response: null,
-  choices: [
+  add_other: false,
+  section_based: false,
+  
+};
+const _mulitplechoiceAnswers = [
+    {
+      label: 'Option 1',
+      next_section: 'CONTINUE'
+    }
+  ];
+const _mulitplechoicegridOptions = {
+  limit: false,
+  shuffle: false,
+};
+
+const _mulitplechoicegridRows= [
+    "Row 1",
+    "Row 2"
+  ];
+const _mulitplechoicegridColumns=[
+  "Column 1",
+  "Column 2"
+];
+
+
+
+const _datemoduleOptions = {
+  date: true,
+  year: false,
+  time: false,
+};
+const _timemoduleOptions = {
+  type: 'TIME'
+};
+const _newquestion = {
+  title: 'Question',
+  type: 'multiple_choice',
+  required: false,
+  description: '',
+  active: false,
+  sort_order:0,
+  options: {
+    description_visible: true,
+    add_other: false,
+    section_based: false,
+  },
+  answers: [
     {
       label: 'Option 1',
       nextSection: 'CONTINUE'
     }
   ]
-};
-const _mulitplechoicegrid = {
-  limit: false,
-  shuffle: false,
-  rows: [
-    "Row 1",
-    "Row 2"
-  ],
-  columns: [
-    "Column 1",
-    "Column 2"
-  ],
-};
-const _datemodule = {
-  date: true,
-  year: false,
-  time: false,
-};
-const _timemodule = {
-  type: 'TIME'
-};
-const _newquestion = {
-  index: '',
-  title: 'Question',
-  type: 'multiple_choice',
-  required: false,
-  description: '',
-  descVisible: true,
-  active: false,
-  options: {
-    addOther: false,
-    sectionBased: false,
-    response: null,
-    choices: [
-      {
-        label: 'Option 1',
-        nextSection: 'CONTINUE'
-      }
-    ]
-  }
 };
 const _newsection = {
   title: 'Untitled Section',
@@ -117,9 +125,9 @@ const _newtextarea = {
 //     active: false,
 //     options: {
 //       addOther: false,
-//       sectionBased: false,
+//       section_based: false,
 //       response: null,
-//       choices: [
+//       answers: [
 //         {
 //           label: 'Option 1',
 //           nextSection: 'CONTINUE'
@@ -173,6 +181,7 @@ export default class CreateQuestionContextProvider extends Component {
         })
       }
     }
+    
     const saveSection = async (data) => {
       console.log(data);
       this.setState({
@@ -210,7 +219,6 @@ export default class CreateQuestionContextProvider extends Component {
         })
       }
     }
-
     const saveSectionSortBackend = async (data) => {
       this.setState({
         updating:true,
@@ -220,9 +228,47 @@ export default class CreateQuestionContextProvider extends Component {
         const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/saveSectionSort/11`, data, {cancelToken: signal.token});
         console.log(response.data.data);
         if(response.data.status === 1){
+          this.setState({
+            updating:false,
+          })
+        }
+        else{
+          this.setState({
+            updating:false,
+            updatingError:response.data.message
+          })
+        }
+        
+      } catch (error) {
+        console.error(error);
+        this.setState({
+          updating:false,
+          updatingError:error.message
+        })
+      }
+    } 
+    
+    const addQuestion = async (data, formid) => {
+      console.log(data);
+      this.setState({
+        updating:true,
+        updatingError:null,
+      })
+      try {
+        const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/addQuestion/11`, data, {cancelToken: signal.token});
+        console.log(response.data.data);
+        if(response.data.status === 1){
+          if(data.id === undefined){
+            this.setState({
+              updating:false,
+              data:{...this.state.data, sections:this.state.data.sections.map((item)=> item.sort_order === data.sort_order ? { ...item, id:response.data.data.section_id} : item)},
+            })
+            // saveSectionSortBackend(this.state.data.sections.reduce((ack, item)=>({...ack,[item.id]:item.sort_order}), {}));
+          }else{
             this.setState({
               updating:false,
             })
+          }
         }
         else{
           this.setState({
@@ -238,8 +284,8 @@ export default class CreateQuestionContextProvider extends Component {
           updatingError:error.message
         })
       }
-    } 
-    
+    }
+
     const saveQuestion = async (data) => {
       console.log(data);
       // this.setState({
@@ -373,6 +419,7 @@ export default class CreateQuestionContextProvider extends Component {
             });
           }
       });
+      _sections[sectionIndex].active = true;
       _sections[sectionIndex].questions[questionIndex].active = true;
       this.setState({
         data:{...this.state.data, sections:_sections}
@@ -493,7 +540,7 @@ export default class CreateQuestionContextProvider extends Component {
     }
     const handleMultiChoiceReorder = (index, startIndex, endIndex) => {
       const result = [...this.state.data];
-      const option = result[index].options.choices;
+      const option = result[index].options.answers;
       const [removed] = option.splice(startIndex, 1);
       option.splice(endIndex, 0, removed);
       result.forEach((item, k) => item.index = k);
@@ -596,9 +643,9 @@ export default class CreateQuestionContextProvider extends Component {
         data: {...this.state.data, sections:_sections},
       });
     };
-    const handleLinerChange = (value, type, id) => {
-      const _data = [...this.state.data];
-      const _query = _data[_data.findIndex((x) => x.index === id * 1)];
+    const handleLinerChange = (sectionIndex, questionIndex, value, type) => {
+      const _sections = [...this.state.data.sections];
+      const _query = _sections[sectionIndex].questions[questionIndex];
 
       if (type === 'LINEAR_MIN') {
         _query.options.min = value;
@@ -607,14 +654,14 @@ export default class CreateQuestionContextProvider extends Component {
         _query.options.max = value;
       }
       if (type === 'MIN_LABEL') {
-        _query.options.minLabel = value;
+        _query.options.min_label = value;
       }
       if (type === 'MAX_LABEL') {
-        _query.options.maxLabel = value;
+        _query.options.max_label = value;
       }
 
       this.setState({
-        data: _data
+        data: {...this.state.data, sections:_sections}
       })
     };
     const handleGridChoice = (value, type, id, key) => {
@@ -660,32 +707,33 @@ export default class CreateQuestionContextProvider extends Component {
         data: {...this.state.data, sections:_sections}
       })
     }
+
     // const handleChangeValueOption = (a, b, c, key) => {
       // const _data = [...this.state.data];
       // const _query = _data[_data.findIndex((x) => x.index === c * 1)];
       // if (b === 'SECTION_BASED_SELECT') {
-      //   _query.options.choices[key].nextSection = a;
+      //   _query.options.answers[key].nextSection = a;
       // }
       // if (b === 'CHANGE') {
-      //   _query.options.choices[key].label = a;
+      //   _query.options.answers[key].label = a;
       // }
       // if (b === 'BLUR') {
       //   if (a.replace(/\s/g, '') === '') {
-      //     _query.options.choices[key].label = `Option ${key + 1}`;
+      //     _query.options.answers[key].label = `Option ${key + 1}`;
       //   } else {
       //     return false;
       //   }
       // }
       // if (b === 'DELETE') {
-      //   _query.options.choices.splice(key, 1)
+      //   _query.options.answers.splice(key, 1)
       // }
       // if (b === 'ADD') {
-      //   let _number = _query.options.choices.length + 1;
+      //   let _number = _query.options.answers.length + 1;
       //   const _option = {
       //     label: `Option ${_number}`,
       //     nextSection: 'CONTINUE'
       //   }
-      //   _query.options.choices.push(_option);
+      //   _query.options.answers.push(_option);
       // }
       // if (b === 'REMOVEOTHER') {
       //   _query.options.addOther = false;
@@ -694,7 +742,7 @@ export default class CreateQuestionContextProvider extends Component {
       //   _query.options.addOther = true;
       // }
       // if (b === 'CHECKBOX_VALIDATION') {
-      //   _query.options.response.responseValidation = !_query.options.response.responseValidation;
+      //   _query.options.response_validation = !_query.options.response_validation;
       // }
       // if (b === 'DESCRIPTION') {
       //   _query.descVisible = !_query.descVisible;
@@ -732,16 +780,16 @@ export default class CreateQuestionContextProvider extends Component {
       //     _query.options = JSON.parse(JSON.stringify(_mulitplechoiceOptions));
       //   }
       //   if ((a === 'multiple_choice' || a === 'drop_down') && (_prevType !== 'multiple_choice' || _prevType !== 'drop_down')) {
-      //     _query.options.sectionBased = false;
+      //     _query.options.section_based = false;
       //   }
       //   if ((a === 'multiple_choice' || a === 'drop_down') && _prevType === 'checkboxes') {
       //     _query.options.response = null;
 
       //   }
       //   if (a === 'checkboxes' && _prevType !== 'checkboxes') {
-      //     _query.options.sectionBased = false;
+      //     _query.options.section_based = false;
       //     _query.options.response = JSON.parse(JSON.stringify(_checkboxvalidation));
-      //     _query.options.choices.forEach(element => {
+      //     _query.options.answers.forEach(element => {
       //       element.nextSection = 'CONTINUE'
       //     });
       //   }
@@ -757,7 +805,7 @@ export default class CreateQuestionContextProvider extends Component {
       //   _data[Number(c) >= 1 ? Number(c) - 1 : 0].active = true;
       // }
       // if (b === 'RESPONSE_VALIDATION') {
-      //   _query.options.responseValidation = !_query.options.responseValidation;
+      //   _query.options.response_validation = !_query.options.response_validation;
       // }
       // if (b === 'CLONEQUESTION') {
       //   let _itemIndex = _data.findIndex((x) => x.index === c * 1)
@@ -771,7 +819,7 @@ export default class CreateQuestionContextProvider extends Component {
 
       // }
       // if (b === 'SECTION_BASE') {
-      //   _query.options.sectionBased = !_query.options.sectionBased;
+      //   _query.options.section_based = !_query.options.section_based;
       // }
       // if (b === 'CHECKBOX_RESPONSE_VALUE') {
       //   _query.options.response.value = a;
@@ -821,40 +869,47 @@ export default class CreateQuestionContextProvider extends Component {
       const _prevType = _query.type;
         _query.type = type;
         if (type === 'time' && _prevType !== 'time') {
-          _query.options = JSON.parse(JSON.stringify(_timemodule));
+          _query.options = JSON.parse(JSON.stringify(_timemoduleOptions));
         }
         if (type === 'date' && _prevType !== 'date') {
-          _query.options = JSON.parse(JSON.stringify(_datemodule));
+          _query.options = JSON.parse(JSON.stringify(_datemoduleOptions));
         }
         if (type === 'linear_scale' && _prevType !== 'linear_scale') {
-          _query.options = JSON.parse(JSON.stringify(_linearscale));
+          _query.options = JSON.parse(JSON.stringify(_linearscaleOption));
         }
         if (type === 'multiple_choice_grid' && _prevType !== 'multiple_choice_grid' && _prevType !== 'tick_box_grid') {
-          _query.options = JSON.parse(JSON.stringify(_mulitplechoicegrid));
+          _query.options = JSON.parse(JSON.stringify(_mulitplechoicegridOptions));
+          _query.rows = JSON.parse(JSON.stringify(_mulitplechoicegridRows));
+          _query.columns = JSON.parse(JSON.stringify(_mulitplechoicegridColumns));
         }
         if (type === 'tick_box_grid' && _prevType !== 'tick_box_grid' && _prevType !== 'multiple_choice_grid') {
-          _query.options = JSON.parse(JSON.stringify(_mulitplechoicegrid));
+          _query.rows = JSON.parse(JSON.stringify(_mulitplechoicegridRows));
+          _query.columns = JSON.parse(JSON.stringify(_mulitplechoicegridColumns));
+          _query.options = JSON.parse(JSON.stringify(_mulitplechoicegridOptions));
         }
         if (type === 'short_answer' && _prevType !== 'short_answer') {
-          _query.options = JSON.parse(JSON.stringify(_answerboxshort));
+          _query.options = JSON.parse(JSON.stringify(_answerboxshortOption));
+          _query.validation = JSON.parse(JSON.stringify(_answerboxshortValidation));
         }
         if (type === 'paragraph' && _prevType !== 'paragraph') {
-          _query.options = JSON.parse(JSON.stringify(_answerboxpara));
+          _query.options = JSON.parse(JSON.stringify(_answerboxparaOption));
+          _query.validation = JSON.parse(JSON.stringify(_answerboxparaValidation));
         }
         if ((type === 'multiple_choice' || type === 'checkboxes' || type === 'drop_down') && _prevType !== 'multiple_choice' && _prevType !== 'checkboxes' && _prevType !== 'drop_down') {
           _query.options = JSON.parse(JSON.stringify(_mulitplechoiceOptions));
+          _query.answers = JSON.parse(JSON.stringify(_mulitplechoiceAnswers));
         }
         if ((type === 'multiple_choice' || type === 'drop_down') && (_prevType !== 'multiple_choice' || _prevType !== 'drop_down')) {
-          _query.options.sectionBased = false;
+          _query.options.section_based = false;
         }
         if ((type === 'multiple_choice' || type === 'drop_down') && _prevType === 'checkboxes') {
           _query.options.response = null;
 
         }
         if (type === 'checkboxes' && _prevType !== 'checkboxes') {
-          _query.options.sectionBased = false;
-          _query.options.response = JSON.parse(JSON.stringify(_checkboxvalidation));
-          _query.options.choices.forEach(element => {
+          _query.options.section_based = false;
+          _query.validation = JSON.parse(JSON.stringify(_checkboxvalidation));
+          _query.answers.forEach(element => {
             element.nextSection = 'CONTINUE'
           });
         }
@@ -889,7 +944,7 @@ export default class CreateQuestionContextProvider extends Component {
     const setQuestionResponseValidation = async (sectionIndex, questionIndex, status) => {
       const _sections = [...this.state.data.sections];
       const _query = _sections[sectionIndex].questions[questionIndex];
-        _query.options.responseValidation = !_query.options.responseValidation;
+        _query.options.response_validation = !_query.options.response_validation;
         this.setState({
           data: {...this.state.data, sections:_sections}
         })
@@ -917,7 +972,7 @@ export default class CreateQuestionContextProvider extends Component {
       const _sections = [...this.state.data.sections];
       const _query = _sections[sectionIndex].questions[questionIndex];
 
-        _query.options.sectionBased = !_query.options.sectionBased;
+        _query.options.section_based = !_query.options.section_based;
 
         this.setState({
           data: {...this.state.data, sections:_sections}
@@ -969,7 +1024,7 @@ export default class CreateQuestionContextProvider extends Component {
       const _sections = [...this.state.data.sections];
       const _query = _sections[sectionIndex].questions[questionIndex];
 
-        _query.options.value = type;
+        _query.validation.value = type;
      
         this.setState({
           data: {...this.state.data, sections:_sections}
@@ -981,7 +1036,7 @@ export default class CreateQuestionContextProvider extends Component {
       const _sections = [...this.state.data.sections];
       const _query = _sections[sectionIndex].questions[questionIndex];
 
-        _query.options.error = type;
+        _query.validation.custom_error = type;
      
         this.setState({
           data: {...this.state.data, sections:_sections}
@@ -1032,7 +1087,7 @@ export default class CreateQuestionContextProvider extends Component {
       const _sections = [...this.state.data.sections];
       const _query = _sections[sectionIndex].questions[questionIndex];
 
-            _query.options.choices[key].nextSection = type;
+            _query.options.answers[key].nextSection = type;
 
           this.setState({
           data: {...this.state.data, sections:_sections}
@@ -1041,11 +1096,11 @@ export default class CreateQuestionContextProvider extends Component {
     }
     
     
-    const setChoicesOnChange = async (sectionIndex, questionIndex, type, key) => {
+    const setAnswersOnChange = async (sectionIndex, questionIndex, type, key) => {
       const _sections = [...this.state.data.sections];
       const _query = _sections[sectionIndex].questions[questionIndex];
 
-          _query.options.choices[key].label = type;
+          _query.answers[key].label = type;
 
           this.setState({
           data: {...this.state.data, sections:_sections}
@@ -1053,12 +1108,12 @@ export default class CreateQuestionContextProvider extends Component {
 
     }
     
-    const setChoicesOnBlur = async (sectionIndex, questionIndex, type, key) => {
+    const setAnswersOnBlur = async (sectionIndex, questionIndex, type, key) => {
       const _sections = [...this.state.data.sections];
       const _query = _sections[sectionIndex].questions[questionIndex];
 
             if (type.replace(/\s/g, '') === '') {
-              _query.options.choices[key].label = `Option ${key + 1}`;
+              _query.answers[key].label = `Option ${key + 1}`;
             } else {
               return false;
             }
@@ -1068,27 +1123,27 @@ export default class CreateQuestionContextProvider extends Component {
 
     }
     
-    const deleteChoices = async (sectionIndex, questionIndex, type, key) => {
+    const deleteAnswers = async (sectionIndex, questionIndex, type, key) => {
       const _sections = [...this.state.data.sections];
       const _query = _sections[sectionIndex].questions[questionIndex];
 
-      _query.options.choices.splice(key, 1)
+      _query.answers.splice(key, 1)
           this.setState({
           data: {...this.state.data, sections:_sections}
         })
 
     }
     
-    const addChoices = async (sectionIndex, questionIndex, type) => {
+    const addAnswers = async (sectionIndex, questionIndex, type) => {
       const _sections = [...this.state.data.sections];
       const _query = _sections[sectionIndex].questions[questionIndex];
 
-      let _number = _query.options.choices.length + 1;
+      let _number = _query.answers.length + 1;
       const _option = {
         label: `Option ${_number}`,
         nextSection: 'CONTINUE'
       }
-      _query.options.choices.push(_option);
+      _query.answers.push(_option);
 
           this.setState({
           data: {...this.state.data, sections:_sections}
@@ -1100,10 +1155,10 @@ export default class CreateQuestionContextProvider extends Component {
       const _sections = [...this.state.data.sections];
       const _query = _sections[sectionIndex].questions[questionIndex];
 
-      _query.options.addOther = false;
+      _query.options.add_other = false;
 
 
-      _query.options.choices.splice(key, 1)
+      _query.answers.splice(key, 1)
           this.setState({
           data: {...this.state.data, sections:_sections}
         })
@@ -1114,22 +1169,21 @@ export default class CreateQuestionContextProvider extends Component {
       const _sections = [...this.state.data.sections];
       const _query = _sections[sectionIndex].questions[questionIndex];
 
-      _query.options.addOther = true;
+      _query.options.add_other = true;
 
 
-      _query.options.choices.splice(key, 1)
+      _query.answers.splice(key, 1)
           this.setState({
           data: {...this.state.data, sections:_sections}
         })
 
     }
+
     const setResponseValidation = async (sectionIndex, questionIndex, type, key) => {
       const _sections = [...this.state.data.sections];
       const _query = _sections[sectionIndex].questions[questionIndex];
 
-      _query.options.response.responseValidation = !_query.options.response.responseValidation;
-
-      _query.options.choices.splice(key, 1)
+      _query.options.response_validation = !_query.options.response_validation;
           this.setState({
           data: {...this.state.data, sections:_sections}
         })
@@ -1141,9 +1195,9 @@ export default class CreateQuestionContextProvider extends Component {
       const _sections = [...this.state.data.sections];
       const _query = _sections[sectionIndex].questions[questionIndex];
 
-      _query.descVisible = !_query.descVisible;
+      _query.options.description_visible = !_query.options.description_visible;
 
-      if (!_query.descVisible) {
+      if (!_query.options.description_visible) {
         _query.description = '';
       }
 
@@ -1192,17 +1246,18 @@ export default class CreateQuestionContextProvider extends Component {
           setResponseValidationCheckBoxError,
           setResponseValidationCheckBoxType,
           setNextSection,
-          setChoicesOnChange,
-          setChoicesOnBlur,
-          deleteChoices,
-          addChoices,
+          setAnswersOnChange,
+          setAnswersOnBlur,
+          deleteAnswers,
+          addAnswers,
           removeOther,
           addOther,
           setResponseValidation,
           setDescription,
           getFormData,
           cancelAllRequests,
-          saveSection
+          saveSection,
+          addQuestion,
         }}
       >
         {this.props.children}

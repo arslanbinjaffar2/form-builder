@@ -212,6 +212,8 @@ const createForm = (props) => {
                                                   isDragging={snapshot.isDragging}
                                                   dragHandle={provided.dragHandleProps}
                                                   data={question}
+                                                  formId={props.match.params.id}
+                                                  sectionId={item.id}
                                                   sectionIndex={k}
                                                   questionIndex={j}
                                                 />

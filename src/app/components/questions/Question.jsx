@@ -6,6 +6,7 @@ import LinearScale from "./LinearScale";
 import MutipleChoiceGrid from "./MutipleChoiceGrid";
 import DateTimeModule from "./DateTimeModule";
 import { CreateQuestionContext } from "app/contexts/CreateQuestionContext";
+import SaveBtn from "../ui/SaveBtn";
 const { Option, SingleValue } = components;
 const customStyles = {
   control: (base) => ({
@@ -44,7 +45,7 @@ const DropdownIndicator = (props) => {
     </components.DropdownIndicator>
   );
 };
-const options = [
+const qustionTypeOptions = [
   { value: "short_answer", label: "Short Answer", icon: "ico-short.svg" },
   { value: "paragraph", label: "Paragraph", icon: "ico-paragraph.svg" },
   { value: "multiple_choice", label: "Multiple choice", icon: "ico-radio.svg" },
@@ -97,12 +98,16 @@ export default class Question extends Component {
     });
   }
   render() {
-    const { title, description, descVisible, active, type, required, index } =
+    const { title, description, options, active, type, required, index } =
       this.props.data;
     return (
       <div
         onClick={(e) => {
-          !active && this.context.handleQuestionChange(this.props.sectionIndex, this.props.questionIndex);
+          !active &&
+            this.context.handleQuestionChange(
+              this.props.sectionIndex,
+              this.props.questionIndex
+            );
         }}
         className={`${
           active ? "ebs-active-section" : ""
@@ -120,7 +125,12 @@ export default class Question extends Component {
             )}
             <textarea
               onChange={(e) =>
-                this.context.handleChangeValue(this.props.sectionIndex, this.props.questionIndex, e.target, "title")
+                this.context.handleChangeValue(
+                  this.props.sectionIndex,
+                  this.props.questionIndex,
+                  e.target,
+                  "title"
+                )
               }
               placeholder="Question"
               ref={this.textRef}
@@ -136,9 +146,17 @@ export default class Question extends Component {
                 menuPlacement="auto"
                 isSearchable={false}
                 styles={customStyles}
-                value={options[options.findIndex((x) => x.value === type)]}
+                value={
+                  qustionTypeOptions[
+                    qustionTypeOptions.findIndex((x) => x.value === type)
+                  ]
+                }
                 onChange={(e) =>
-                  this.context.changeQuestionType(this.props.sectionIndex, this.props.questionIndex, e.value)
+                  this.context.changeQuestionType(
+                    this.props.sectionIndex,
+                    this.props.questionIndex,
+                    e.value
+                  )
                 }
                 components={{
                   IndicatorSeparator: () => null,
@@ -155,16 +173,21 @@ export default class Question extends Component {
                     primary: "#E39840",
                   },
                 })}
-                options={options}
+                options={qustionTypeOptions}
               />
             </div>
           )}
         </div>
-        {descVisible && (
+        {options.description_visible && (
           <div className="ebs-description-wrapper">
             <textarea
               onChange={(e) =>
-                this.context.handleChangeValue(e.target, index, "description")
+                this.context.handleChangeValue(
+                  this.props.sectionIndex,
+                  this.props.questionIndex,
+                  e.target,
+                  "description"
+                )
               }
               value={description}
               ref={this.textDescRef}
@@ -191,21 +214,38 @@ export default class Question extends Component {
             questionIndex={this.props.questionIndex}
           />
         )}
-        {type === "linear_scale" && <LinearScale data={this.props} />}
+        {type === "linear_scale" && (
+          <LinearScale
+            data={this.props}
+            sectionIndex={this.props.sectionIndex}
+            questionIndex={this.props.questionIndex}
+          />
+        )}
         {(type === "multiple_choice_grid" || type === "tick_box_grid") && (
           <MutipleChoiceGrid
-           data={this.props} 
-           sectionIndex={this.props.sectionIndex}
-           questionIndex={this.props.questionIndex} 
+            data={this.props}
+            sectionIndex={this.props.sectionIndex}
+            questionIndex={this.props.questionIndex}
           />
         )}
         {(type === "date" || type === "time") && (
-          <DateTimeModule 
-          data={this.props} 
-          sectionIndex={this.props.sectionIndex}
-          questionIndex={this.props.questionIndex} 
+          <DateTimeModule
+            data={this.props}
+            sectionIndex={this.props.sectionIndex}
+            questionIndex={this.props.questionIndex}
           />
         )}
+        <SaveBtn
+          onClick={() => {
+            this.context.addQuestion({
+              ...this.props.data,
+              form_builder_form_id: this.props.formId,
+              form_builder_section_id: this.props.sectionId,
+            });
+          }}
+        >
+          Save Question
+        </SaveBtn>
       </div>
     );
   }

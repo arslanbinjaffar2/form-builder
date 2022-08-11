@@ -61,7 +61,7 @@ export default class DateModule extends Component {
                   <div className="ebs-title-tooltip">Show</div>
                   <div
                   onClick ={(e) => this.context.setDescription(this.props.sectionIndex, this.props.questionIndex, e.target)} 
-                  className={`ebs-tooltip-item ${descVisible ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><div className="ebs-title">Description</div></div>
+                  className={`ebs-tooltip-item ${options.description_visible ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><div className="ebs-title">Description</div></div>
                   <div
                    onClick ={(e) => this.context.handleGridChoice(e.target, 'RESPONSE' ,`${parent},${index}`)} 
                    className={`ebs-tooltip-item ${options.limit ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><div className="ebs-title">Limit to one response per column</div></div>

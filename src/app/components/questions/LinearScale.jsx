@@ -75,7 +75,7 @@ export default class LinearScale extends Component {
               isSearchable={false}
               styles={customStyles}
               value={_dropdown_min[_dropdown_min.findIndex(x => x.value === options.min)]} 
-              onChange={(e) => this.context.handleLinerChange(e.value, 'LINEAR_MIN' ,`${index}`)}
+              onChange={(e) => this.context.handleLinerChange(this.props.sectionIndex, this.props.questionIndex, e.value, 'LINEAR_MIN' )}
               components={{IndicatorSeparator: () => null }}
               theme={theme => ({
                 ...theme,
@@ -97,7 +97,7 @@ export default class LinearScale extends Component {
                 isSearchable={false}
                 styles={customStyles}
                 value={_dropdown_max[_dropdown_max.findIndex(x => x.value === options.max)]} 
-                onChange={(e) => this.context.handleLinerChange(e.value, 'LINEAR_MAX' ,`${index}`)}
+                onChange={(e) => this.context.handleLinerChange(this.props.sectionIndex, this.props.questionIndex, e.value, 'LINEAR_MAX' )}
                 components={{IndicatorSeparator: () => null }}
                 theme={theme => ({
                   ...theme,
@@ -113,16 +113,16 @@ export default class LinearScale extends Component {
           </div>
           <div className="ebs-linear-optional">
             <div className="ebs-linear-optional-wrapp d-flex align-items-center">
-              <span className={`ebs-counter ${options.minLabel.length > 0 ? 'ebs-active' : ''}`}>{options.min}</span>
+              <span className={`ebs-counter ${options.min_label !== '' ? 'ebs-active' : ''}`}>{options.min}</span>
               <input
-                onChange={(e) => this.context.handleLinerChange(e.target.value, 'MIN_LABEL' ,`${index}`)} 
-                value={options.minLabel} type="text" placeholder="Label (optional)"  />  
+                onChange={(e) => this.context.handleLinerChange(this.props.sectionIndex, this.props.questionIndex, e.value, 'MIN_LABEL' )} 
+                value={options.min_label} type="text" placeholder="Label (optional)"  />  
             </div>
             <div className="ebs-linear-optional-wrapp d-flex align-items-center">
-              <span className={`ebs-counter ${options.maxLabel.length > 0 ? 'ebs-active' : ''}`}>{options.max}</span>
+              <span className={`ebs-counter ${options.max_label !== '' ? 'ebs-active' : ''}`}>{options.max}</span>
               <input
-               onChange={(e) => this.context.handleLinerChange(e.target.value, 'MAX_LABEL' ,`${index}`)}
-               value={options.maxLabel}
+               onChange={(e) => this.context.handleLinerChange(this.props.sectionIndex, this.props.questionIndex, e.value, 'MAX_LABEL' )}
+               value={options.max_label}
                type="text" placeholder="Label (optional)"  />  
             </div>
           </div>
@@ -131,7 +131,7 @@ export default class LinearScale extends Component {
             <div className="ebs-linear-view-wrapper d-flex align-items-center text-center">
               <div className="ebs-linear-box d-flex ebs-linear-caption">
                 <div className="ebs-label"></div>
-                <div className="ebs-value"><div className="ebs-value-inner">{options.minLabel}</div></div>
+                <div className="ebs-value"><div className="ebs-value-inner">{options.min_label}</div></div>
               </div>
                {Array.apply(null,Array((Number(options.max) - (Number(options.min) === 0 ? 0 : 1))+1)).map((e,i) => (
                  <div key={i} className="ebs-linear-box d-flex">
@@ -141,7 +141,7 @@ export default class LinearScale extends Component {
                ))} 
               <div className="ebs-linear-box d-flex ebs-linear-caption">
                 <div className="ebs-label"></div>
-                <div className="ebs-value"><div className="ebs-value-inner">{options.maxLabel}</div></div>
+                <div className="ebs-value"><div className="ebs-value-inner">{options.max_label}</div></div>
               </div>
             </div>
         </div>}
@@ -173,7 +173,7 @@ export default class LinearScale extends Component {
                   <div className="ebs-title-tooltip">Show</div>
                   <div
                     onClick ={(e) => this.context.setDescription(this.props.sectionIndex, this.props.questionIndex, e.target)} 
-                  className={`ebs-tooltip-item ${descVisible ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><div className="ebs-title">Description</div></div>
+                  className={`ebs-tooltip-item ${options.description_visible ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><div className="ebs-title">Description</div></div>
                 </div>
             </div>
          </div>

@@ -81,7 +81,7 @@ export default class MutipleChoiceGrid extends Component {
     window.removeEventListener('click',this.onBodyClick.bind(this), false)
   }
   render() {
-    const {active, descVisible, options, required, type, index } = this.props.data.data;
+    const {active, options, required, type, rows, columns, sort_order } = this.props.data.data;
     return (
       <React.Fragment>
       <div className="ebs-question-grid">
@@ -93,14 +93,14 @@ export default class MutipleChoiceGrid extends Component {
               <ContentBox
                 type="rows"
                 active={active}
-                index={index}
+                index={sort_order}
                 onDrag={this.onDragEnd.bind(this)}
                 onChange={this.context.handleGridChoice.bind(this)}
-                data={options.rows} />
+                data={rows} />
                 <div className="ebs-list-box">
-                  <div className="ebs-counter">{options.rows.length + 1}.</div>
+                  <div className="ebs-counter">{rows.length + 1}.</div>
                   <div className="ebs-add-options">
-                    <span onClick ={(e) => this.context.handleGridChoice(e.target, 'ADD_ROW' ,`${index}`)}>Add Row</span>
+                    <span onClick ={(e) => this.context.handleGridChoice(e.target, 'ADD_ROW' ,`${sort_order}`)}>Add Row</span>
                   </div>
                 </div>
              </div>
@@ -112,16 +112,16 @@ export default class MutipleChoiceGrid extends Component {
               type="columns"
               active={active}
               parentType={type}
-              index={index}
+              index={sort_order}
               onDrag={this.onDragEnd.bind(this)}
               onChange={this.context.handleGridChoice.bind(this)}
-              data={options.columns} />
+              data={columns} />
               <div className="ebs-list-box">
                 <div className="ebs-icon-box">
                 <i className="material-icons">{type === 'multiple_choice_grid' ? 'radio_button_unchecked' : type === 'tick_box_grid' ? 'check_box_outline_blank' : 'check' }</i>
                 </div>
                 <div className="ebs-add-options">
-                  <span onClick ={(e) => this.context.handleGridChoice(e.target, 'ADD_COLUMN' ,`${index}`)}>Add Column</span>
+                  <span onClick ={(e) => this.context.handleGridChoice(e.target, 'ADD_COLUMN' ,`${sort_order}`)}>Add Column</span>
                 </div>
               </div>
              </div>
@@ -132,14 +132,14 @@ export default class MutipleChoiceGrid extends Component {
           <div className="ebs-question-grid-wrapp">
             <div className="ebs-question-grid-header">
               <div className="ebs-question-grid-th ebs-grid-title"></div>
-              {options.columns && options.columns.map((list,k) => 
+              {columns && columns.map((list,k) => 
                 <div key={k} className="ebs-question-grid-th">{list}</div>
               )}
             </div>
-            {options.rows && options.rows.map((items,key) => 
+            {rows && rows.map((items,key) => 
               <div key={key} className="ebs-question-grid-header">
                 <div className="ebs-question-grid-th ebs-grid-title">{items}</div>
-                {options.columns && options.columns.map((list,k) => 
+                {columns && columns.map((list,k) => 
                   <div key={k} className="ebs-question-grid-th ebs-grid-checkbox">
                     <i className="material-icons">{type === 'multiple_choice_grid' ? 'radio_button_unchecked' : type === 'tick_box_grid' ? 'check_box_outline_blank' : 'check' }</i>
                   </div>
@@ -176,12 +176,12 @@ export default class MutipleChoiceGrid extends Component {
                   <div className="ebs-title-tooltip">Show</div>
                   <div
                   onClick ={(e) => this.context.setDescription(this.props.sectionIndex, this.props.questionIndex, e.target)} 
-                  className={`ebs-tooltip-item ${descVisible ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><div className="ebs-title">Description</div></div>
+                  className={`ebs-tooltip-item ${options.description_visible ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><div className="ebs-title">Description</div></div>
                   <div
-                   onClick ={(e) => this.context.handleGridChoice(e.target, 'RESPONSE' ,`${index}`)} 
+                   onClick ={(e) => this.context.handleGridChoice(e.target, 'RESPONSE' ,`${sort_order}`)} 
                    className={`ebs-tooltip-item ${options.limit ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><div className="ebs-title">Limit to one response per column</div></div>
                   <div
-                   onClick ={(e) => this.context.handleGridChoice(e.target, 'SHUFFLE' ,`${index}`)}
+                   onClick ={(e) => this.context.handleGridChoice(e.target, 'SHUFFLE' ,`${sort_order}`)}
                    className={`ebs-tooltip-item ${options.shuffle ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><div className="ebs-title">Shuffle row order</div></div>
                 </div>
             </div>

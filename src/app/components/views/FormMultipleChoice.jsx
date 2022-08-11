@@ -17,7 +17,7 @@ const FormMultipleChoice = ({data}) => {
               <div className="ebs-title">{element.label}</div>
             </label>
           ))}
-        {data.options.addOther && (
+        {data.options.add_other && (
           <label className="ebs-option-list d-flex align-items-center">
             <label className="ebs-option ebs-radio">
               <input name={`item_${data.index}`} type="radio" />
