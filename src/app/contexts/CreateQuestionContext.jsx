@@ -52,12 +52,20 @@ const _mulitplechoicegridOptions = {
 };
 
 const _mulitplechoicegridRows= [
-    "Row 1",
-    "Row 2"
+  {
+    label: 'Row 1',
+  },
+  {
+    label: 'Row 2',
+  },
   ];
 const _mulitplechoicegridColumns=[
-  "Column 1",
-  "Column 2"
+  {
+    label: 'Column 1',
+  },
+  {
+    label: 'Column 2',
+  },
 ];
 
 
@@ -68,7 +76,7 @@ const _datemoduleOptions = {
   time: false,
 };
 const _timemoduleOptions = {
-  type: 'TIME'
+  time_type: 'TIME'
 };
 const _newquestion = {
   title: 'Question',
@@ -85,7 +93,7 @@ const _newquestion = {
   answers: [
     {
       label: 'Option 1',
-      nextSection: 'CONTINUE'
+      next_section: 'CONTINUE'
     }
   ]
 };
@@ -248,7 +256,7 @@ export default class CreateQuestionContextProvider extends Component {
       }
     } 
     
-    const addQuestion = async (data, formid) => {
+    const addQuestion = async (data, sectionIndex, questionIndex) => {
       console.log(data);
       this.setState({
         updating:true,
@@ -259,9 +267,12 @@ export default class CreateQuestionContextProvider extends Component {
         console.log(response.data.data);
         if(response.data.status === 1){
           if(data.id === undefined){
+            const _sections = [...this.state.data.sections];
+            _sections[sectionIndex].questions[questionIndex] = response.data.data;
+            console.log(_sections);
             this.setState({
               updating:false,
-              data:{...this.state.data, sections:this.state.data.sections.map((item)=> item.sort_order === data.sort_order ? { ...item, id:response.data.data.section_id} : item)},
+              data:{...this.state.data, sections:_sections},
             })
             // saveSectionSortBackend(this.state.data.sections.reduce((ack, item)=>({...ack,[item.id]:item.sort_order}), {}));
           }else{
@@ -594,9 +605,9 @@ export default class CreateQuestionContextProvider extends Component {
       })
 
     }
-    const handleChangeDateTime = (value, type, id) => {
-      const _data = [...this.state.data];
-      const _query = _data[_data.findIndex((x) => x.index === id * 1)];
+    const handleChangeDateTime = (sectionIndex, questionIndex,  type) => {
+      const _sections = [...this.state.data.sections];
+      const _query = _sections[sectionIndex].questions[questionIndex];
       if (type === 'INCLUDE_TIME') {
         _query.options.time = !_query.options.time;
       }
@@ -604,10 +615,10 @@ export default class CreateQuestionContextProvider extends Component {
         _query.options.year = !_query.options.year;
       }
       if (type === 'TIME_DURATION') {
-        _query.options.type = _query.options.type === 'TIME' ? 'DURATION' : 'TIME';
+        _query.options.time_type = _query.options.time_type === 'TIME' ? 'DURATION' : 'TIME';
       }
       this.setState({
-        data: _data
+        data: {...this.state.data, sections:_sections}
       })
     }
     const handleSectionPanel = (value, type, id) => {
@@ -664,9 +675,9 @@ export default class CreateQuestionContextProvider extends Component {
         data: {...this.state.data, sections:_sections}
       })
     };
-    const handleGridChoice = (value, type, id, key) => {
-      const _data = [...this.state.data];
-      const _query = _data[_data.findIndex((x) => x.index === id * 1)];
+    const handleGridChoice = (sectionIndex, questionIndex, value, type, key) => {
+      const _sections = [...this.state.data.sections];
+      const _query = _sections[sectionIndex].questions[questionIndex];
       if (type === 'RESPONSE') {
         _query.options.limit = !_query.options.limit;
       }
@@ -674,30 +685,30 @@ export default class CreateQuestionContextProvider extends Component {
         _query.options.shuffle = !_query.options.shuffle;
       }
       if (type === 'INPUT_ROW') {
-        _query.options.rows[key] = value;
+        _query.grid_questions[key].label = value;
       }
       if (type === 'INPUT_COLUMN') {
-        _query.options.columns[key] = value;
+        _query.answers[key].label = value;
       }
       if (type === 'DELETE_ROW') {
-        _query.options.rows.splice(key, 1);
+        _query.grid_questions.splice(key, 1);
       };
       if (type === 'DELETE_COLUMN') {
-        _query.options.columns.splice(key, 1);
+        _query.answers.splice(key, 1);
       };
       if (type === 'ADD_ROW') {
-        let _number = _query.options.rows.length + 1;
+        let _number = _query.grid_questions.length + 1;
         let _option = `Row ${_number}`;
-        _query.options.rows.push(_option);
+        _query.grid_questions.push({label:_option});
       }
       if (type === 'ADD_COLUMN') {
-        let _number = _query.options.columns.length + 1;
+        let _number = _query.answers.length + 1;
         let _option = `Column ${_number}`;
-        _query.options.columns.push(_option);
+        _query.answers.push({label:_option});
       }
 
       this.setState({
-        data: _data
+        data: {...this.state.data, sections:_sections}
       })
     };
     const handleChangeSectionSelect = (event, index) => {
@@ -879,12 +890,12 @@ export default class CreateQuestionContextProvider extends Component {
         }
         if (type === 'multiple_choice_grid' && _prevType !== 'multiple_choice_grid' && _prevType !== 'tick_box_grid') {
           _query.options = JSON.parse(JSON.stringify(_mulitplechoicegridOptions));
-          _query.rows = JSON.parse(JSON.stringify(_mulitplechoicegridRows));
-          _query.columns = JSON.parse(JSON.stringify(_mulitplechoicegridColumns));
+          _query.grid_questions = JSON.parse(JSON.stringify(_mulitplechoicegridRows));
+          _query.answers = JSON.parse(JSON.stringify(_mulitplechoicegridColumns));
         }
         if (type === 'tick_box_grid' && _prevType !== 'tick_box_grid' && _prevType !== 'multiple_choice_grid') {
-          _query.rows = JSON.parse(JSON.stringify(_mulitplechoicegridRows));
-          _query.columns = JSON.parse(JSON.stringify(_mulitplechoicegridColumns));
+          _query.grid_questions = JSON.parse(JSON.stringify(_mulitplechoicegridRows));
+          _query.answers = JSON.parse(JSON.stringify(_mulitplechoicegridColumns));
           _query.options = JSON.parse(JSON.stringify(_mulitplechoicegridOptions));
         }
         if (type === 'short_answer' && _prevType !== 'short_answer') {

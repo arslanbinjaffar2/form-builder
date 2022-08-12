@@ -115,13 +115,13 @@ export default class LinearScale extends Component {
             <div className="ebs-linear-optional-wrapp d-flex align-items-center">
               <span className={`ebs-counter ${options.min_label !== '' ? 'ebs-active' : ''}`}>{options.min}</span>
               <input
-                onChange={(e) => this.context.handleLinerChange(this.props.sectionIndex, this.props.questionIndex, e.value, 'MIN_LABEL' )} 
+                onChange={(e) => this.context.handleLinerChange(this.props.sectionIndex, this.props.questionIndex, e.target.value, 'MIN_LABEL' )} 
                 value={options.min_label} type="text" placeholder="Label (optional)"  />  
             </div>
             <div className="ebs-linear-optional-wrapp d-flex align-items-center">
               <span className={`ebs-counter ${options.max_label !== '' ? 'ebs-active' : ''}`}>{options.max}</span>
               <input
-               onChange={(e) => this.context.handleLinerChange(this.props.sectionIndex, this.props.questionIndex, e.value, 'MAX_LABEL' )}
+               onChange={(e) => this.context.handleLinerChange(this.props.sectionIndex, this.props.questionIndex, e.target.value, 'MAX_LABEL' )}
                value={options.max_label}
                type="text" placeholder="Label (optional)"  />  
             </div>

@@ -63,10 +63,10 @@ export default class DateModule extends Component {
                   onClick ={(e) => this.context.setDescription(this.props.sectionIndex, this.props.questionIndex, e.target)} 
                   className={`ebs-tooltip-item ${options.description_visible ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><div className="ebs-title">Description</div></div>
                   <div
-                   onClick ={(e) => this.context.handleGridChoice(e.target, 'RESPONSE' ,`${parent},${index}`)} 
+                   onClick ={(e) => this.context.handleGridChoice(this.props.sectionIndex, this.props.questionIndex, e.target, 'RESPONSE' ,`${parent},${index}`)} 
                    className={`ebs-tooltip-item ${options.limit ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><div className="ebs-title">Limit to one response per column</div></div>
                   <div
-                   onClick ={(e) => this.context.handleGridChoice(e.target, 'SHUFFLE' ,`${parent},${index}`)}
+                   onClick ={(e) => this.context.handleGridChoice(this.props.sectionIndex, this.props.questionIndex, e.target, 'SHUFFLE' ,`${parent},${index}`)}
                    className={`ebs-tooltip-item ${options.shuffle ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><div className="ebs-title">Shuffle row order</div></div>
                 </div>
             </div>

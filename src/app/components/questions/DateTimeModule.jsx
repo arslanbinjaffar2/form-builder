@@ -47,7 +47,7 @@ export default class DateTimeModule extends Component {
           </div>}
           {type === 'time' && <div className="ebs-datetime-content">
             <div className={`ebs-datetime-list ${active ? 'ebs-type-active' : ''}`}>
-              <div className="ebs-title">{options.type === 'TIME' ? 'Time' : 'Duration'}</div>
+              <div className="ebs-title">{options.time_type === 'TIME' ? 'Time' : 'Duration'}</div>
               <div className="ebs-icon"><i className="material-icons">schedule</i></div>
             </div>
           </div>}
@@ -82,20 +82,20 @@ export default class DateTimeModule extends Component {
                   onClick ={(e) => this.context.setDescription(this.props.sectionIndex, this.props.questionIndex, e.target)} 
                   className={`ebs-tooltip-item ${options.description_visible ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><div className="ebs-title">Description</div></div>
                   {type === 'date' && <React.Fragment> <div
-                   onClick ={(e) => this.context.handleChangeDateTime(e.target, 'INCLUDE_TIME' ,`${index}`)} 
+                   onClick ={(e) => this.context.handleChangeDateTime(this.props.sectionIndex, this.props.questionIndex, 'INCLUDE_TIME')} 
                    className={`ebs-tooltip-item ${options.time ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><div className="ebs-title">Include time</div></div>
                   <div
-                   onClick ={(e) => this.context.handleChangeDateTime(e.target, 'INCLUDE_YEAR' ,`${index}`)}
+                   onClick ={(e) => this.context.handleChangeDateTime(this.props.sectionIndex, this.props.questionIndex, 'INCLUDE_YEAR')}
                    className={`ebs-tooltip-item ${options.year ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><div className="ebs-title">Include year</div></div></React.Fragment>}
                    {type === 'time' && <React.Fragment>
                    <div className="ebs-title-tooltip">Answer Type</div>
                    <div
-                      onClick ={(e) => this.context.handleChangeDateTime(e.target, 'TIME_DURATION' ,`${index}`)} 
-                      className={`ebs-tooltip-item ${options.type === 'TIME' ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><div className="ebs-title"> Time</div>
+                      onClick ={(e) => this.context.handleChangeDateTime(this.props.sectionIndex, this.props.questionIndex, 'TIME_DURATION')} 
+                      className={`ebs-tooltip-item ${options.time_type === 'TIME' ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><div className="ebs-title"> Time</div>
                     </div>
                    <div
-                      onClick ={(e) => this.context.handleChangeDateTime(e.target, 'TIME_DURATION' ,`${index}`)} 
-                      className={`ebs-tooltip-item ${options.type === 'DURATION' ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><div className="ebs-title"> Duration</div>
+                      onClick ={(e) => this.context.handleChangeDateTime(this.props.sectionIndex, this.props.questionIndex, 'TIME_DURATION')} 
+                      className={`ebs-tooltip-item ${options.time_type === 'DURATION' ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><div className="ebs-title"> Duration</div>
                     </div>
                     </React.Fragment>}
                 </div>

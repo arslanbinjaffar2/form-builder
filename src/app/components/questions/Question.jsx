@@ -241,7 +241,7 @@ export default class Question extends Component {
               ...this.props.data,
               form_builder_form_id: this.props.formId,
               form_builder_section_id: this.props.sectionId,
-            });
+            }, this.props.sectionIndex, this.props.questionIndex);
           }}
         >
           Save Question
