@@ -127,9 +127,9 @@ export default class MultipleChoice extends Component {
                       {(provided, snapshot) => (
                         <div
                           ref={provided.innerRef}
-                          {...provided.draggableProps}>
-                          <div className={`ebs-list-box d-flex ${answers.length === 1 ? 'non-draggable' : ''}`} key={k}>
-                            <div className={`ebs-list-box-wrapper d-flex align-items-center ${options.section_based && active ? 'list-box-columns' : ''}`}>
+                          {...provided.draggableProps} key={k}>
+                          <div className={`ebs-list-box d-flex ${answers.length === 1 ? 'non-draggable' : ''}`} >
+                            <div className={`ebs-list-box-wrapper d-flex align-items-center ${options.section_based == 1 && active ? 'list-box-columns' : ''}`}>
                               <div className="ebs-list-drag"{...provided.dragHandleProps}><span className="material-icons">drag_indicator</span></div>
                               <div className="ebs-icon">
                                 {type !== 'drop_down' && <i className="material-icons">{type === 'multiple_choice' ? 'radio_button_unchecked' : type === 'checkboxes' ? 'check_box_outline_blank' : 'check'}</i>}
@@ -146,7 +146,7 @@ export default class MultipleChoice extends Component {
                                   onClick={(e) => deleteAnswers(this.props.sectionIndex, this.props.questionIndex, k)}
                                   className="material-icons">close</span></div>}
                             </div>
-                            {type !== 'checkboxes' && options.section_based && active && this.state.sectionTo && <div className="ebs-section-based">
+                            {(type !== 'checkboxes' && options.section_based == 1 && active && this.state.sectionTo) && <div className="ebs-section-based">
                               <Select
                                 menuColor='red'
                                 maxMenuHeight="1"
@@ -178,7 +178,7 @@ export default class MultipleChoice extends Component {
               )}
             </Droppable>
           </DragDropContext>
-          {options.add_other && type !== 'drop_down' &&
+          {options.add_other == 1 && type !== 'drop_down' &&
             <div className="ebs-list-box d-flex">
               <div className="ebs-icon">
                 {type !== 'drop_down' && <i className="material-icons">{type === 'multiple_choice' ? 'radio_button_unchecked' : type === 'checkboxes' ? 'check_box_outline_blank' : 'check'}</i>}
@@ -202,7 +202,7 @@ export default class MultipleChoice extends Component {
                 onClick={(e) => addOther(this.props.sectionIndex, this.props.questionIndex, e.target)}
                 className="ebs-addother">add "Other"</strong></React.Fragment>} </div>
           </div>}
-          {type === 'checkboxes' && active && options.response_validation && <div style={{ padding: '25px 25px 0' }} className="">
+          {type === 'checkboxes' && active && options.response_validation == 1 && <div style={{ padding: '25px 25px 0' }} className="">
             <div className="ebs-validation-rule">
               <div className="row d-flex">
                 <div className="col-3">
@@ -268,15 +268,15 @@ export default class MultipleChoice extends Component {
                 <div className="ebs-title-tooltip">Show</div>
                 <div
                   onClick={(e) => setDescription(this.props.sectionIndex, this.props.questionIndex, e.target)}
-                  className={`ebs-tooltip-item ${options.description_visible ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><div className="ebs-title">Description</div></div>
+                  className={`ebs-tooltip-item ${options.description_visible == 1 ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><div className="ebs-title">Description</div></div>
 
                 {type !== 'checkboxes' && <div
                   onClick={(e) => setSectionBase(this.props.sectionIndex, this.props.questionIndex, e.target)}
-                  className={`ebs-tooltip-item ${options.section_based ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><span className="ebs-title">Go to Section baseed on answer</span></div>}
+                  className={`ebs-tooltip-item ${options.section_based == 1? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><span className="ebs-title">Go to Section baseed on answer</span></div>}
 
                 {type === 'checkboxes' && <div
                   onClick={(e) => setResponseValidation(this.props.sectionIndex, this.props.questionIndex,  e.target)}
-                  className={`ebs-tooltip-item ${options.response_validation ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><span className="ebs-title">Response Validation</span></div>}
+                  className={`ebs-tooltip-item ${options.response_validation == 1 ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><span className="ebs-title">Response Validation</span></div>}
               </div>
             </div>
           </div>

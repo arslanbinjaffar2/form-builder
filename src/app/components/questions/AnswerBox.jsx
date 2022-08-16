@@ -101,11 +101,13 @@ export default class AnswerBox extends Component {
   componentDidMount() {
     let _data = this.props.data.data;
     // eslint-disable-next-line no-eval
-    const _evaldropdown = eval(`_IS_${_data.validation.type}`);
-      this.setState({
-        dropdown_one: _data.type === 'short_answer' ? _options : _options_para,
-        dropdown_two: _evaldropdown ? _evaldropdown : _IS_NUMBER
-      })
+   
+      const _evaldropdown = (_data.validation && _data.validation.type) ? eval(`_IS_${_data.validation.type}`) : false;
+ 
+        this.setState({
+          dropdown_one: _data.type === 'short_answer' ? _options : _options_para,
+          dropdown_two: _evaldropdown ? _evaldropdown : _IS_NUMBER
+        })
     window.addEventListener('click',this.onBodyClick.bind(this), false)
   }
 
@@ -119,11 +121,12 @@ export default class AnswerBox extends Component {
   componentWillReceiveProps(nextProps) {
       let _data = this.props.data.data;
       // eslint-disable-next-line no-eval
-      const _evaldropdown = eval(`_IS_${_data.validation.type}`);
-        this.setState({
-          dropdown_one: _data.type === 'short_answer' ? _options : _options_para,
-          dropdown_two: _evaldropdown ? _evaldropdown : _IS_NUMBER
-        })
+        const _evaldropdown = (_data.validation && _data.validation.type) ? eval(`_IS_${_data.validation.type}`) : false;
+          this.setState({
+            dropdown_one: _data.type === 'short_answer' ? _options : _options_para,
+            dropdown_two: _evaldropdown ? _evaldropdown : _IS_NUMBER
+          })
+    
    }
   componentWillUnmount () {
     window.removeEventListener('click',this.onBodyClick.bind(this), false)
@@ -165,23 +168,23 @@ export default class AnswerBox extends Component {
                 onChange={(e) => setResponseValidationRule(this.props.sectionIndex, this.props.questionIndex, e.value)}
                 options={this.state.dropdown_two} />
               </div>
-              <div className={options.type === 'NUMBER' || options.type === 'LENGTH' ? 'col-2' : 'col-3'}>
-                {(options.type === 'NUMBER' || options.type === 'LENGTH') &&
+              <div className={validation.type === 'NUMBER' || validation.type === 'LENGTH' ? 'col-2' : 'col-3'}>
+                {(validation.type === 'NUMBER' || validation.type === 'LENGTH') &&
                  <input 
                   onChange={(e) => setResponseValidationFeildValue(this.props.sectionIndex, this.props.questionIndex, e.target.value)}
-                  value={validation.value} placeholder="Number" className="" type="text" />}
-                {options.type === 'TEXT' && <input
+                  value={validation.value ? validation.value: ''} placeholder="Number" className="" type="text" />}
+                {validation.type === 'TEXT' && <input
                 onChange={(e) => setResponseValidationFeildValue(this.props.sectionIndex, this.props.questionIndex, e.target.value)}
-                 value={validation.value} placeholder="Text" className="" type="text" />}
-                {options.type === 'REGULAR_EXPRESSION' && 
+                 value={validation.value ? validation.value: ''} placeholder="Text" className="" type="text" />}
+                {validation.type === 'REGULAR_EXPRESSION' && 
                 <input
                  onChange={(e) => setResponseValidationFeildValue(this.props.sectionIndex, this.props.questionIndex, e.target.value)}
-                 value={validation.value} placeholder="Pattern" className="" type="text" />}
+                 value={validation.value ? validation.value: ''} placeholder="Pattern" className="" type="text" />}
               </div>
-              <div className={options.type === 'NUMBER' || options.type === 'LENGTH' ? 'col-4' : 'col-3'}>
+              <div className={validation.type === 'NUMBER' || validation.type === 'LENGTH' ? 'col-4' : 'col-3'}>
                 <input
                  onChange={(e) => setResponseValidationFeildError(this.props.sectionIndex, this.props.questionIndex, e.target.value)}
-                 value={validation.custom_error} placeholder="Custom error text" type="text" />
+                 value={validation.custom_error ? validation.custom_error : '' } placeholder="Custom error text" type="text" />
               </div>
             </div>
             <div onClick ={(e) => setQuestionResponseValidation(this.props.sectionIndex, this.props.questionIndex, e.target)} className="ebs-close-validation"><i className="material-icons">close</i></div>

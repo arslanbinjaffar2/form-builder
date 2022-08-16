@@ -296,6 +296,45 @@ export default class CreateQuestionContextProvider extends Component {
         })
       }
     }
+    
+    const updateQuestion = async (data, sectionIndex, questionIndex) => {
+      this.setState({
+        updating:true,
+        updatingError:null,
+      })
+      try {
+        const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/updateQuestion/11`, data, {cancelToken: signal.token});
+        console.log(response.data.data);
+        if(response.data.status === 1){
+          if(data.id === undefined){
+            const _sections = [...this.state.data.sections];
+            _sections[sectionIndex].questions[questionIndex] = response.data.data;
+            console.log(_sections);
+            this.setState({
+              updating:false,
+              data:{...this.state.data, sections:_sections},
+            })
+          }else{
+            this.setState({
+              updating:false,
+            })
+          }
+        }
+        else{
+          this.setState({
+            updating:false,
+            updatingError:response.data.message
+          })
+        }
+       
+      } catch (error) {
+        console.error(error);
+        this.setState({
+          updating:false,
+          updatingError:error.message
+        })
+      }
+    }
 
     const saveQuestion = async (data) => {
       console.log(data);
@@ -995,21 +1034,21 @@ export default class CreateQuestionContextProvider extends Component {
       const _sections = [...this.state.data.sections];
       const _query = _sections[sectionIndex].questions[questionIndex];
 
-      _query.options.type = type;
+      _query.validation.type = type;
       if (type === 'NUMBER') {
-        _query.options.rule = 'GREATER_THAN';
+        _query.validation.rule = 'GREATER_THAN';
       }
       if (type === 'TEXT') {
-        _query.options.rule = 'CONTAINS';
+        _query.validation.rule = 'CONTAINS';
       }
       if (type === 'LENGTH') {
-        _query.options.rule = 'MAX_CHAR_COUNT';
+        _query.validation.rule = 'MAX_CHAR_COUNT';
       }
       if (type === 'REGULAR_EXPRESSION') {
-        _query.options.rule = 'CONTAINS';
+        _query.validation.rule = 'CONTAINS';
       }
-      _query.options.value = '';
-      _query.options.error = '';
+      _query.validation.value = '';
+      _query.validation.error = '';
 
         this.setState({
           data: {...this.state.data, sections:_sections}
@@ -1021,9 +1060,9 @@ export default class CreateQuestionContextProvider extends Component {
       const _sections = [...this.state.data.sections];
       const _query = _sections[sectionIndex].questions[questionIndex];
 
-        _query.options.rule = type;
-        _query.options.value = '';
-        _query.options.error = '';
+        _query.validation.rule = type;
+        _query.validation.value = '';
+        _query.validation.error = '';
      
         this.setState({
           data: {...this.state.data, sections:_sections}
@@ -1269,6 +1308,7 @@ export default class CreateQuestionContextProvider extends Component {
           cancelAllRequests,
           saveSection,
           addQuestion,
+          updateQuestion,
         }}
       >
         {this.props.children}

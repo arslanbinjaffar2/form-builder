@@ -237,6 +237,13 @@ export default class Question extends Component {
         )}
         <SaveBtn
           onClick={() => {
+            this.props.data.id !== undefined ?
+            this.context.updateQuestion({
+              ...this.props.data,
+              form_builder_form_id: this.props.formId,
+              form_builder_section_id: this.props.sectionId,
+            }, this.props.sectionIndex, this.props.questionIndex)
+            :
             this.context.addQuestion({
               ...this.props.data,
               form_builder_form_id: this.props.formId,
