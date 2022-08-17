@@ -19,11 +19,10 @@ export default class SortSection extends Component {
     section: null 
   }
   componentDidMount() {
-    const _data = this.context.data;
-    const _array = _data.filter((x)=>(x.type === "SECTION"));
-    console.log(_array, 'slor');
+    const _data = this.context.data.sections;
+    console.log(_data, 'slor');
     this.setState({
-      section: _array
+      section: _data
     },() => {
       console.log(this.state.section);
     })

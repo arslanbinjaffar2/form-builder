@@ -158,13 +158,13 @@ export default class AnswerBox extends Component {
             <div className="row d-flex">
               <div className="col-3">
               <CustomSelect
-                value={this.state.dropdown_one[this.state.dropdown_one.findIndex(x => x.value === options.type)]} 
+                value={this.state.dropdown_one[this.state.dropdown_one.findIndex(x => x.value === validation.type)]} 
                 onChange={(e) => setResponseValidationType(this.props.sectionIndex, this.props.questionIndex, e.value)}
                 options={this.state.dropdown_one} />
               </div>
               <div className="col-3">
               <CustomSelect
-                value={this.state.dropdown_two[this.state.dropdown_two.findIndex(x => x.value === options.rule)]} 
+                value={this.state.dropdown_two[this.state.dropdown_two.findIndex(x => x.value === validation.rule)]} 
                 onChange={(e) => setResponseValidationRule(this.props.sectionIndex, this.props.questionIndex, e.value)}
                 options={this.state.dropdown_two} />
               </div>

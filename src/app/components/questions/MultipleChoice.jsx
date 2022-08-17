@@ -109,7 +109,7 @@ export default class MultipleChoice extends Component {
        addAnswers,
        setDescription,
        } = this.context;
-    const { active, options, answers, type, required, } = this.props.data.data;
+    const { active, options, answers, type, required, validation } = this.props.data.data;
     return (
       <React.Fragment>
 
@@ -212,8 +212,8 @@ export default class MultipleChoice extends Component {
                     menuPlacement="auto"
                     isSearchable={false}
                     styles={customStyles}
-                    value={_options[_options.findIndex(x => x.value === options.response.type)]}
-                    onChange={(e) => setResponseValidationCheckBoxType(this.props.sectionIndex, this.props.questionIndex, e.target)}
+                    value={_options[_options.findIndex(x => x.value === validation.type)]}
+                    onChange={(e) => setResponseValidationCheckBoxType(this.props.sectionIndex, this.props.questionIndex, e.value)}
                     components={{ IndicatorSeparator: () => null }}
                     theme={theme => ({
                       ...theme,
@@ -227,11 +227,11 @@ export default class MultipleChoice extends Component {
                     options={_options} />
                 </div>
                 <div className="col-3">
-                  <input type="text" value={options.response.value}
+                  <input type="text" value={validation.value}
                     onChange={(e) => setResponseValidationCheckBoxValue(this.props.sectionIndex, this.props.questionIndex, e.target.value)} placeholder="Number" />
                 </div>
                 <div className="col-6">
-                  <input type="text" value={options.response.error}
+                  <input type="text" value={validation.error}
                     onChange={(e) => setResponseValidationCheckBoxError(this.props.sectionIndex, this.props.questionIndex, e.target.value)}
                     placeholder="Custom error validation" />
                 </div>

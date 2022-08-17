@@ -52,7 +52,7 @@ export default class MutipleChoiceGrid extends Component {
     if (!result.destination) {
       return;
     }
-    this.context.handleMultiChoiceGridReorder(this.props.data.data.index,result.source.index, result.destination.index,result.source.droppableId);
+    this.context.handleMultiChoiceGridReorder(this.props.sectionIndex, this.props.questionIndex, result.source.index, result.destination.index, result.source.droppableId);
   }
   handleClick = (e) => {
     e.preventDefault();

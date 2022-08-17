@@ -17,7 +17,7 @@ function handleClick() {
 }
 const Section = ({ onClick, value, data, index,  }) => {
   const [section, setSection] = useState(index);
-  const {handleSectionArea,handleSectionPanel,handleSectionSort, saveSection} = useContext(CreateQuestionContext);
+  const {handleSectionArea,handleSectionPanel,handleSectionSort, saveSection, deleteSection} = useContext(CreateQuestionContext);
   handleClick()
   const handlebtnClick = (e) => {
     e.preventDefault();
@@ -59,15 +59,18 @@ const Section = ({ onClick, value, data, index,  }) => {
                         Move Section
                     </div>
                     <div
-                    onClick={(e) => handleSectionPanel(e.target, 'DELETE', index)}
+                    onClick={(e) =>
+                      value.id !== undefined ? 
+                      deleteSection({section_id:value.id})
+                      : handleSectionPanel(e.target, 'DELETE', index)}
                     className="ebs-tooltip-item">
                       Delete Section
                     </div>
-                    {index > 0 &&  <div
+                    {/* {index > 0 &&  <div
                       onClick={(e) => handleSectionPanel(e.target, 'MERGE', index)}
                       className="ebs-tooltip-item">
                         Merge with above
-                    </div>}
+                    </div>} */}
                   
                 </div>
               </div>
