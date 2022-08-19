@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import Select  from "react-select";
 import { CreateQuestionContext } from "app/contexts/CreateQuestionContext";
+import SaveBtn from "@/ui/SaveBtn";
 
 const customStyles = {
   control: base => ({
@@ -135,6 +136,7 @@ export default class AnswerBox extends Component {
     const {
       cloneQuestion, 
       deleteQuestion, 
+      deleteQuestionFront,
       setResponseValidationType, 
       setResponseValidationRule,
       setResponseValidationFeildValue,
@@ -144,7 +146,7 @@ export default class AnswerBox extends Component {
       setDescription,
       setResponseValidation
     } = this.context;
-    const {active,  options, required, type, validation } = this.props.data.data;
+    const {active,  options, required, type, validation , id} = this.props.data;
     return (
       <React.Fragment>
       <div className="ebs-answer-box">
@@ -193,10 +195,32 @@ export default class AnswerBox extends Component {
         </div>
         {active && <div className="ebs-footer-wrapper">
           <div className="ebs-left-area d-flex">
+              <SaveBtn
+              onClick={() => {
+                this.props.data.id !== undefined ?
+                this.context.updateQuestion({
+                  ...this.props.data,
+                  form_builder_form_id: this.props.formId,
+                  form_builder_section_id: this.props.sectionId,
+                }, this.props.sectionIndex, this.props.questionIndex)
+                :
+                this.context.addQuestion({
+                  ...this.props.data,
+                  form_builder_form_id: this.props.formId,
+                  form_builder_section_id: this.props.sectionId,
+                }, this.props.sectionIndex, this.props.questionIndex);
+              }}
+            >
+              Save Question
+            </SaveBtn>
+          </div>
+          <div className="ebs-left-area d-flex">
             <span onClick ={(e) => {e.stopPropagation();cloneQuestion(this.props.sectionIndex, this.props.questionIndex, e.target)}}  className="ebs-btn">
               <i className="material-icons">content_copy</i>
             </span>
-            <span onClick ={(e) => {e.stopPropagation();deleteQuestion(this.props.sectionIndex, this.props.questionIndex, e.target)}}  className="ebs-btn">
+            <span onClick ={(e) => {e.stopPropagation(); id !== undefined ? 
+                      deleteQuestion({question_id:id}, this.props.sectionIndex)
+                      : deleteQuestionFront(this.props.sectionIndex, this.props.questionIndex, e.target)}}  className="ebs-btn">
               <i className="material-icons">delete</i>
             </span>
           </div>

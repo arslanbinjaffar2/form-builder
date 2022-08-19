@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Select from "react-select";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { CreateQuestionContext } from "app/contexts/CreateQuestionContext";
+import SaveBtn from "@/ui/SaveBtn";
 
 const customStyles = {
   control: base => ({
@@ -72,7 +73,7 @@ export default class MultipleChoice extends Component {
   
     _arraysection.forEach((element, key) => {
       const _new = {
-        value: `SECTION_${key}`,
+        value: element.id,
         label: `Go to Section ${key + 1} (${element.title})`,
       }
       newArray.push(_new)
@@ -109,7 +110,7 @@ export default class MultipleChoice extends Component {
        addAnswers,
        setDescription,
        } = this.context;
-    const { active, options, answers, type, required, validation } = this.props.data.data;
+    const { active, options, answers, type, required, validation, id } = this.props.data;
     return (
       <React.Fragment>
 
@@ -153,8 +154,8 @@ export default class MultipleChoice extends Component {
                                 menuPlacement="auto"
                                 isSearchable={false}
                                 styles={customStyles}
-                                value={this.state.sectionTo[this.state.sectionTo.findIndex(x => x.value === element.nextSection)]}
-                                onChange={(e) => setNextSection(this.props.sectionIndex, this.props.questionIndex, e.value)}
+                                value={this.state.sectionTo[this.state.sectionTo.findIndex(x => x.value === element.next_section)]}
+                                onChange={(e) => setNextSection(this.props.sectionIndex, this.props.questionIndex, e.value, k)}
                                 components={{ IndicatorSeparator: () => null }}
                                 theme={theme => ({
                                   ...theme,
@@ -242,11 +243,33 @@ export default class MultipleChoice extends Component {
         </div>
 
         {active && <div className="ebs-footer-wrapper">
+        <div className="ebs-left-area d-flex">
+              <SaveBtn
+              onClick={() => {
+                this.props.data.id !== undefined ?
+                this.context.updateQuestion({
+                  ...this.props.data,
+                  form_builder_form_id: this.props.formId,
+                  form_builder_section_id: this.props.sectionId,
+                }, this.props.sectionIndex, this.props.questionIndex)
+                :
+                this.context.addQuestion({
+                  ...this.props.data,
+                  form_builder_form_id: this.props.formId,
+                  form_builder_section_id: this.props.sectionId,
+                }, this.props.sectionIndex, this.props.questionIndex);
+              }}
+            >
+              Save Question
+            </SaveBtn>
+          </div>
           <div className="ebs-left-area d-flex">
             <span onClick={(e) => { e.stopPropagation(); cloneQuestion(this.props.sectionIndex, this.props.questionIndex, e.target) }} className="ebs-btn">
               <i className="material-icons">content_copy</i>
             </span>
-            <span onClick={(e) => { e.stopPropagation(); deleteQuestion(this.props.sectionIndex, this.props.questionIndex, e.target) }} className="ebs-btn">
+            <span onClick={(e) => { e.stopPropagation(); id !== undefined ? 
+                      this.context.deleteQuestion({question_id:id}, this.props.sectionIndex)
+                      : this.context.deleteQuestionFront(this.props.sectionIndex, this.props.questionIndex, e.target) }} className="ebs-btn">
               <i className="material-icons">delete</i>
             </span>
           </div>

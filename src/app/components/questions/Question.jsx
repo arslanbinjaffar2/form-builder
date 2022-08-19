@@ -6,7 +6,7 @@ import LinearScale from "./LinearScale";
 import MutipleChoiceGrid from "./MutipleChoiceGrid";
 import DateTimeModule from "./DateTimeModule";
 import { CreateQuestionContext } from "app/contexts/CreateQuestionContext";
-import SaveBtn from "../ui/SaveBtn";
+import SaveBtn from "@/ui/SaveBtn";
 const { Option, SingleValue } = components;
 const customStyles = {
   control: (base) => ({
@@ -120,7 +120,7 @@ export default class Question extends Component {
             <span className="material-icons">drag_indicator</span>
           </div>
           <div className="ebs-question-box d-flex">
-            {!active && required && (
+            {active === 0 && required && (
               <span className="ebs-icon-required">*</span>
             )}
             <textarea
@@ -201,41 +201,51 @@ export default class Question extends Component {
           type === "drop_down") && (
           <MultipleChoice
             handleChangeValueOption={this.context.handleChangeValueOption}
-            data={this.props}
+            data={this.props.data}
             sectionIndex={this.props.sectionIndex}
             questionIndex={this.props.questionIndex}
+            formId={this.props.formId}
+            sectionId={this.props.sectionId}
           />
         )}
         {(type === "short_answer" || type === "paragraph") && (
           <AnswerBox
             handleChangeValueOption={this.context.handleChangeValueOption}
-            data={this.props}
+            data={this.props.data}
             sectionIndex={this.props.sectionIndex}
             questionIndex={this.props.questionIndex}
+            formId={this.props.formId}
+            sectionId={this.props.sectionId}
           />
         )}
         {type === "linear_scale" && (
           <LinearScale
-            data={this.props}
+            data={this.props.data}
             sectionIndex={this.props.sectionIndex}
             questionIndex={this.props.questionIndex}
+            formId={this.props.formId}
+            sectionId={this.props.sectionId}
           />
         )}
         {(type === "multiple_choice_grid" || type === "tick_box_grid") && (
           <MutipleChoiceGrid
-            data={this.props}
+            data={this.props.data}
             sectionIndex={this.props.sectionIndex}
             questionIndex={this.props.questionIndex}
+            formId={this.props.formId}
+            sectionId={this.props.sectionId}
           />
         )}
         {(type === "date" || type === "time") && (
           <DateTimeModule
-            data={this.props}
+            data={this.props.data}
             sectionIndex={this.props.sectionIndex}
             questionIndex={this.props.questionIndex}
+            formId={this.props.formId}
+            sectionId={this.props.sectionId}
           />
         )}
-        <SaveBtn
+        {/* <SaveBtn
           onClick={() => {
             this.props.data.id !== undefined ?
             this.context.updateQuestion({
@@ -252,7 +262,7 @@ export default class Question extends Component {
           }}
         >
           Save Question
-        </SaveBtn>
+        </SaveBtn> */}
       </div>
     );
   }

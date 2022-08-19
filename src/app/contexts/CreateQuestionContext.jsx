@@ -87,6 +87,8 @@ const _newquestion = {
   description: '',
   active: false,
   sort_order:0,
+  form_builder_form_id:0,
+  form_builder_section_id:0,
   options: {
     description_visible: true,
     add_other: false,
@@ -108,14 +110,14 @@ const _newsection = {
   sort_order: 0,
 };
 const _newtextarea = {
-  index: '',
   type: 'TEXT_BLOCK',
-  title: 'Untitled Title',
-  desc: 'Form Description',
-  descVisible: true,
+  title: 'Untitled Section',
+  description: 'Form Description',
+  required: false,
   active: false,
-
+  sort_order:0,
 };
+
 // const _data = [
 //   {
 //     index: 0,
@@ -290,7 +292,7 @@ export default class CreateQuestionContextProvider extends Component {
       }
     }
     
-    const deleteQuestion = async (data) => {
+    const deleteQuestion = async (data, sectionIndex) => {
       console.log(data);
       this.setState({
         updating:true,
@@ -300,9 +302,11 @@ export default class CreateQuestionContextProvider extends Component {
         const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/deleteQuestion/11`, data, {cancelToken: signal.token});
         console.log(response.data.data);
         if(response.data.status === 1){
+          const _sections = [...this.state.data.sections];
+          _sections[sectionIndex].questions = _sections[sectionIndex].questions.filter((item)=> item.id !== data.question_id);
             this.setState({
               updating:false,
-              data:{...this.state.data, sections:this.state.data.sections.filter((item)=> item.id !== data.section_id)},
+              data:{...this.state.data, sections:_sections},
             })
             saveSectionSortBackend(this.state.data.sections.reduce((ack, item)=>({...ack,[item.id]:item.sort_order}), {}));
           
@@ -536,10 +540,11 @@ export default class CreateQuestionContextProvider extends Component {
             _section[_sectionIndex].questions = [_clone];
             _section[_sectionIndex].questions[0].active = true;
           }else{
-            _questionIndex = _section[_sectionIndex].questions.findIndex(x => x.active === true) !== -1 ? _section[_sectionIndex].questions.findIndex(x => x.active === true) : 0;
+            _questionIndex = _section[_sectionIndex].questions.findIndex(x => x.active === true) !== -1 ? _section[_sectionIndex].questions.findIndex(x => x.active === true) : -1;
             _section[_sectionIndex].questions.splice(_questionIndex + 1, 0, _clone);
             _section[_sectionIndex].questions[_questionIndex].active = false;
             _section[_sectionIndex].questions[_questionIndex + 1].active = true;
+            _section[_sectionIndex].questions[_questionIndex + 1].form_builder_form_id = parseInt(form_id);
             _section[_sectionIndex].questions.forEach((element, k) => {
               element.sort_order = k;
             });          
@@ -557,13 +562,21 @@ export default class CreateQuestionContextProvider extends Component {
         console.log(_section);
             }
       if (type === 'ADD_TITLE_DESCRIPTION') {
+        console.log("hejo")
+        let _questionIndex = 0;
         let _clone = JSON.parse(JSON.stringify(_newtextarea));
-        _data.splice(_itemIndex + 1, 0, _clone);
-        _data.forEach((element, k) => {
-          element.index = k;
-          element.active = false;
-        });
-        _data[_itemIndex + 1].active = true;
+          if(_section[_sectionIndex].questions.length <= 0){
+            _section[_sectionIndex].questions = [_clone];
+            _section[_sectionIndex].questions[0].active = true;
+          }else{
+            _questionIndex = _section[_sectionIndex].questions.findIndex(x => x.active === true) !== -1 ? _section[_sectionIndex].questions.findIndex(x => x.active === true) : -1;
+            _section[_sectionIndex].questions.splice(_questionIndex + 1, 0, _clone);
+            _section[_sectionIndex].questions[_questionIndex].active = false;
+            _section[_sectionIndex].questions[_questionIndex + 1].active = true;
+            _section[_sectionIndex].questions.forEach((element, k) => {
+              element.sort_order = k;
+            });          
+          }
       }
       this.setState({
         data: {...this.state.data, sections:_section}
@@ -594,14 +607,16 @@ export default class CreateQuestionContextProvider extends Component {
         // save in backend
       }
       else{
-        const section = _sections[source.droppableId];
-        const copiedQuestions = [...section.questions];
-        const [removed] = copiedQuestions.splice(source.index, 1);
-        copiedQuestions.splice(destination.index, 0, removed);
-        _sections[source.droppableId].questions = copiedQuestions.map((item,k)=>({...item, sort_order:k}));
-        // this.state.data.sections.reduce((ack, item)=>({...ack,[item.id]:item.sort_order}), {})
-        saveQuestionSortBackend({section_one:_sections[source.droppableId].questions.reduce((ack, item)=>({...ack,[item.id]:item.sort_order}), {})});
-        // save in backend
+        if(source.index !== destination.index){
+          const section = _sections[source.droppableId];
+          const copiedQuestions = [...section.questions];
+          const [removed] = copiedQuestions.splice(source.index, 1);
+          copiedQuestions.splice(destination.index, 0, removed);
+          _sections[source.droppableId].questions = copiedQuestions.map((item,k)=>({...item, sort_order:k}));
+          // this.state.data.sections.reduce((ack, item)=>({...ack,[item.id]:item.sort_order}), {})
+          saveQuestionSortBackend({section_one:_sections[source.droppableId].questions.reduce((ack, item)=>({...ack,[item.id]:item.sort_order}), {})});
+          // save in backend
+        }
       }
 
       this.setState({
@@ -850,9 +865,10 @@ export default class CreateQuestionContextProvider extends Component {
       const _sections = [...this.state.data.sections];
 
       _sections[sectionIndex].questions.splice(questionIndex, 1);
-      _sections[sectionIndex].questions.forEach((item, k) => item.index = k);
-      _sections[sectionIndex].questions[Number(questionIndex) >= 1 ? Number(questionIndex) - 1 : 0].active = true;
-
+      _sections[sectionIndex].questions.forEach((item, k) => item.sort_order = k);
+        if(Number(questionIndex) > 0){
+          _sections[sectionIndex].questions[ Number(questionIndex) - 1 ].active = true;
+        }
         this.setState({
           data: {...this.state.data, sections:_sections}
         })
@@ -1004,7 +1020,7 @@ export default class CreateQuestionContextProvider extends Component {
       const _sections = [...this.state.data.sections];
       const _query = _sections[sectionIndex].questions[questionIndex];
 
-            _query.options.answers[key].nextSection = type;
+            _query.answers[key].next_section = type;
 
           this.setState({
           data: {...this.state.data, sections:_sections}

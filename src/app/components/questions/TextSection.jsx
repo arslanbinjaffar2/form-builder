@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { CreateQuestionContext } from "app/contexts/CreateQuestionContext";
+import SaveBtn from '@/ui/SaveBtn';
 function handleClick() {
   const items = document.querySelectorAll('.ebs-textarea-alt-title');
   const desc = document.querySelectorAll('.ebs-textarea-alt-desc');
@@ -39,10 +40,10 @@ export default class TextSection extends Component {
     }
   }
   render() {
-    const { onClick, value,  index,dragHandle } = this.props;
+    const {  data,  index, dragHandle } = this.props;
     return (
       <React.Fragment>
-        <div onClick={(e) => { !value.active && onClick(index) }} className={`ebs-section-wrapper  ${value.active ? 'ebs-active-section' : ''}`}>
+        <div onClick={(e) => { !data.active && this.context.handleQuestionChange(this.props.sectionIndex, this.props.questionIndex); }} className={`ebs-section-wrapper  ${data.active ? 'ebs-active-section' : ''}`}>
           <div className="ebs-section-box ebs-text-section">
             <div className="ebs-drag-handle" {...dragHandle}>
               <span className="material-icons">drag_indicator</span>
@@ -50,38 +51,76 @@ export default class TextSection extends Component {
             <div className="row d-flex">
               <div className="col-10">
                <textarea 
-                onChange={(e) => this.context.handleTextArea(e.target,'title',index)} 
-                placeholder="Untitled form" className="ebs-textarea-alt-title" value={value.title}/>
+                 onChange={(e) =>
+                  this.context.handleChangeValue(
+                    this.props.sectionIndex,
+                    this.props.questionIndex,
+                    e.target,
+                    "title"
+                  )
+                }
+                value={data.description} 
+                placeholder="Untitled form" className="ebs-textarea-alt-title" value={data.title}/>
               </div>
               <div className="col-2 p-0">
-              {value.active && <div style={{border: 'none', padding: 0}} className="ebs-footer-wrapper">
+              {data.active && <div style={{border: 'none', padding: 0}} className="ebs-footer-wrapper">
+                  <div className="ebs-left-area d-flex">
+                    <SaveBtn
+                    onClick={() => {
+                      this.props.data.id !== undefined ?
+                      this.context.updateQuestion({
+                        ...this.props.data,
+                        form_builder_form_id: this.props.formId,
+                        form_builder_section_id: this.props.sectionId,
+                      }, this.props.sectionIndex, this.props.questionIndex)
+                      :
+                      this.context.addQuestion({
+                        ...this.props.data,
+                        form_builder_form_id: this.props.formId,
+                        form_builder_section_id: this.props.sectionId,
+                      }, this.props.sectionIndex, this.props.questionIndex);
+                    }}
+                  >
+                    Save Question
+                  </SaveBtn>
+                </div>
                 <div className="ebs-left-area d-flex p-0">
                   <span onClick={(e) => { e.stopPropagation(); this.context.handleChangeValueOption(e.target, 'CLONEQUESTION', `${index}`) }} className="ebs-btn">
                     <i className="material-icons">content_copy</i>
                   </span>
-                  <span onClick={(e) => { e.stopPropagation(); this.context.handleChangeValueOption(e.target, 'DELETEQUESTION', `${index}`) }} className="ebs-btn">
+                  <span onClick={(e) => { e.stopPropagation(); data.id !== undefined ? 
+                      this.context.deleteQuestion({question_id: data.id}, this.props.sectionIndex)
+                      : this.context.deleteQuestionFront(this.props.sectionIndex, this.props.questionIndex, e.target) }} className="ebs-btn">
                     <i className="material-icons">delete</i>
                   </span>
                 </div>
-                <div className="ebs-right-area d-flex p-0">
+                {/* <div className="ebs-right-area d-flex p-0">
                   <div className="ebs-more-option-panel">
-                    <button onClick={this.handlebtnClick.bind(this)} className={`ebs-btn ${value.type === 'checkboxes' ? 'tooltip-medium' : ''}`}><span style={{ pointerEvents: 'none' }} className="material-icons">more_vert</span></button>
+                    <button onClick={this.handlebtnClick.bind(this)} className={`ebs-btn ${data.type === 'checkboxes' ? 'tooltip-medium' : ''}`}><span style={{ pointerEvents: 'none' }} className="material-icons">more_vert</span></button>
                     <div className="ebs-app-tooltip">
                       <div className="ebs-title-tooltip">Show</div>
                       <div
                         onClick={(e) => this.context.setDescription(this.props.sectionIndex, this.props.questionIndex, e.target)}
-                        className={`ebs-tooltip-item ${value.descVisible ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><div className="ebs-title">Description</div></div>
+                        className={'ebs-tooltip-item  ebs-active' }><span className="material-icons ebs-icon">check</span><div className="ebs-title">Description</div></div>
                       
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>}
               </div>
             </div>
-            {value.descVisible && <textarea 
-              onChange={(e) => this.context.handleTextArea(e.target,'desc',index)} 
+             <textarea 
+               onChange={(e) =>
+                this.context.handleChangeValue(
+                  this.props.sectionIndex,
+                  this.props.questionIndex,
+                  e.target,
+                  "description"
+                )
+              }
+              value={data.description}
               placeholder="Form Description" className="ebs-textarea-alt-desc" 
-              value={value.desc} />}
+              />
           </div>
         </div>
       </React.Fragment>

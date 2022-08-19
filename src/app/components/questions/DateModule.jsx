@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { CreateQuestionContext } from 'app/contexts/CreateQuestionContext';
+import SaveBtn from "@/ui/SaveBtn";
 
 export default class DateModule extends Component {
   static contextType = CreateQuestionContext;
@@ -31,15 +32,37 @@ export default class DateModule extends Component {
   }
   render() {
     const {parent,index} = this.props.data;
-    const {active, descVisible, options, required } = this.props.data.data;
+    const {active, descVisible, options, required, id } = this.props.data;
     return (
       <div className="ebs-question-grid">
         {active && <div className="ebs-footer-wrapper">
+        <div className="ebs-left-area d-flex">
+              <SaveBtn
+              onClick={() => {
+                this.props.data.id !== undefined ?
+                this.context.updateQuestion({
+                  ...this.props.data,
+                  form_builder_form_id: this.props.formId,
+                  form_builder_section_id: this.props.sectionId,
+                }, this.props.sectionIndex, this.props.questionIndex)
+                :
+                this.context.addQuestion({
+                  ...this.props.data,
+                  form_builder_form_id: this.props.formId,
+                  form_builder_section_id: this.props.sectionId,
+                }, this.props.sectionIndex, this.props.questionIndex);
+              }}
+            >
+              Save Question
+            </SaveBtn>
+          </div>
           <div className="ebs-left-area d-flex">
             <span onClick ={(e) => {e.stopPropagation();this.context.cloneQuestion(this.props.sectionIndex, this.props.questionIndex, e.target)}}  className="ebs-btn">
               <i className="material-icons">content_copy</i>
             </span>
-            <span onClick ={(e) => {e.stopPropagation();this.context.deleteQuestion(this.props.sectionIndex, this.props.questionIndex, e.target)}}  className="ebs-btn">
+            <span onClick ={(e) => {e.stopPropagation(); id !== undefined ? 
+                      this.context.deleteQuestion({question_id:id}, this.props.sectionIndex)
+                      : this.context.deleteQuestionFront(this.props.sectionIndex, this.props.questionIndex, e.target)}}  className="ebs-btn">
               <i className="material-icons">delete</i>
             </span>
           </div>

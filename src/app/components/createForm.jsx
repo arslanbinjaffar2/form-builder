@@ -173,16 +173,7 @@ const createForm = (props) => {
                                   </div>
                             </React.Fragment>
                           )}
-                          {item.type === 'TEXT_BLOCK' && 
-                              <div key={k}>
-                                <TextSection
-                                  data={sections}
-                                  onClick={handleChange}
-                                  index={item.id}
-                                  value={item}
-                                />
-                              </div>  
-                          }
+                          
                           <Droppable droppableId={`${k}`} key={`droppable-section-${k}`}>
                             {(provided, snapshot) => (
                               <div {...provided.droppableProps} ref={provided.innerRef}>
@@ -209,8 +200,8 @@ const createForm = (props) => {
                                                 ref={provided.innerRef}
                                                 {...provided.draggableProps}>
                                                 <Question
-                                                  isDragging={snapshot.isDragging}
-                                                  dragHandle={provided.dragHandleProps}
+                                                  isDragging={ question.id !== undefined ? snapshot.isDragging : null}
+                                                  dragHandle={ question.id !== undefined ? provided.dragHandleProps : null}
                                                   data={question}
                                                   formId={props.match.params.id}
                                                   sectionId={item.id}
@@ -221,6 +212,29 @@ const createForm = (props) => {
                                             )}
                                           </Draggable>
                                         )}
+                                     {question.type === 'TEXT_BLOCK' && 
+                                     <Draggable
+                                     key={j}
+                                     // isDragDisabled={item.questions.length > 2 ? false : true}
+                                     draggableId={`item-${j}`}
+                                     index={j}>
+                                     {(provided, snapshot) => (
+                                       <div
+                                         ref={provided.innerRef}
+                                         {...provided.draggableProps}>
+                                          <TextSection
+                                            isDragging={ question.id !== undefined ? snapshot.isDragging : null}
+                                            dragHandle={ question.id !== undefined ? provided.dragHandleProps : null}
+                                            data={question}
+                                            formId={props.match.params.id}
+                                            sectionId={item.id}
+                                            sectionIndex={k}
+                                            questionIndex={j}
+                                          />
+                                       </div>
+                                            )}
+                                          </Draggable>
+                                      }
                                     </React.Fragment>
                                   ))}
                                 {provided.placeholder}
@@ -234,9 +248,13 @@ const createForm = (props) => {
           </div>
         </div>
       </main>}
-      {updating && <div className="ebs-updating-wrapper">
-        <div className="ebs-loader"></div>
-      </div>}
+      {updating && 
+      <div className="ebs-updating-loader-backdrop">
+        <div className="ebs-updating-wrapper">
+          <div className="ebs-loader"></div>
+        </div>
+      </div>
+      }
     </React.Fragment>
   );
 }
