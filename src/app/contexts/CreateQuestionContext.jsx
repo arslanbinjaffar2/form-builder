@@ -326,6 +326,41 @@ export default class CreateQuestionContextProvider extends Component {
         })
       }
     }
+    
+    const cloneQuestion = async (data, sectionIndex) => {
+      console.log(data);
+      this.setState({
+        updating:true,
+        updatingError:null,
+      })
+      try {
+        const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/cloneQuestion/11`, data, {cancelToken: signal.token});
+        console.log(response.data.data);
+        if(response.data.status === 1){
+          // const _sections = [...this.state.data.sections];
+          // _sections[sectionIndex].questions = _sections[sectionIndex].questions.filter((item)=> item.id !== data.question_id);
+            this.setState({
+              updating:false,
+              // data:{...this.state.data, sections:_sections},
+            })
+          //   saveSectionSortBackend(this.state.data.sections.reduce((ack, item)=>({...ack,[item.id]:item.sort_order}), {}));
+          
+        }
+        else{
+          this.setState({
+            updating:false,
+            updatingError:response.data.message
+          })
+        }
+       
+      } catch (error) {
+        console.error(error);
+        this.setState({
+          updating:false,
+          updatingError:error.message
+        })
+      }
+    }
 
     const updateQuestionSection = async (data, sectionSortData, sectionIndex, questionIndex) => {
       this.setState({
@@ -519,7 +554,7 @@ export default class CreateQuestionContextProvider extends Component {
       this.setState({
         data: {...this.state.data, sections:sections}
       })
-      saveSectionSortBackend(this.state.data.sections.reduce((ack, item)=>({...ack,[item.id]:item.sort_order}), {}));
+      saveSectionSortBackend(sections.reduce((ack, item)=>({...ack,[item.id]:item.sort_order}), {}));
       handleSectionSort();
     }
     const handleSectionSort = () => {
@@ -789,10 +824,12 @@ export default class CreateQuestionContextProvider extends Component {
     };
     const handleChangeSectionSelect = (event, index) => {
       const _sections = [...this.state.data.sections];
-      _sections[index].nextSection = event;
+      _sections[index].next_section = event;
+
       this.setState({
         data: {...this.state.data, sections:_sections}
       })
+      saveSection(_sections[index]);
     }
 
     const changeQuestionType = async (sectionIndex, questionIndex, type) => {
@@ -883,23 +920,23 @@ export default class CreateQuestionContextProvider extends Component {
         })
     }
     
-    const cloneQuestion = async (sectionIndex, questionIndex, status) => {
-      const _sections = [...this.state.data.sections];
-      const _query = _sections[sectionIndex].questions[questionIndex];
+    // const cloneQuestion = async (sectionIndex, questionIndex, status) => {
+    //   const _sections = [...this.state.data.sections];
+    //   const _query = _sections[sectionIndex].questions[questionIndex];
 
-      const _clone = JSON.parse(JSON.stringify(_query));
-      _sections[sectionIndex].questions.splice(questionIndex, 0, _clone);
-      _sections[sectionIndex].questions.forEach((element, k) => {
-        element.index = k;
-        element.active = false;
-      });
+      // const _clone = JSON.parse(JSON.stringify(_query));
+      // _sections[sectionIndex].questions.splice(questionIndex, 0, _clone);
+      // _sections[sectionIndex].questions.forEach((element, k) => {
+      //   element.index = k;
+      //   element.active = false;
+      // });
       
-      _sections[sectionIndex].questions[questionIndex + 1].active = true;
+      // _sections[sectionIndex].questions[questionIndex + 1].active = true;
 
-        this.setState({
-          data: {...this.state.data, sections:_sections}
-        })
-    }
+      //   this.setState({
+      //     data: {...this.state.data, sections:_sections}
+      //   })
+    // }
     
     const setSectionBase = async (sectionIndex, questionIndex, status) => {
       const _sections = [...this.state.data.sections];

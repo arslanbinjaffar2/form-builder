@@ -100,7 +100,7 @@ export default class AnswerBox extends Component {
     }
   }
   componentDidMount() {
-    let _data = this.props.data.data;
+    let _data = this.props.data;
     // eslint-disable-next-line no-eval
    
       const _evaldropdown = (_data.validation && _data.validation.type) ? eval(`_IS_${_data.validation.type}`) : false;
@@ -120,7 +120,7 @@ export default class AnswerBox extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-      let _data = this.props.data.data;
+      let _data = this.props.data;
       // eslint-disable-next-line no-eval
         const _evaldropdown = (_data.validation && _data.validation.type) ? eval(`_IS_${_data.validation.type}`) : false;
           this.setState({

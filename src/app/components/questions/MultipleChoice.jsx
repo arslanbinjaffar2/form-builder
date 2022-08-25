@@ -154,7 +154,7 @@ export default class MultipleChoice extends Component {
                                 menuPlacement="auto"
                                 isSearchable={false}
                                 styles={customStyles}
-                                value={this.state.sectionTo[this.state.sectionTo.findIndex(x => x.value === element.next_section)]}
+                                value={this.state.sectionTo[this.state.sectionTo.findIndex(x => x.value == element.next_section)]}
                                 onChange={(e) => setNextSection(this.props.sectionIndex, this.props.questionIndex, e.value, k)}
                                 components={{ IndicatorSeparator: () => null }}
                                 theme={theme => ({
@@ -264,7 +264,7 @@ export default class MultipleChoice extends Component {
             </SaveBtn>
           </div>
           <div className="ebs-left-area d-flex">
-            <span onClick={(e) => { e.stopPropagation(); cloneQuestion(this.props.sectionIndex, this.props.questionIndex, e.target) }} className="ebs-btn">
+            <span onClick={(e) => { e.stopPropagation(); cloneQuestion({question_id:id}, this.props.sectionIndex) }} className="ebs-btn">
               <i className="material-icons">content_copy</i>
             </span>
             <span onClick={(e) => { e.stopPropagation(); id !== undefined ? 

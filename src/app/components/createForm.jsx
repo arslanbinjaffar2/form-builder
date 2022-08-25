@@ -37,7 +37,7 @@ const PageBreak = ({data, index, onChange}) => {
   { value: 'SUBMIT', label: 'Submit form' }];
   data.forEach((element, key) => {
     const _new = {
-      value: `SECTION_${key}`,
+      value: element.id,
       label: `Go to Section ${key + 1} (${element.title})`,
     }
     newArray.push(_new)
