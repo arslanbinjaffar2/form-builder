@@ -1,5 +1,7 @@
 import React, { createContext, Component } from 'react';
 import axios from 'axios'
+import { withRouter } from 'react-router-dom';
+
 const _answerboxshortOption = {
   response_validation: false,
 };
@@ -124,7 +126,7 @@ const _newtextarea = {
 //     type: 'SECTION',
 //     title: 'Form Title',
 //     desc: 'Form Description',
-//     nextSection: 'CONTINUE',
+//     next_section: 'CONTINUE',
 //     active: true,
 
 //   }, {
@@ -142,7 +144,7 @@ const _newtextarea = {
 //       answers: [
 //         {
 //           label: 'Option 1',
-//           nextSection: 'CONTINUE'
+//           next_section: 'CONTINUE'
 //         }
 //       ]
 //     }
@@ -150,7 +152,7 @@ const _newtextarea = {
 // ]
 
 export const CreateQuestionContext = createContext();
-export default class CreateQuestionContextProvider extends Component {
+class CreateQuestionContextProvider extends Component {
   state = {
     data: [],
     loading:false,
@@ -327,7 +329,7 @@ export default class CreateQuestionContextProvider extends Component {
       }
     }
     
-    const cloneQuestion = async (data, sectionIndex) => {
+    const cloneQuestion = async (data, sectionIndex, questionIndex) => {
       console.log(data);
       this.setState({
         updating:true,
@@ -337,13 +339,51 @@ export default class CreateQuestionContextProvider extends Component {
         const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/cloneQuestion/11`, data, {cancelToken: signal.token});
         console.log(response.data.data);
         if(response.data.status === 1){
-          // const _sections = [...this.state.data.sections];
-          // _sections[sectionIndex].questions = _sections[sectionIndex].questions.filter((item)=> item.id !== data.question_id);
+          const _sections = [...this.state.data.sections];
+            _sections[sectionIndex].questions.splice(questionIndex + 1, 0, response.data.data);
+            _sections[sectionIndex].questions[questionIndex].active = false;
+            _sections[sectionIndex].questions[questionIndex + 1].active = true;
             this.setState({
               updating:false,
-              // data:{...this.state.data, sections:_sections},
+              data:{...this.state.data, sections:_sections},
             })
-          //   saveSectionSortBackend(this.state.data.sections.reduce((ack, item)=>({...ack,[item.id]:item.sort_order}), {}));
+            saveQuestionSortBackend({section_one:_sections[sectionIndex].questions.reduce((ack, item)=>({...ack,[item.id]:item.sort_order}), {})});
+          
+        }
+        else{
+          this.setState({
+            updating:false,
+            updatingError:response.data.message
+          })
+        }
+       
+      } catch (error) {
+        console.error(error);
+        this.setState({
+          updating:false,
+          updatingError:error.message
+        })
+      }
+    }
+    
+    const cloneSection = async (data, sectionIndex) => {
+      console.log(data);
+      this.setState({
+        updating:true,
+        updatingError:null,
+      })
+      try {
+        const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/cloneSection/11`, data, {cancelToken: signal.token});
+        console.log(response.data.data);
+        if(response.data.status === 1){
+          const _sections = [...this.state.data.sections];
+          _sections.splice(sectionIndex + 1, 0, response.data.data);
+
+            this.setState({
+              updating:false,
+              data:{...this.state.data, sections:_sections},
+            })
+            saveSectionSortBackend(this.state.data.sections.reduce((ack, item)=>({...ack,[item.id]:item.sort_order}), {}));
           
         }
         else{
@@ -443,7 +483,7 @@ export default class CreateQuestionContextProvider extends Component {
               updating:false,
               data:{...this.state.data, sections:_sections},
             })
-            // saveSectionSortBackend(this.state.data.sections.reduce((ack, item)=>({...ack,[item.id]:item.sort_order}), {}));
+            saveQuestionSortBackend({section_one:_sections[sectionIndex].questions.reduce((ack, item)=>({...ack,[item.id]:item.sort_order}), {})});
           }else{
             this.setState({
               updating:false,
@@ -575,7 +615,7 @@ export default class CreateQuestionContextProvider extends Component {
             _section[_sectionIndex].questions = [_clone];
             _section[_sectionIndex].questions[0].active = true;
           }else{
-            _questionIndex = _section[_sectionIndex].questions.findIndex(x => x.active === true) !== -1 ? _section[_sectionIndex].questions.findIndex(x => x.active === true) : -1;
+            _questionIndex = _section[_sectionIndex].questions.findIndex(x => x.active === true) !== -1 ? _section[_sectionIndex].questions.findIndex(x => x.active === true) : 0;
             _section[_sectionIndex].questions.splice(_questionIndex + 1, 0, _clone);
             _section[_sectionIndex].questions[_questionIndex].active = false;
             _section[_sectionIndex].questions[_questionIndex + 1].active = true;
@@ -604,7 +644,7 @@ export default class CreateQuestionContextProvider extends Component {
             _section[_sectionIndex].questions = [_clone];
             _section[_sectionIndex].questions[0].active = true;
           }else{
-            _questionIndex = _section[_sectionIndex].questions.findIndex(x => x.active === true) !== -1 ? _section[_sectionIndex].questions.findIndex(x => x.active === true) : -1;
+            _questionIndex = _section[_sectionIndex].questions.findIndex(x => x.active === true) !== -1 ? _section[_sectionIndex].questions.findIndex(x => x.active === true) : 0;
             _section[_sectionIndex].questions.splice(_questionIndex + 1, 0, _clone);
             _section[_sectionIndex].questions[_questionIndex].active = false;
             _section[_sectionIndex].questions[_questionIndex + 1].active = true;
@@ -879,7 +919,7 @@ export default class CreateQuestionContextProvider extends Component {
           _query.options.section_based = false;
           _query.validation = JSON.parse(JSON.stringify(_checkboxvalidation));
           _query.answers.forEach(element => {
-            element.nextSection = 'CONTINUE'
+            element.next_section = 'CONTINUE'
           });
         }
 
@@ -1111,7 +1151,7 @@ export default class CreateQuestionContextProvider extends Component {
       let _number = _query.answers.length + 1;
       const _option = {
         label: `Option ${_number}`,
-        nextSection: 'CONTINUE'
+        next_section: 'CONTINUE'
       }
       _query.answers.push(_option);
 
@@ -1177,7 +1217,9 @@ export default class CreateQuestionContextProvider extends Component {
 
     }
     
-
+    const previewForm = () => {
+          this.props.history.push(`/form/update/${this.state.data.id}/view`);
+    }
 
 
 
@@ -1208,6 +1250,7 @@ export default class CreateQuestionContextProvider extends Component {
           deleteQuestionFront,
           setQuestionResponseValidation,
           cloneQuestion,
+          cloneSection,
           setSectionBase,
           setResponseValidationType,
           setResponseValidationRule,
@@ -1230,7 +1273,8 @@ export default class CreateQuestionContextProvider extends Component {
           saveSection,
           addQuestion,
           updateQuestion,
-          deleteSection
+          deleteSection,
+          previewForm
         }}
       >
         {this.props.children}
@@ -1238,3 +1282,5 @@ export default class CreateQuestionContextProvider extends Component {
     );
   }
 }
+
+export default withRouter(CreateQuestionContextProvider)

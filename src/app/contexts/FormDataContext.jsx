@@ -49,12 +49,12 @@ class FormDataContextProvider extends Component {
       // this.setState({
       //   data: data
       // },() => {
-      //   if (type === 'SAVE') {
-      //     this.props.history.push('/')
-      //   } else {
-      //     localStorage.setItem('id',this.state.data.length)
-      //     this.props.history.push('/form/view');
-      //   }
+        if (type === 'SAVE') {
+          this.props.history.push('/')
+        } else {
+          // localStorage.setItem('id',this.state.data.length)
+          this.props.history.push(`/form/view/${this.state.currentForm}`);
+        }
       // })
     }
     
@@ -138,7 +138,7 @@ class FormDataContextProvider extends Component {
     }
 
     const setCurrentForm = (id) => {
-      console.log(this.state.data.find((item)=>(item.id === id)))
+      console.log(this.state.data.find((item)=>(item.id === id)), "helellee")
       this.setState({
         currentForm:this.state.data.find((item)=>(item.id === id)).id
       }

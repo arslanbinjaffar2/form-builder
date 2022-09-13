@@ -17,7 +17,7 @@ function handleClick() {
 }
 const Section = ({ onClick, value, data, index,  }) => {
   const [section, setSection] = useState(index);
-  const {handleSectionArea,handleSectionPanel,handleSectionSort, saveSection, deleteSection} = useContext(CreateQuestionContext);
+  const {handleSectionArea,handleSectionPanel,handleSectionSort, cloneSection, saveSection, deleteSection} = useContext(CreateQuestionContext);
   handleClick()
   const handlebtnClick = (e) => {
     e.preventDefault();
@@ -49,7 +49,7 @@ const Section = ({ onClick, value, data, index,  }) => {
                 <button onClick={handlebtnClick} className={`ebs-btn tooltip-medium`}><span style={{ pointerEvents: 'none' }} className="material-icons">more_vert</span></button>
                 <div className="ebs-app-tooltip">
                   <div
-                    onClick={(e) => handleSectionPanel(e.target, 'DUPLICATE', index)}
+                    onClick={(e) => cloneSection({section_id: value.id}, index)}
                     className="ebs-tooltip-item">
                       Duplicate Section
                     </div>

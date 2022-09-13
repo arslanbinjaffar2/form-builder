@@ -76,7 +76,7 @@ export default class DateTimeModule extends Component {
             </SaveBtn>
           </div>
           <div className="ebs-left-area d-flex">
-            <span onClick ={(e) => {e.stopPropagation();this.context.cloneQuestion(this.props.sectionIndex, this.props.questionIndex, e.target)}}  className="ebs-btn">
+            <span onClick ={(e) => {e.stopPropagation();this.context.cloneQuestion({question_id:id}, this.props.sectionIndex, this.props.questionIndex)}}  className="ebs-btn">
               <i className="material-icons">content_copy</i>
             </span>
             <span onClick ={(e) => {e.stopPropagation(); id !== undefined ? 

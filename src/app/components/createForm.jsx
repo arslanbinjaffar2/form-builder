@@ -78,9 +78,13 @@ const createForm = (props) => {
   const [sectionTo, setSectionTo] = useState(null);
   const [sections, setSection] = useState([]);
   useEffect(() => {
-    getFormData(parseInt(props.match.params.id));
+    if(data.length <= 0 && data.id !== props.match.params.id){
+      getFormData(parseInt(props.match.params.id));
+    }
     return () => {
-      cancelAllRequests();
+      if(loading){
+        cancelAllRequests();
+      }
     }
   }, [])
   
