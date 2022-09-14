@@ -104,9 +104,9 @@ export default class FormDatebox extends Component {
   return (
     <div className="ebs-formview-mulitple">
       <div className="form-view-title">
-        {data.title} {data.required && <span className="required">*</span>}
+        {data.title && data.title} {data.required === 1 && <span className="required">*</span>}
       </div>
-      {data.descVisible && data.description && <div className="form-view-description">{data.description}</div>}
+      {(data.options.description_visible && data.description) && <div className="form-view-description">{data.description}</div>}
       <div className="ebs-options-view">
         <div className="ebs-time-form-view">
           <div className="ebs-time-grid d-flex align-items-center ebs-duration-grid">

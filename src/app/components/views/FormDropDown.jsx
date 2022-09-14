@@ -25,9 +25,9 @@ const FormDropDown = ({data}) => {
   return (
     <div className="ebs-formview-mulitple">
       <div className="form-view-title">
-        {data.title} {data.required && <span className="required">*</span>}
+        {data.title && data.title} {data.required === 1 && <span className="required">*</span>}
       </div>
-      {data.descVisible && data.description && <div className="form-view-description">{data.description}</div>}
+      {(data.options.description_visible && data.description) && <div className="form-view-description">{data.description}</div>}
       <div className="ebs-options-view">
       <Select
         menuColor='red'
@@ -37,7 +37,7 @@ const FormDropDown = ({data}) => {
         isSearchable={false}
         styles={customStyles}
         components={{ IndicatorSeparator: () => null }}
-        options={data.options.choices}
+        options={data.answers}
         theme={theme => ({
           ...theme,
           borderRadius: 0,

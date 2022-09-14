@@ -3,15 +3,15 @@ const FormLinearScale = ({data}) => {
   return (
     <div className="ebs-formview-mulitple">
       <div className="form-view-title">
-        {data.title} {data.required && <span className="required">*</span>}
+        {data.title && data.title} {data.required === 1 && <span className="required">*</span>}
       </div>
-      {data.descVisible && data.description && <div className="form-view-description">{data.description}</div>}
+      {(data.options.description_visible && data.description) && <div className="form-view-description">{data.description}</div>}
       <div className="ebs-options-view">
       <div className="ebs-linear-view">
           <div className="ebs-linear-view-wrapper d-flex text-center">
             <div className="ebs-linear-box d-flex ebs-linear-caption">
               <div className="ebs-label"></div>
-              <div className="ebs-value"><div className="ebs-value-inner">{data.options.minLabel}</div></div>
+              <div className="ebs-value"><div className="ebs-value-inner">{data.options.min_label}</div></div>
             </div>
               {Array.apply(null,Array((Number(data.options.max) - (Number(data.options.min) === 0 ? 0 : 1))+1)).map((e,i) => (
                 <div key={i} className="ebs-linear-box d-flex">
@@ -26,7 +26,7 @@ const FormLinearScale = ({data}) => {
               ))} 
             <div className="ebs-linear-box d-flex ebs-linear-caption">
               <div className="ebs-label"></div>
-              <div className="ebs-value"><div className="ebs-value-inner">{data.options.maxLabel}</div></div>
+              <div className="ebs-value"><div className="ebs-value-inner">{data.options.max_label}</div></div>
             </div>
           </div>
         </div>
