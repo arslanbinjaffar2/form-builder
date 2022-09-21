@@ -113,7 +113,6 @@ export default class MultipleChoice extends Component {
     const { active, options, answers, type, required, validation, id } = this.props.data;
     return (
       <React.Fragment>
-
         <div className="ebs-multiple-choice-wrapper">
           <DragDropContext onDragEnd={this.onDragEnd.bind(this)}>
             <Droppable droppableId="multiplechoice">

@@ -16,36 +16,26 @@ const Section = ({section, sections, active, setactive, formData, setFormData}) 
     const [validated, setValidated] = useState(false)
     const ValidateSection = async (e, type) => {
         e.preventDefault();
-       let sectionValidated = false;
+       let notValidatedFor = [];
        let formData2 = formData;
             await section.questions.forEach(question => {
-                     if(question.required){
-                    if(formData2[section.id] !== undefined && formData2[section.id][question.id] !== undefined && (formData2[section.id][question.id]['answer'] !== "" || formData2[section.id][question.id]['answer'].length > 0)){
-                            if(validateShortAnswer(question.validation, formData2[section.id][question.id])){
-                                sectionValidated = true;
-                            }else{
-                                sectionValidated = false;
-                            }
-                    }else{
-                        if(formData2[section.id] !== undefined &&  formData2[section.id][question.id] !== undefined){
-                            console.log("hello");
-                           formData2 = {...formData2, [question.form_builder_section_id]:{...formData2[section.id], [question.id]: { ...formData2[section.id][question.id], ['error']:true}}}
-                        }else{
-                            console.log(formData2);
-                            console.log("hello3");
-                          formData2 = {...formData2, [question.form_builder_section_id]:{...formData2[section.id], [question.id]: {['error']:true}}}
+                     if(question.required === 1){
+                        if(formData2[section.id][question.id]['answer'] === "" || formData2[section.id][question.id]['answer'].length <= 0){
+                            formData2 = {...formData2, [question.form_builder_section_id]:{...formData2[section.id], [question.id]: { ...formData2[section.id][question.id], ['requiredError']:true}}}
+                            notValidatedFor.push(question.id);
                         }
-                        console.log("required " + question.id);
-                        sectionValidated = false;
+                        if(question.validation.type !== undefined){
+                            if(!validateShortAnswer(question.validation, formData2[section.id][question.id]['answer'])){
+                                formData2 = {...formData2, [question.form_builder_section_id]:{...formData2[section.id], [question.id]: { ...formData2[section.id][question.id], ['validationError']:true}}}
+                                notValidatedFor.push(question.id);
+                            }
+                        }
                     }
-                }else{
-                    sectionValidated = true;
-                }
             });
-
             setFormData(formData2);
-
-            if (sectionValidated === true &&  validated === true){
+            console.log(notValidatedFor);
+            console.log(validated);
+            if (notValidatedFor.length <= 0 &&  validated === true){
                 if(type === 'next'){
                     setactive(active + 1);
                 }  

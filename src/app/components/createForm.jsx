@@ -98,6 +98,7 @@ const createForm = (props) => {
   }, [data]);
   
   const onDragStart = (result) => {
+    // console.log(document.activeElement);
     document.activeElement.blur();
   }
   const onDragEnd = (result) => {
@@ -109,7 +110,7 @@ const createForm = (props) => {
     const { source, destination } = result;
     // console.log(source, 'source');
     // console.log(destination, 'destination');
-    handleReorder(source, destination);
+    // handleReorder(source, destination);
   }
   return (
     <React.Fragment>
@@ -180,7 +181,9 @@ const createForm = (props) => {
                           
                           <Droppable droppableId={`${k}`} key={`droppable-section-${k}`}>
                             {(provided, snapshot) => (
-                              <div {...provided.droppableProps} ref={provided.innerRef}>
+                              <div 
+                              // {...provided.droppableProps} 
+                              ref={provided.innerRef}>
                                   {item.questions && item.questions.map((question, j)=>(
                                     
                                     <React.Fragment key={j}>
@@ -196,16 +199,16 @@ const createForm = (props) => {
                                         question.type === "time") && (
                                           <Draggable
                                             key={j}
-                                            // isDragDisabled={item.questions.length > 2 ? false : true}
                                             draggableId={`item-${j}`}
                                             index={j}>
                                             {(provided, snapshot) => (
                                               <div
                                                 ref={provided.innerRef}
-                                                {...provided.draggableProps}>
+                                                {...provided.draggableProps}
+                                                >
                                                 <Question
-                                                  isDragging={ question.id !== undefined ? snapshot.isDragging : null}
-                                                  dragHandle={ question.id !== undefined ? provided.dragHandleProps : null}
+                                                  isDragging={snapshot.isDragging}
+                                                  dragHandle={provided.dragHandleProps}
                                                   data={question}
                                                   formId={props.match.params.id}
                                                   sectionId={item.id}
@@ -216,7 +219,7 @@ const createForm = (props) => {
                                             )}
                                           </Draggable>
                                         )}
-                                     {question.type === 'TEXT_BLOCK' && 
+                                     {/* {question.type === 'TEXT_BLOCK' && 
                                      <Draggable
                                      key={j}
                                      // isDragDisabled={item.questions.length > 2 ? false : true}
@@ -238,7 +241,7 @@ const createForm = (props) => {
                                        </div>
                                             )}
                                           </Draggable>
-                                      }
+                                      } */}
                                     </React.Fragment>
                                   ))}
                                 {provided.placeholder}

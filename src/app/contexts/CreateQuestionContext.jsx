@@ -209,7 +209,7 @@ class CreateQuestionContextProvider extends Component {
           if(data.id === undefined){
             this.setState({
               updating:false,
-              data:{...this.state.data, sections:this.state.data.sections.map((item)=> item.sort_order === data.sort_order ? { ...item, id:response.data.data.section_id} : item)},
+              data:{...this.state.data, sections:this.state.data.sections.map((item)=> item.sort_order === data.sort_order ? { ...response.data.data } : item)},
             })
             saveSectionSortBackend(this.state.data.sections.reduce((ack, item)=>({...ack,[item.id]:item.sort_order}), {}));
           }else{
@@ -660,7 +660,7 @@ class CreateQuestionContextProvider extends Component {
     const handleReorder = (source, destination) => {
       const _sections = [...this.state.data.sections];
       
-      if (source.droppableId !== destination.droppableId) {
+      if (parseInt(source.droppableId) !== parseInt(destination.droppableId)) {
         const sourceSection = _sections[parseInt(source.droppableId)];
         const destSection = _sections[parseInt(destination.droppableId)];
         const sourceQuestions = [...sourceSection.questions];
@@ -689,7 +689,7 @@ class CreateQuestionContextProvider extends Component {
           copiedQuestions.splice(destination.index, 0, removed);
           _sections[source.droppableId].questions = copiedQuestions.map((item,k)=>({...item, sort_order:k}));
           // this.state.data.sections.reduce((ack, item)=>({...ack,[item.id]:item.sort_order}), {})
-          saveQuestionSortBackend({section_one:_sections[source.droppableId].questions.reduce((ack, item)=>({...ack,[item.id]:item.sort_order}), {})});
+          // saveQuestionSortBackend({section_one:_sections[parseInt(source.droppableId)].questions.reduce((ack, item)=>({...ack,[item.id]:item.sort_order}), {})});
           // save in backend
         }
       }
@@ -697,7 +697,7 @@ class CreateQuestionContextProvider extends Component {
       this.setState({
         data: {...this.state.data, sections:_sections}
       })
-      handleQuestionChange(parseInt(destination.droppableId), destination.index);
+      // handleQuestionChange(parseInt(destination.droppableId), destination.index);
     }
     const handleMultiChoiceReorder = (index, startIndex, endIndex) => {
       const result = [...this.state.data];

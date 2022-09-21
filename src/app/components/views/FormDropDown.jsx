@@ -1,4 +1,5 @@
 import React from 'react';
+import { validateShortAnswer } from '../../../helpers/validation';
 import Select from "react-select";
 const customStyles = {
   control: base => ({
@@ -21,7 +22,25 @@ const customStyles = {
 
   })
 };
-const FormDropDown = ({data}) => {
+
+
+
+const FormDropDown = ({data, formData, setFormData, setValidated}) => {
+  const onChange = (evt) => { 
+    // console.log(evt);
+    let newFormData = formData;
+    const valid = evt.id !== "" ? validateShortAnswer(data.validation, evt.id) : true;
+    newFormData = {...formData,
+       [data.form_builder_section_id]:{...formData[data.form_builder_section_id], 
+        [data.id]:{ ...formData[data.form_builder_section_id][data.id], 
+          ['answer']:evt.id, ['requiredError']:false,  
+          ['validationError']:!valid,  
+          ['question_type']:data.type}}};
+
+    console.log(newFormData);
+    setFormData(newFormData);
+    setValidated(valid);
+  }
   return (
     <div className="ebs-formview-mulitple">
       <div className="form-view-title">
@@ -37,6 +56,7 @@ const FormDropDown = ({data}) => {
         isSearchable={false}
         styles={customStyles}
         components={{ IndicatorSeparator: () => null }}
+        onChange={(item)=> onChange(item)}
         options={data.answers}
         theme={theme => ({
           ...theme,

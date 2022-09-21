@@ -8,20 +8,17 @@ const FormLongAnswer = ({data, formData, setFormData, setValidated}) => {
     element.style.height = element.scrollHeight + "px";
 
     let newFormData = formData;
-    if(formData.length > 0 ){
-       newFormData = {...formData, [data.form_builder_section_id]:{...formData[data.form_builder_section_id], [data.id]: { ...data.id, ['answer']:evt.currentTarget.value}}};
-    }
-    else{
-       newFormData = {
-        [data.form_builder_section_id]:{
-          [data.id]:{['answer']:evt.currentTarget.value}
-        }
-       };
-    }
+    const valid = evt.currentTarget.value !== "" ? validateShortAnswer(data.validation, evt.currentTarget.value) : true;
+    newFormData = {...formData,
+       [data.form_builder_section_id]:{...formData[data.form_builder_section_id], 
+        [data.id]:{ ...formData[data.form_builder_section_id][data.id], 
+          ['answer']:evt.currentTarget.value, ['requiredError']:false,  
+          ['validationError']:!valid,  
+          ['question_type']:data.type}}};
+
+    console.log(newFormData);
     setFormData(newFormData);
-    const valid = validateShortAnswer(data.validation, evt.currentTarget.value);
     setValidated(valid);
-    setError(!valid);
   }
 
 
@@ -34,17 +31,9 @@ const FormLongAnswer = ({data, formData, setFormData, setValidated}) => {
       {(data.options.description_visible && data.description) && <div className="form-view-description">{data.description}</div>}
       <div className="ebs-options-view">
         <div className="ebs-input-response">
-          <textarea onChange={handleTextaera} placeholder="Your answer" type="text" value={
-            (formData[data.form_builder_section_id] && 
-              formData[data.form_builder_section_id] && 
-              formData[data.form_builder_section_id][data.id]) ? 
-              formData[data.form_builder_section_id][data.id]['answer'] : ''}  />
-          {error && data.validation.custom_error}
-          {
-              (formData[data.form_builder_section_id] && 
-              formData[data.form_builder_section_id] && 
-              formData[data.form_builder_section_id][data.id]) &&
-              formData[data.form_builder_section_id][data.id]['error'] && "This question is required"}
+          <textarea onChange={handleTextaera} placeholder="Your answer" type="text" value={formData[data.form_builder_section_id][data.id]['answer']}  />
+          {formData[data.form_builder_section_id][data.id]['validationError'] === true && data.validation.custom_error}
+          {formData[data.form_builder_section_id][data.id]['requiredError'] === true && "This question is required"}
         </div>
       </div>
     </div>

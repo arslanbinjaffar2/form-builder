@@ -1,7 +1,7 @@
 import validator from "validator";
 
 export function validateShortAnswer(validation, input){
-    console.log(validation);
+    // console.log(validation);
     if(validation.type === "NUMBER"){
          return   validateNumber(validation, input);
     }
@@ -14,7 +14,7 @@ export function validateShortAnswer(validation, input){
     else if(validation.type === "REGULAR_EXPRESSION"){
         return validateRegexp(validation, input);
     }
-    else if(validation.type === "OPTION"){
+    else if(validation.rule === "OPTION"){
         return validateOptions(validation, input);
     }
 }
@@ -100,14 +100,16 @@ export function validateRegexp(validation, input){
 }
 
 export function validateOptions(validation, input){
-    if(validation.rule === "AT_LEAST"){
-        return validator.contains(input, validation.value);
+    console.log(input);
+    if(validation.type === "AT_LEAST"){
+        return input.length >=   parseInt(validation.value);
     }
-    else if(validation.rule === "AT_MOST"){
-        return !validator.contains(input, validation.value);
+    else if(validation.type === "AT_MOST"){
+        console.log(input.length);
+        return input.length <= parseInt(validation.value);
     }
-    else if(validation.rule === "EXACTLY"){
-            return validator.matches(input, validation.value);
+    else if(validation.type === "EXACTLY"){
+        return input.length ==  parseInt(validation.value);
     }
 }
 
