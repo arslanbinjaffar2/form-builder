@@ -11,7 +11,7 @@ const FormCheckboxes = ({data, formData, setFormData, setValidated}) => {
       answers2 = [...answers2, evt.currentTarget.value];
     }
     let newFormData = formData;
-    const valid = evt.currentTarget.value !== "" ? validateShortAnswer(data.validation, answers2) : true;
+    const valid = evt.currentTarget.value !== "" && data.validation.type !== undefined ? validateShortAnswer(data.validation, answers2) : true;
     newFormData = {...formData,
        [data.form_builder_section_id]:{...formData[data.form_builder_section_id], 
         [data.id]:{ ...formData[data.form_builder_section_id][data.id], 

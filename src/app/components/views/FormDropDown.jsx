@@ -29,7 +29,7 @@ const FormDropDown = ({data, formData, setFormData, setValidated}) => {
   const onChange = (evt) => { 
     // console.log(evt);
     let newFormData = formData;
-    const valid = evt.id !== "" ? validateShortAnswer(data.validation, evt.id) : true;
+    const valid = evt.id !== "" && data.validation.type !== undefined ? validateShortAnswer(data.validation, evt.id) : true;
     newFormData = {...formData,
        [data.form_builder_section_id]:{...formData[data.form_builder_section_id], 
         [data.id]:{ ...formData[data.form_builder_section_id][data.id], 

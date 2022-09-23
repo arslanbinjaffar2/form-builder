@@ -4,7 +4,7 @@ const FormShortAnswer = ({data, formData, setFormData, setValidated}) => {
   const onChange = (evt) => { 
     // console.log(evt);
     let newFormData = formData;
-    const valid = evt.currentTarget.value !== "" ? validateShortAnswer(data.validation, evt.currentTarget.value) : true;
+    const valid = evt.currentTarget.value !== "" && data.validation.type !== undefined ? validateShortAnswer(data.validation, evt.currentTarget.value) : true;
     newFormData = {...formData,
        [data.form_builder_section_id]:{...formData[data.form_builder_section_id], 
         [data.id]:{ ...formData[data.form_builder_section_id][data.id], 

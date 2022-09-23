@@ -4,17 +4,14 @@ const FormMultipleChoice = ({data, formData, setFormData, setValidated}) => {
   const onChange = (evt) => { 
     // console.log(evt);
     let newFormData = formData;
-    const valid = evt.currentTarget.value !== "" ? validateShortAnswer(data.validation, evt.currentTarget.value) : true;
     newFormData = {...formData,
        [data.form_builder_section_id]:{...formData[data.form_builder_section_id], 
         [data.id]:{ ...formData[data.form_builder_section_id][data.id], 
           ['answer']:evt.currentTarget.value, ['requiredError']:false,  
-          ['validationError']:!valid,  
+          ['validationError']:false,  
           ['question_type']:data.type}}};
 
-    console.log(newFormData);
     setFormData(newFormData);
-    setValidated(valid);
   }
   return (
     <div className="ebs-formview-mulitple">

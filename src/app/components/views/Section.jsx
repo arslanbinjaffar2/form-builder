@@ -13,11 +13,13 @@ import FormTextBlock from './FormTextBlock';
 import { validateShortAnswer } from '../../../helpers/validation';
 
 const Section = ({section, sections, active, setactive, formData, setFormData}) => {
-    const [validated, setValidated] = useState(false)
+    const [validated, setValidated] = useState(true);
     const ValidateSection = async (e, type) => {
         e.preventDefault();
        let notValidatedFor = [];
        let formData2 = formData;
+    //    console.log(validated);
+
             await section.questions.forEach(question => {
                      if(question.required === 1){
                         if(formData2[section.id][question.id]['answer'] === "" || formData2[section.id][question.id]['answer'].length <= 0){
@@ -27,14 +29,15 @@ const Section = ({section, sections, active, setactive, formData, setFormData}) 
                         if(question.validation.type !== undefined){
                             if(!validateShortAnswer(question.validation, formData2[section.id][question.id]['answer'])){
                                 formData2 = {...formData2, [question.form_builder_section_id]:{...formData2[section.id], [question.id]: { ...formData2[section.id][question.id], ['validationError']:true}}}
+                                setValidated(false);
                                 notValidatedFor.push(question.id);
                             }
                         }
                     }
             });
             setFormData(formData2);
-            console.log(notValidatedFor);
-            console.log(validated);
+            // console.log(notValidatedFor);
+            // console.log(validated);
             if (notValidatedFor.length <= 0 &&  validated === true){
                 if(type === 'next'){
                     setactive(active + 1);
@@ -130,7 +133,7 @@ const Section = ({section, sections, active, setactive, formData, setFormData}) 
             >
             Back
             </button>
-            <button className="btn btn-default btn-submit" >Submit</button>
+            <button className="btn btn-default btn-submit" onClick={(e)=>{ console.log(formData);  }} >Submit</button>
         </div>
         )}
     </React.Fragment>
