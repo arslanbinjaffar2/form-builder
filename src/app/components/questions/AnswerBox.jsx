@@ -156,7 +156,7 @@ export default class AnswerBox extends Component {
               {type === 'short_answer' ? 'Short answer text' : 'Long answer text'}
             </div>
           </div>
-          {options.response_validation && <div className="ebs-validation-rule">
+          {options.response_validation === 1 && <div className="ebs-validation-rule">
             <div className="row d-flex">
               <div className="col-3">
               <CustomSelect

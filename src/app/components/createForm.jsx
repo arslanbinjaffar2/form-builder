@@ -110,7 +110,7 @@ const createForm = (props) => {
     const { source, destination } = result;
     // console.log(source, 'source');
     // console.log(destination, 'destination');
-    // handleReorder(source, destination);
+    handleReorder(source, destination);
   }
   return (
     <React.Fragment>
@@ -182,12 +182,11 @@ const createForm = (props) => {
                           <Droppable droppableId={`${k}`} key={`droppable-section-${k}`}>
                             {(provided, snapshot) => (
                               <div 
-                              // {...provided.droppableProps} 
-                              ref={provided.innerRef}>
-                                  {item.questions && item.questions.map((question, j)=>(
-                                    
-                                    <React.Fragment key={j}>
-                                      {(question.type === "multiple_choice" ||
+                                ref={provided.innerRef}    
+                                {...provided.droppableProps}
+                                >
+                                  {item.questions && item.questions.map((question, j)=>{
+                                     return (question.type === "multiple_choice" ||
                                         question.type === "checkboxes" ||
                                         question.type === "drop_down" ||
                                         question.type === "short_answer" ||
@@ -198,8 +197,8 @@ const createForm = (props) => {
                                         question.type === "date" ||
                                         question.type === "time") && (
                                           <Draggable
-                                            key={j}
-                                            draggableId={`item-${j}`}
+                                            key={`draggable-question-${question.id ? question.id : question.sort_order}`}
+                                            draggableId={`draggable-question-${question.id ? question.id : question.sort_order}`}
                                             index={j}>
                                             {(provided, snapshot) => (
                                               <div
@@ -219,31 +218,8 @@ const createForm = (props) => {
                                             )}
                                           </Draggable>
                                         )}
-                                     {/* {question.type === 'TEXT_BLOCK' && 
-                                     <Draggable
-                                     key={j}
-                                     // isDragDisabled={item.questions.length > 2 ? false : true}
-                                     draggableId={`item-${j}`}
-                                     index={j}>
-                                     {(provided, snapshot) => (
-                                       <div
-                                         ref={provided.innerRef}
-                                         {...provided.draggableProps}>
-                                          <TextSection
-                                            isDragging={ question.id !== undefined ? snapshot.isDragging : null}
-                                            dragHandle={ question.id !== undefined ? provided.dragHandleProps : null}
-                                            data={question}
-                                            formId={props.match.params.id}
-                                            sectionId={item.id}
-                                            sectionIndex={k}
-                                            questionIndex={j}
-                                          />
-                                       </div>
-                                            )}
-                                          </Draggable>
-                                      } */}
-                                    </React.Fragment>
-                                  ))}
+                                    
+                                  )}
                                 {provided.placeholder}
                               </div>
                             )}

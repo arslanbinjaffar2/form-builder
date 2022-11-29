@@ -3,7 +3,7 @@ import axios from 'axios'
 import { withRouter } from 'react-router-dom';
 
 const _answerboxshortOption = {
-  response_validation: false,
+  response_validation: 0,
 };
 const _answerboxshortValidation = {
   customError: '',
@@ -12,7 +12,7 @@ const _answerboxshortValidation = {
   value: '',
 };
 const _answerboxparaOption = {
-  response_validation: false,
+  response_validation: 0,
 };
 const _answerboxparaValidation = {
   custom_error: '',
@@ -22,7 +22,7 @@ const _answerboxparaValidation = {
 };
 
 const _checkboxOption = {
-  response_validation: false,
+  response_validation: 0,
 };
 
 const _checkboxvalidation = {
@@ -40,8 +40,8 @@ const _linearscaleOption = {
 }
 
 const _mulitplechoiceOptions = {
-  add_other: false,
-  section_based: false,
+  add_other: 0,
+  section_based: 0,
   
 };
 const _mulitplechoiceAnswers = [
@@ -51,8 +51,8 @@ const _mulitplechoiceAnswers = [
     }
   ];
 const _mulitplechoicegridOptions = {
-  limit: false,
-  shuffle: false,
+  limit: 0,
+  shuffle: 0,
 };
 
 const _mulitplechoicegridRows= [
@@ -75,9 +75,9 @@ const _mulitplechoicegridColumns=[
 
 
 const _datemoduleOptions = {
-  date: true,
-  year: false,
-  time: false,
+  date: 1,
+  year: 0,
+  time: 0,
 };
 const _timemoduleOptions = {
   time_type: 'TIME'
@@ -85,16 +85,16 @@ const _timemoduleOptions = {
 const _newquestion = {
   title: 'Question',
   type: 'multiple_choice',
-  required: false,
+  required: 0,
   description: '',
-  active: false,
+  active: 0,
   sort_order:0,
   form_builder_form_id:0,
   form_builder_section_id:0,
   options: {
-    description_visible: true,
-    add_other: false,
-    section_based: false,
+    description_visible: 1,
+    add_other: 0,
+    section_based: 0,
   },
   answers: [
     {
@@ -108,15 +108,15 @@ const _newsection = {
   description: 'Form Description',
   next_section: 'CONTINUE',
   form_builder_form_id:0,
-  active: false,
+  active: 0,
   sort_order: 0,
 };
 const _newtextarea = {
   type: 'TEXT_BLOCK',
   title: 'Untitled Section',
   description: 'Form Description',
-  required: false,
-  active: false,
+  required: 0,
+  active: 0,
   sort_order:0,
 };
 
@@ -477,7 +477,7 @@ class CreateQuestionContextProvider extends Component {
         if(response.data.status === 1){
           if(data.id === undefined){
             const _sections = [...this.state.data.sections];
-            _sections[sectionIndex].questions[questionIndex] = response.data.data;
+            _sections[sectionIndex].questions[questionIndex] = {...response.data.data, active:true};
             console.log(_sections);
             this.setState({
               updating:false,
@@ -661,24 +661,29 @@ class CreateQuestionContextProvider extends Component {
       const _sections = [...this.state.data.sections];
       
       if (parseInt(source.droppableId) !== parseInt(destination.droppableId)) {
-        const sourceSection = _sections[parseInt(source.droppableId)];
-        const destSection = _sections[parseInt(destination.droppableId)];
-        const sourceQuestions = [...sourceSection.questions];
-        const destQuestion = destSection.questions ? [...destSection.questions] : [];
-        const [removed] = sourceQuestions.splice(source.index, 1);
-        destQuestion.splice(destination.index, 0, removed);
-        _sections[parseInt(source.droppableId)].questions = sourceQuestions.map((item,k)=>({...item, sort_order:k}));
-        _sections[parseInt(destination.droppableId)].questions = destQuestion.map((item,k)=>({...item, sort_order:k}));
-
-        updateQuestionSection(
-          {question_id:removed.id, section_id:_sections[parseInt(destination.droppableId)].id},
-          {
-            section_one:_sections[source.droppableId].questions.reduce((ack, item)=>({...ack,[item.id]:item.sort_order}), {}), 
-            section_one:_sections[destination.droppableId].questions.reduce((ack, item)=>({...ack,[item.id]:item.sort_order}), {}) 
-          },
-          destination.droppableId,
-          destination.index,
-          );
+            console.log("hello")
+            const sourceSection = _sections[parseInt(source.droppableId)];
+            const destSection = _sections[parseInt(destination.droppableId)];
+            const sourceQuestions = [...sourceSection.questions]? [...sourceSection.questions] : [];
+            const destQuestion = destSection.questions ? [...destSection.questions] : [];
+            const [removed] = sourceQuestions.splice(source.index, 1);
+  
+            destQuestion.splice(destination.index, 0, removed);
+  
+            _sections[parseInt(source.droppableId)].questions = sourceQuestions.map((item,k)=>({...item, sort_order:k}));
+            _sections[parseInt(destination.droppableId)].questions = destQuestion.map((item,k)=>({...item, sort_order:k}));
+  
+            updateQuestionSection(
+              {question_id:removed.id, section_id:_sections[parseInt(destination.droppableId)].id},
+              {
+                section_one:_sections[source.droppableId].questions.reduce((ack, item)=>({...ack,[item.id]:item.sort_order}), {}), 
+                section_one:_sections[destination.droppableId].questions.reduce((ack, item)=>({...ack,[item.id]:item.sort_order}), {}) 
+              },
+              destination.droppableId,
+              destination.index,
+              );
+          
+          
         // save in backend
       }
       else{
@@ -760,10 +765,10 @@ class CreateQuestionContextProvider extends Component {
       const _sections = [...this.state.data.sections];
       const _query = _sections[sectionIndex].questions[questionIndex];
       if (type === 'INCLUDE_TIME') {
-        _query.options.time = !_query.options.time;
+        _query.options.time = _query.options.time === 1 ? 0 : 1;
       }
       if (type === 'INCLUDE_YEAR') {
-        _query.options.year = !_query.options.year;
+        _query.options.year = _query.options.year === 1 ? 0 : 1;
       }
       if (type === 'TIME_DURATION') {
         _query.options.time_type = _query.options.time_type === 'TIME' ? 'DURATION' : 'TIME';
@@ -830,10 +835,10 @@ class CreateQuestionContextProvider extends Component {
       const _sections = [...this.state.data.sections];
       const _query = _sections[sectionIndex].questions[questionIndex];
       if (type === 'RESPONSE') {
-        _query.options.limit = !_query.options.limit;
+        _query.options.limit = _query.options.limit === 1 ? 0 : 1;
       }
       if (type === 'SHUFFLE') {
-        _query.options.shuffle = !_query.options.shuffle;
+        _query.options.shuffle = _query.options.shuffle === 1 ? 0 : 1;
       }
       if (type === 'INPUT_ROW') {
         _query.grid_questions[key].label = value;
@@ -954,7 +959,7 @@ class CreateQuestionContextProvider extends Component {
     const setQuestionResponseValidation = async (sectionIndex, questionIndex, status) => {
       const _sections = [...this.state.data.sections];
       const _query = _sections[sectionIndex].questions[questionIndex];
-        _query.options.response_validation = !_query.options.response_validation;
+        _query.options.response_validation = _query.options.response_validation === 1 ? 0 : 1;
         this.setState({
           data: {...this.state.data, sections:_sections}
         })
@@ -982,7 +987,7 @@ class CreateQuestionContextProvider extends Component {
       const _sections = [...this.state.data.sections];
       const _query = _sections[sectionIndex].questions[questionIndex];
 
-        _query.options.section_based = !_query.options.section_based;
+        _query.options.section_based = _query.options.section_based === 1 ? 0 : 1;
 
         this.setState({
           data: {...this.state.data, sections:_sections}
@@ -994,7 +999,12 @@ class CreateQuestionContextProvider extends Component {
       const _sections = [...this.state.data.sections];
       const _query = _sections[sectionIndex].questions[questionIndex];
 
-      _query.validation.type = type;
+      if(typeof _query.validation == 'object'){
+        _query.validation.type = type;
+      }else{
+        _query.validation = {type:type};
+      }
+
       if (type === 'NUMBER') {
         _query.validation.rule = 'GREATER_THAN';
       }
@@ -1193,11 +1203,16 @@ class CreateQuestionContextProvider extends Component {
       const _sections = [...this.state.data.sections];
       const _query = _sections[sectionIndex].questions[questionIndex];
 
-      _query.options.response_validation = !_query.options.response_validation;
+          if(typeof _query.options == 'object'){
+          _query.options.response_validation = _query.options.response_validation === 1 ? 0 : 1;
+
+          } else {
+            _query.options = {response_validation: 1};
+          }
+
           this.setState({
           data: {...this.state.data, sections:_sections}
         })
-
     }
     
     const setDescription = async (sectionIndex, questionIndex) => {
@@ -1205,9 +1220,14 @@ class CreateQuestionContextProvider extends Component {
       const _sections = [...this.state.data.sections];
       const _query = _sections[sectionIndex].questions[questionIndex];
 
-      _query.options.description_visible = !_query.options.description_visible;
+      if(typeof _query.options == 'object'){
+        _query.options.description_visible = _query.options.description_visible === 1 ? 0 : 1;
+      } else {
+        _query.options = {description_visible: 1};
+      }
+    
 
-      if (!_query.options.description_visible) {
+      if (_query.options.description_visible === 1) {
         _query.description = '';
       }
 

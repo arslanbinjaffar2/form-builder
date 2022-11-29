@@ -38,10 +38,10 @@ export default class DateTimeModule extends Component {
         <div className="ebs-datetime-grid-wrapper">
           {type === 'date' && <div className="ebs-datetime-content">
             <div className={`ebs-datetime-list ${active ? 'ebs-type-active' : ''}`}>
-              <div className="ebs-title">Month, Day {options.year && ', Year'}</div>
+              <div className="ebs-title">Month, Day {options.year === 1 && ', Year'}</div>
               <div className="ebs-icon"><i className="material-icons">date_range</i></div>
             </div>
-            {options.time && <div className={`ebs-datetime-list ${active ? 'ebs-type-active' : ''}`}>
+            {options.time === 1 && <div className={`ebs-datetime-list ${active ? 'ebs-type-active' : ''}`}>
               <div className="ebs-title">Time</div>
               <div className="ebs-icon"><i className="material-icons">schedule</i></div>
             </div>}

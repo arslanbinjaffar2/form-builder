@@ -16,6 +16,9 @@ const Section = ({section, sections, active, setactive, formData, setFormData}) 
     const [validated, setValidated] = useState(true);
     const ValidateSection = async (e, type) => {
         e.preventDefault();
+        if(type === 'back'){
+             setactive(active - 1);
+         }
        let notValidatedFor = [];
        let formData2 = formData;
     //    console.log(validated);
@@ -41,10 +44,7 @@ const Section = ({section, sections, active, setactive, formData, setFormData}) 
             if (notValidatedFor.length <= 0 &&  validated === true){
                 if(type === 'next'){
                     setactive(active + 1);
-                }  
-                else if(type === 'back'){
-                    setactive(active - 1);
-                }
+                } 
             }
       };
   return (
@@ -133,7 +133,7 @@ const Section = ({section, sections, active, setactive, formData, setFormData}) 
             >
             Back
             </button>
-            <button className="btn btn-default btn-submit" onClick={(e)=>{ console.log(formData);  }} >Submit</button>
+            <button className="btn btn-default btn-submit" onClick={(e) => ValidateSection(e, 'next')} >Submit</button>
         </div>
         )}
     </React.Fragment>

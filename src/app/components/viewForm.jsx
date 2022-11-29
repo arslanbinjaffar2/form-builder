@@ -25,7 +25,7 @@ function viewForm(props) {
   useEffect(() => {
     if(data && data.sections){
       setSection([...data.sections]);
-      setFormData(data.sections.reduce((ack, section)=> ( {...ack, [section.id]: section.questions.reduce((ack, question)=> ({...ack, [question.id]: {requiredError:false, validationError:false, question_type:question.type, answer:question.type !== "checkboxes" ? "" : []} }) , {})} ), {}));
+      setFormData(data.sections.reduce((ack, section)=> ( {...ack, [section.id]: section.questions ? section.questions.reduce((ack, question)=> ({...ack, [question.id]: {requiredError:false, validationError:false, question_type:question.type, answer:question.type !== "checkboxes" ? "" : []} }) , {}) : [] } ), {}));
     }
     return () => {
     }
@@ -43,7 +43,7 @@ function viewForm(props) {
             </div>
           )}
 
-            {sections.map((section, index)=>(
+            {sections.length > 0 && sections.map((section, index)=>(
                active === index && <Section key={index} section={section} sections={sections} active={active} setactive={setactive} formData={formData} setFormData={setFormData} />
             ))}
           

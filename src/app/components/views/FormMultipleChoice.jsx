@@ -7,7 +7,7 @@ const FormMultipleChoice = ({data, formData, setFormData, setValidated}) => {
     newFormData = {...formData,
        [data.form_builder_section_id]:{...formData[data.form_builder_section_id], 
         [data.id]:{ ...formData[data.form_builder_section_id][data.id], 
-          ['answer']:evt.currentTarget.value, ['requiredError']:false,  
+          ['answer']:parseInt(evt.currentTarget.value), ['requiredError']:false,  
           ['validationError']:false,  
           ['question_type']:data.type}}};
 
@@ -23,7 +23,7 @@ const FormMultipleChoice = ({data, formData, setFormData, setValidated}) => {
           {data.answers && data.answers.map((element, key) => (
             <label key={key} className="ebs-option-list d-flex align-items-center">
               <label className="ebs-option ebs-radio">
-                <input name={`item_${data.index}`} type="radio" value={element.id} onChange={(e)=>{onChange(e)}} />
+                <input name={`item_${data.id}`} type="radio" checked={(formData[data.form_builder_section_id][data.id]['answer'] !== undefined && formData[data.form_builder_section_id][data.id]['answer'] === element.id) ? true : false} value={element.id} onChange={(e)=>{onChange(e)}} />
                 <i className="material-icons"></i>
               </label>
               <div className="ebs-title">{element.label && element.label}</div>
