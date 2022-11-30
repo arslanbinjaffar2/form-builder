@@ -12,8 +12,8 @@ function viewForm(props) {
   const [active, setactive] = useState(0);
   const [formData, setFormData] = useState({});
   useEffect(() => {
-    if(data.length <= 0 && data.id !== props.match.params.id){
-      getFormData(parseInt(props.match.params.id));
+    if(data.length <= 0 || data.id !== props.match.params.id){
+      getFormData(parseInt(props.match.params.event_id), parseInt(props.match.params.registration_form_id), parseInt(props.match.params.id));
     }
     return () => {
       if(loading){
