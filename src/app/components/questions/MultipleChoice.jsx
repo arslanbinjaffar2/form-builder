@@ -43,7 +43,7 @@ export default class MultipleChoice extends Component {
     if (!result.destination) {
       return;
     }
-    this.context.handleMultiChoiceReorder(this.props.data.data.index, result.source.index, result.destination.index);
+    this.context.handleMultiChoiceReorder(this.props.sectionIndex, this.props.questionIndex, this.props.data.index, result.source.index, result.destination.index);
   }
   handleClick = (e) => {
     e.preventDefault();

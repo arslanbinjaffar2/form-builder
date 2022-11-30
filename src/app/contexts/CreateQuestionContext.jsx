@@ -708,14 +708,16 @@ class CreateQuestionContextProvider extends Component {
       })
       // handleQuestionChange(parseInt(destination.droppableId), destination.index);
     }
-    const handleMultiChoiceReorder = (index, startIndex, endIndex) => {
-      const result = [...this.state.data];
-      const option = result[index].options.answers;
+    const handleMultiChoiceReorder = (sectionIndex, questionIndex, index, startIndex, endIndex) => {
+      console.log(sectionIndex, questionIndex);
+      const _sections = [...this.state.data.sections];
+      var option = _sections[sectionIndex].questions[questionIndex].answers;
       const [removed] = option.splice(startIndex, 1);
       option.splice(endIndex, 0, removed);
-      result.forEach((item, k) => item.index = k);
+      console.log(_sections);
+      // result.forEach((item, k) => item.index = k);
       this.setState({
-        data: result
+        data: {...this.state.data, sections:_sections}
       })
     }
     const handleMultiChoiceGridReorder = (sectionIndex, questionIndex, startIndex, endIndex, type) => {
