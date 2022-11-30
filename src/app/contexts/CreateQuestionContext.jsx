@@ -160,19 +160,23 @@ class CreateQuestionContextProvider extends Component {
     updating:false,
     updatingError:null,
     sortSection: false,
+    event_id:null,
+    registration_form_id:null,
   }
   render() {
     const CancelToken = axios.CancelToken;
     const signal = CancelToken.source();
 
-    const getFormData = async (form_id) => {
+    const getFormData = async (event_id, registration_form_id, form_id) => {
       console.log(form_id);
       this.setState({
         loading:true,
         loadingError:null,
+        event_id:event_id,
+        registration_form_id:registration_form_id,
       })
       try {
-        const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/getForm/11`, {form_id:form_id}, {cancelToken: signal.token});
+        const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/getForm/${event_id}/${registration_form_id}`, {form_id:form_id}, {cancelToken: signal.token});
         console.log(response.data.data);
         if(response.data.status === 1){
             this.setState({
@@ -203,7 +207,7 @@ class CreateQuestionContextProvider extends Component {
         updatingError:null,
       })
       try {
-        const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/saveSection/11`, data, {cancelToken: signal.token});
+        const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/saveSection/${this.state.event_id}/${this.state.registration_form_id}`, data, {cancelToken: signal.token});
         console.log(response.data.data);
         if(response.data.status === 1){
           if(data.id === undefined){
@@ -239,7 +243,7 @@ class CreateQuestionContextProvider extends Component {
         updatingError:null,
       })
       try {
-        const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/saveSectionSort/11`, data, {cancelToken: signal.token});
+        const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/saveSectionSort/${this.state.event_id}/${this.state.registration_form_id}`, data, {cancelToken: signal.token});
         console.log(response.data.data);
         if(response.data.status === 1){
           this.setState({
@@ -268,7 +272,7 @@ class CreateQuestionContextProvider extends Component {
         updatingError:null,
       })
       try {
-        const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/deleteSection/11`, data, {cancelToken: signal.token});
+        const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/deleteSection/${this.state.event_id}/${this.state.registration_form_id}`, data, {cancelToken: signal.token});
         console.log(response.data.data);
         if(response.data.status === 1){
             this.setState({
@@ -301,7 +305,7 @@ class CreateQuestionContextProvider extends Component {
         updatingError:null,
       })
       try {
-        const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/deleteQuestion/11`, data, {cancelToken: signal.token});
+        const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/deleteQuestion/${this.state.event_id}/${this.state.registration_form_id}`, data, {cancelToken: signal.token});
         console.log(response.data.data);
         if(response.data.status === 1){
           const _sections = [...this.state.data.sections];
@@ -336,7 +340,7 @@ class CreateQuestionContextProvider extends Component {
         updatingError:null,
       })
       try {
-        const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/cloneQuestion/11`, data, {cancelToken: signal.token});
+        const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/cloneQuestion/${this.state.event_id}/${this.state.registration_form_id}`, data, {cancelToken: signal.token});
         console.log(response.data.data);
         if(response.data.status === 1){
           const _sections = [...this.state.data.sections];
@@ -373,7 +377,7 @@ class CreateQuestionContextProvider extends Component {
         updatingError:null,
       })
       try {
-        const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/cloneSection/11`, data, {cancelToken: signal.token});
+        const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/cloneSection/${this.state.event_id}/${this.state.registration_form_id}`, data, {cancelToken: signal.token});
         console.log(response.data.data);
         if(response.data.status === 1){
           const _sections = [...this.state.data.sections];
@@ -408,7 +412,7 @@ class CreateQuestionContextProvider extends Component {
         updatingError:null,
       })
       try {
-        const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/updateQuestionSection/11`, data, {cancelToken: signal.token});
+        const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/updateQuestionSection/${this.state.event_id}/${this.state.registration_form_id}`, data, {cancelToken: signal.token});
         console.log(response.data.data);
         if(response.data.status === 1){
           const _sections = [...this.state.data.sections];
@@ -442,7 +446,7 @@ class CreateQuestionContextProvider extends Component {
         updatingError:null,
       })
       try {
-        const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/updateQuestionSort/11`, data, {cancelToken: signal.token});
+        const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/updateQuestionSort/${this.state.event_id}/${this.state.registration_form_id}`, data, {cancelToken: signal.token});
         console.log(response.data.data);
         if(response.data.status === 1){
           this.setState({
@@ -472,7 +476,7 @@ class CreateQuestionContextProvider extends Component {
         updatingError:null,
       })
       try {
-        const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/addQuestion/11`, data, {cancelToken: signal.token});
+        const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/addQuestion/${this.state.event_id}/${this.state.registration_form_id}`, data, {cancelToken: signal.token});
         console.log(response.data.data);
         if(response.data.status === 1){
           if(data.id === undefined){
@@ -512,7 +516,7 @@ class CreateQuestionContextProvider extends Component {
         updatingError:null,
       })
       try {
-        const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/updateQuestion/11`, data, {cancelToken: signal.token});
+        const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/updateQuestion/${this.state.event_id}/${this.state.registration_form_id}`, data, {cancelToken: signal.token});
         console.log(response.data.data);
         if(response.data.status === 1){
           if(data.id === undefined){
@@ -1237,8 +1241,8 @@ class CreateQuestionContextProvider extends Component {
 
     }
     
-    const previewForm = () => {
-          this.props.history.push(`/form/update/${this.state.data.id}/view`);
+    const previewForm = (event_id, registration_form_id) => {
+          this.props.history.push(`/${event_id}/${registration_form_id}/form/update/${this.state.data.id}/view`);
     }
 
 

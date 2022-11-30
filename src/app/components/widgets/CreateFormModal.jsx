@@ -1,7 +1,7 @@
 import React, {useState, useContext, useEffect} from 'react'
 import { FormDataContext } from "app/contexts/FormDataContext";
 
-const CreateFormModal = ({open, close}) => {
+const CreateFormModal = ({event_id, registration_form_id, open, close}) => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [error, setError] = useState(false);
@@ -15,7 +15,7 @@ const CreateFormModal = ({open, close}) => {
         }
         setTitle('');
         setDescription('');
-        await createForm({
+        await createForm(event_id, registration_form_id, {
             title,
             description,
         }, ()=> {close()});

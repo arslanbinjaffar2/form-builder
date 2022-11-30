@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { FormDataContext } from "app/contexts/FormDataContext";
 import { CreateQuestionContext } from "app/contexts/CreateQuestionContext";
+import AppNavbar from "@/AppNavbar";
 
 import Section from './views/Section';
 
@@ -32,24 +33,28 @@ function viewForm(props) {
   }, [data]);
 
   return (
-    <div className="ebs-form-preview">
-        <div className="ebs-form-preview-wrapper">
-          {data && (
-            <div className="ebs-form-title">
-              {data.title && <div className="ebs-title">{data.title}</div>}
-              {data.description && (
-                <div className="ebs-description">{data.description}</div>
-              )}
-            </div>
-          )}
+    <React.Fragment>
+      <AppNavbar showpanel event_id={props.match.params.event_id} registration_form_id={props.match.params.registration_form_id} />
+        <div className="ebs-form-preview">
+          <div className="ebs-form-preview-wrapper">
 
-            {sections.length > 0 && sections.map((section, index)=>(
-               active === index && <Section key={index} section={section} sections={sections} active={active} setactive={setactive} formData={formData} setFormData={setFormData} />
-            ))}
-          
-          
+            {data && (
+              <div className="ebs-form-title">
+                {data.title && <div className="ebs-title">{data.title}</div>}
+                {data.description && (
+                  <div className="ebs-description">{data.description}</div>
+                )}
+              </div>
+            )}
+
+              {sections.length > 0 && sections.map((section, index)=>(
+                active === index && <Section key={index} section={section} sections={sections} active={active} setactive={setactive} formData={formData} setFormData={setFormData} />
+              ))}
+            
+            
+          </div>
         </div>
-      </div>
+    </React.Fragment>
   )
 }
 

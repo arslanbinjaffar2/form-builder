@@ -14,9 +14,9 @@ const AppNavbar = ({...props}) => {
 					</div>
 					{props.showpanel && <div className="col-5 d-flex justify-content-end">
 						<div className="ebs-panel-settings">
-							<span onClick={() => previewForm()} className="ebs-btn"><img src={require('img/ico-preview.svg')} alt="" /></span>
-							<span className="ebs-btn"><img src={require('img/ico-settings.svg')} alt="" /></span>
-							<span onClick={() => handleSave(data,'SAVE')} className="ebs-btn"><i className="material-icons">save</i></span>
+							<span onClick={() => handleSave(props.event_id, props.registration_form_id, 'SAVE')} className="ebs-btn"><img src={require('img/ico-back.svg')} alt="" /></span>
+							<span onClick={() => previewForm(props.event_id, props.registration_form_id)} className="ebs-btn"><img src={require('img/ico-preview.svg')} alt="" /></span>
+							<span onClick={() => handleSave(props.event_id, props.registration_form_id, 'SAVE')} className="ebs-btn"><i className="material-icons">save</i></span>
 						</div>
 					</div>}
 				</div>

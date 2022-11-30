@@ -5,10 +5,11 @@ import moment from 'moment';
 const lastModified = (date) => {
   return moment(date).format('DD MMM, YYYY');
 }
-const HomeFormsList = () => {
+const HomeFormsList = (props) => {
+  console.log(props, 'props');
   const { data, getForms, processing, cancelAllRequests, setCurrentForm } = useContext(FormDataContext);
   useEffect(() => {
-    getForms();
+    getForms(parseInt(props.event_id), parseInt(props.registration_form_id));
     return () => {
           cancelAllRequests();
     }
@@ -47,7 +48,7 @@ const HomeFormsList = () => {
             <div className="container">
               <div className="row d-flex align-items center">
                 {data.map((item,k) => 
-                  <div key={k} className="col-lg-3 col-md-4" onClick={()=>{ setCurrentForm(item.id) }}>
+                  <div key={k} className="col-lg-3 col-md-4" onClick={()=>{ setCurrentForm(parseInt(props.event_id), parseInt(props.registration_form_id), item.id) }}>
                     <div className="ebs-form-box">
                       <div className="ebs-box-image">
                         <img src={item.screenShot ? item.screenShot : require('img/template.svg') } alt="" />

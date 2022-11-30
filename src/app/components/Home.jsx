@@ -4,7 +4,7 @@ import HomeFormsList from './const/HomeFormsList';
 import CreateFormModal from './widgets/CreateFormModal';
 import { FormDataContext } from "app/contexts/FormDataContext";
 
- const Home = () => {
+ const Home = (props) => {
 	const {processing} = useContext(FormDataContext);
   const [open, setOpen] = useState(false)
   return (
@@ -22,8 +22,8 @@ import { FormDataContext } from "app/contexts/FormDataContext";
          </div>
          </div>
        </div>
-       <HomeFormsList />
-       <CreateFormModal open={open} close={()=>{setOpen(false)}}/>
+       <HomeFormsList event_id={props.match.params.event_id} registration_form_id={props.match.params.registration_form_id} />
+       <CreateFormModal event_id={props.match.params.event_id} registration_form_id={props.match.params.registration_form_id} open={open} close={()=>{setOpen(false)}}/>
      </main>
     </React.Fragment> 
    );

@@ -28,13 +28,15 @@ class FormDataContextProvider extends Component {
     data: [],
     processing:false,
     processError:null,
-    currentForm:null
+    currentForm:null,
+    event_id:null,
+    registration_form_id:null,
   }
   render() {
     const CancelToken = axios.CancelToken;
     const signal = CancelToken.source();
 
-    const handleSave = (content,type) => {
+    const handleSave = (event_id, registration_form_id, type) => {
       // const data = [...this.state.data];
       // const _question  = {
       //   id: this.state.data.length,
@@ -50,15 +52,15 @@ class FormDataContextProvider extends Component {
       //   data: data
       // },() => {
         if (type === 'SAVE') {
-          this.props.history.push('/')
+          this.props.history.push(`/${event_id}/${registration_form_id}`)
         } else {
           // localStorage.setItem('id',this.state.data.length)
-          this.props.history.push(`/form/view/${this.state.currentForm}`);
+          this.props.history.push(`/${event_id}/${registration_form_id}/form/view/${this.state.currentForm}`);
         }
       // })
     }
     
-    const createForm = async (content, callBack) => {
+    const createForm = async (event_id, registration_form_id, content, callBack) => {
       console.log(content);
       const data = [...this.state.data];
       this.setState({
@@ -66,7 +68,7 @@ class FormDataContextProvider extends Component {
         processError:null,
       })
       try {
-        const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/createForm/11`, content, {cancelToken: signal.token});
+        const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/createForm/${event_id}/${registration_form_id}`, content, {cancelToken: signal.token});
         data.push(response.data.data);
         console.log(response.data.data);
         if(response.data.status === 1){
@@ -98,13 +100,15 @@ class FormDataContextProvider extends Component {
       }
     }
 
-    const getForms = async () => {
+    const getForms = async (event_id, registration_form_id) => {
       this.setState({
         processing:true,
         processError:null,
+        event_id:event_id,
+        registration_form_id:registration_form_id,
       })
       try {
-        const response = await axios.get(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/getForms/11`, {cancelToken: signal.token});
+        const response = await axios.get(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/getForms/${event_id}/${registration_form_id}`, {cancelToken: signal.token});
         console.log(response.data.data);
         if(response.data.status === 1){
             this.setState({
@@ -137,14 +141,14 @@ class FormDataContextProvider extends Component {
       })
     }
 
-    const setCurrentForm = (id) => {
-      console.log(this.state.data.find((item)=>(item.id === id)), "helellee")
+    const setCurrentForm = (event_id, registration_form_id, id) => {
+      console.log(this.state.data.find((item)=>(item.id === id)), "helellee");
       this.setState({
         currentForm:this.state.data.find((item)=>(item.id === id)).id
       }
       ,
       () => {
-          this.props.history.push(`/form/update/${this.state.data.find((item)=>(item.id === id)).id}`);
+          this.props.history.push(`/${event_id}/${registration_form_id}/form/update/${id}`);
         }
       )
     }

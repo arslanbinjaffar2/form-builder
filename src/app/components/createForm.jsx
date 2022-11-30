@@ -79,7 +79,7 @@ const createForm = (props) => {
   const [sections, setSection] = useState([]);
   useEffect(() => {
     if(data.length <= 0 && data.id !== props.match.params.id){
-      getFormData(parseInt(props.match.params.id));
+      getFormData(parseInt(props.match.params.event_id), parseInt(props.match.params.registration_form_id) ,parseInt(props.match.params.id));
     }
     return () => {
       if(loading){
@@ -114,7 +114,7 @@ const createForm = (props) => {
   }
   return (
     <React.Fragment>
-      <AppNavbar showpanel />
+      <AppNavbar showpanel event_id={props.match.params.event_id} registration_form_id={props.match.params.registration_form_id} />
       {loading && data.length <= 0 &&  <div className="ebs-loader-backdrop">
           <div className="ebs-loader-wrapper">
             <div className="ebs-loader"></div>
