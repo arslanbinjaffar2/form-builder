@@ -26,6 +26,9 @@ const publicUrl = publicPath.slice(0, -1);
 // Get environment variables to inject into our app.
 const env = getClientEnvironment(publicUrl);
 
+function resolve (dir) {
+  return path.join(__dirname, '..', dir)
+}
 // Assert this just to be safe.
 // Development builds of React are slow and not intended for production.
 if (env.stringified['process.env'].NODE_ENV !== '"production"') {
@@ -88,7 +91,16 @@ module.exports = {
     // for React Native Web.
     extensions: ['.web.js', '.mjs', '.js', '.json', '.web.jsx', '.jsx', '.scss'],
     alias: {
-      
+      'app': resolve('src/app'),
+      'sass': resolve('src/sass'),
+      'img': resolve('src/img'),
+      'router': resolve('src/router'),
+      'db': resolve('src/db'),
+      '@': resolve('src/app/components/'),
+      'compapp': resolve('src/app/components/app'),
+      'bootstrap': resolve('node_modules/bootstrap'),
+      'modules': resolve('node_modules'),
+      'store': resolve('src/store'),
       // Support React Native Web
       // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
       'react-native': 'react-native-web',
