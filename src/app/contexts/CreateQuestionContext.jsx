@@ -1241,8 +1241,13 @@ class CreateQuestionContextProvider extends Component {
 
     }
     
-    const previewForm = (event_id, registration_form_id) => {
-          this.props.history.push(`/${event_id}/${registration_form_id}/form/update/${this.state.data.id}/view`);
+    const previewForm = (event_id, registration_form_id, type) => {
+      if(type === 'view'){
+        this.props.history.push(`/${event_id}/${registration_form_id}/form/update/${this.state.data.id}/view`);
+      }
+      else{
+        this.props.history.push(`/${event_id}/${registration_form_id}/form/update/${this.state.data.id}`);
+      }
     }
 
 

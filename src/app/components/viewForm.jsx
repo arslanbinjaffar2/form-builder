@@ -34,7 +34,7 @@ function viewForm(props) {
 
   return (
     <React.Fragment>
-      <AppNavbar showpanel event_id={props.match.params.event_id} registration_form_id={props.match.params.registration_form_id} />
+      <AppNavbar showpanel view event_id={props.match.params.event_id} registration_form_id={props.match.params.registration_form_id} />
         <div className="ebs-form-preview">
           <div className="ebs-form-preview-wrapper">
 
