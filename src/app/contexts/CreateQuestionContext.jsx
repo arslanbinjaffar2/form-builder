@@ -1149,11 +1149,15 @@ class CreateQuestionContextProvider extends Component {
 
     }
     
-    const deleteAnswers = async (sectionIndex, questionIndex, type, key) => {
+    const deleteAnswers = async (sectionIndex, questionIndex, key) => {
       const _sections = [...this.state.data.sections];
       const _query = _sections[sectionIndex].questions[questionIndex];
 
-      _query.answers.splice(key, 1)
+      const removedAnswer =  _query.answers.splice(key, 1);
+      console.log(removedAnswer);
+          if(removedAnswer[0].type !== undefined && removedAnswer[0].type === 'other'){
+              _query.options.add_other = false;
+          }
           this.setState({
           data: {...this.state.data, sections:_sections}
         })
@@ -1177,14 +1181,14 @@ class CreateQuestionContextProvider extends Component {
 
     }
    
-    const removeOther = async (sectionIndex, questionIndex, type, key) => {
+    const removeOther = async (sectionIndex, questionIndex, key) => {
       const _sections = [...this.state.data.sections];
       const _query = _sections[sectionIndex].questions[questionIndex];
 
       _query.options.add_other = false;
 
-
       _query.answers.splice(key, 1)
+
           this.setState({
           data: {...this.state.data, sections:_sections}
         })
@@ -1195,10 +1199,16 @@ class CreateQuestionContextProvider extends Component {
       const _sections = [...this.state.data.sections];
       const _query = _sections[sectionIndex].questions[questionIndex];
 
-      _query.options.add_other = true;
+          _query.options.add_other = true;
 
+          let _number = _query.answers.length + 1;
+          const _option = {
+            label: `Other`,
+            next_section: 'CONTINUE',
+            type: 'other'
+          }
+          _query.answers.push(_option);
 
-      _query.answers.splice(key, 1)
           this.setState({
           data: {...this.state.data, sections:_sections}
         })

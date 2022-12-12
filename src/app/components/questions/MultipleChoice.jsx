@@ -178,7 +178,7 @@ export default class MultipleChoice extends Component {
               )}
             </Droppable>
           </DragDropContext>
-          {options.add_other == 1 && type !== 'drop_down' &&
+          {/* {options.add_other == 1 && type !== 'drop_down' &&
             <div className="ebs-list-box d-flex">
               <div className="ebs-icon">
                 {type !== 'drop_down' && <i className="material-icons">{type === 'multiple_choice' ? 'radio_button_unchecked' : type === 'checkboxes' ? 'check_box_outline_blank' : 'check'}</i>}
@@ -187,7 +187,7 @@ export default class MultipleChoice extends Component {
               {active && <div className="ebs-remove-icon"><span
                 onClick={(e) => removeOther(this.props.sectionIndex, this.props.questionIndex, e.target)}
                 className="material-icons">close</span></div>}
-            </div>}
+            </div>} */}
 
           {active && <div className="ebs-list-box d-flex">
             <div className="ebs-icon">
