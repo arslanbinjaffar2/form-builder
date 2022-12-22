@@ -181,7 +181,12 @@ class CreateQuestionContextProvider extends Component {
         if(response.data.status === 1){
             this.setState({
               loading:false,
-              data:{...response.data.data, sections:response.data.data.sections.map((item, i)=>({...item, active: i === 0 ? true : false}))},
+              data:{...response.data.data, sections:response.data.data.sections.map((item, i)=>{
+                  if(i === 0 && item.questions !== undefined && item.questions.length > 0){
+                      return   {...item, active: i === 0 ? true : false, questions: item.questions.map((q, i)=>( {...q, active: i === 0 ? true : false} ))};
+                  }
+                  return   {...item, active: i === 0 ? true : false}                
+              })},
             })
         }
         else{
@@ -572,6 +577,9 @@ class CreateQuestionContextProvider extends Component {
           }
       });
       _sections[sectionIndex].active = true;
+      if(_sections[sectionIndex].questions !== undefined && _sections[sectionIndex].questions.length > 0){
+        _sections[sectionIndex].questions[0].active = true;
+      };
       this.setState({
         data:{...this.state.data, sections:_sections}
       })
@@ -615,10 +623,12 @@ class CreateQuestionContextProvider extends Component {
           let _questionIndex = 0;
           let _clone = JSON.parse(JSON.stringify(_newquestion));
 
-          if(_section[_sectionIndex].questions.length <= 0){
+          if(_section[_sectionIndex].questions === undefined || _section[_sectionIndex].questions.length <= 0){
+            console.log('if');
             _section[_sectionIndex].questions = [_clone];
             _section[_sectionIndex].questions[0].active = true;
           }else{
+            console.log('else');
             _questionIndex = _section[_sectionIndex].questions.findIndex(x => x.active === true) !== -1 ? _section[_sectionIndex].questions.findIndex(x => x.active === true) : 0;
             _section[_sectionIndex].questions.splice(_questionIndex + 1, 0, _clone);
             _section[_sectionIndex].questions[_questionIndex].active = false;
@@ -644,7 +654,7 @@ class CreateQuestionContextProvider extends Component {
         console.log("hejo")
         let _questionIndex = 0;
         let _clone = JSON.parse(JSON.stringify(_newtextarea));
-          if(_section[_sectionIndex].questions.length <= 0){
+          if(_section[_sectionIndex].questions === undefined && _section[_sectionIndex].questions.length <= 0){
             _section[_sectionIndex].questions = [_clone];
             _section[_sectionIndex].questions[0].active = true;
           }else{
@@ -1171,7 +1181,9 @@ class CreateQuestionContextProvider extends Component {
       let _number = _query.answers.length + 1;
       const _option = {
         label: `Option ${_number}`,
-        next_section: 'CONTINUE'
+        next_section: 'CONTINUE',
+        type: 'regular'
+
       }
       _query.answers.push(_option);
 

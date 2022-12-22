@@ -115,6 +115,7 @@ const createForm = (props) => {
   return (
     <React.Fragment>
       <AppNavbar showpanel event_id={props.match.params.event_id} registration_form_id={props.match.params.registration_form_id} />
+      
       {loading && data.length <= 0 &&  <div className="ebs-loader-backdrop">
           <div className="ebs-loader-wrapper">
             <div className="ebs-loader"></div>
