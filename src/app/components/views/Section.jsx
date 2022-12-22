@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import FormMultipleChoice from './FormMultipleChoice';
 import FormCheckboxes from './FormCheckboxes';
 import FormDropDown from './FormDropDown';
@@ -14,10 +14,17 @@ import { validateShortAnswer } from '../../../helpers/validation';
 
 const Section = ({section, sections, active, setactive, formData, setFormData}) => {
     const [validated, setValidated] = useState(true);
+    const [nextSection, setNextSection] = useState(section.next_section);
+    const [sectionHistory, setSectionHistory] = useState([]);
+    const [stepType, setStepType] = useState("next");
     const ValidateSection = async (e, type) => {
         e.preventDefault();
+        setStepType(type);
         if(type === 'back'){
-             setactive(active - 1);
+             let newSectionHistory = sectionHistory;
+             let removehistory = newSectionHistory.pop();
+             console.log(removehistory);
+             setactive(removehistory.previous);
          }
        let notValidatedFor = [];
        let formData2 = formData;
@@ -39,14 +46,29 @@ const Section = ({section, sections, active, setactive, formData, setFormData}) 
                     }
             });
             setFormData(formData2);
-            // console.log(notValidatedFor);
-            // console.log(validated);
             if (notValidatedFor.length <= 0 &&  validated === true){
                 if(type === 'next'){
-                    setactive(active + 1);
+                    setactive(nextSection === "CONTINUE" ? active + 1 : sections.findIndex((sect)=> sect.id == nextSection));
                 } 
             }
       };
+
+    useEffect(() => {
+        
+        if(stepType == 'back'){
+            let newSectionHistory = sectionHistory;
+            newSectionHistory.pop();
+            setSectionHistory(newSectionHistory)
+        }
+
+        if(stepType == 'next'){
+            let newSectionHistory = [...sectionHistory, { previous:sectionHistory.length > 0 ? sectionHistory[sectionHistory.length -1].current : 0, current:active}];
+            setSectionHistory(newSectionHistory);
+        }
+     
+    }, [active])
+    
+
   return (
     <React.Fragment>
         {sections && section &&
@@ -63,7 +85,7 @@ const Section = ({section, sections, active, setactive, formData, setFormData}) 
             {section.questions.map((item, itemIndex) => {
 
                     if(item.type === "multiple_choice"){
-                    return <FormMultipleChoice key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
+                    return <FormMultipleChoice key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} setNextSection={setNextSection} />
                     }
                     else if(item.type === "checkboxes") {
                     return  <FormCheckboxes key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
@@ -112,7 +134,7 @@ const Section = ({section, sections, active, setactive, formData, setFormData}) 
             {active > 0 && (
             <button
                 className="btn btn-default"
-                onClick={() => setactive(active - 1)}
+                onClick={(e) => ValidateSection(e, 'back')}
             >
                 Back
             </button>

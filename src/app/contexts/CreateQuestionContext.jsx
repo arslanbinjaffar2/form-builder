@@ -83,7 +83,7 @@ const _timemoduleOptions = {
   time_type: 'TIME'
 };
 const _newquestion = {
-  title: 'Question',
+  title: '',
   type: 'multiple_choice',
   required: 0,
   description: '',
@@ -105,7 +105,7 @@ const _newquestion = {
 };
 const _newsection = {
   title: 'Untitled Section',
-  description: 'Form Description',
+  description: '',
   next_section: 'CONTINUE',
   form_builder_form_id:0,
   active: 0,

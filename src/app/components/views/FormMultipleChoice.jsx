@@ -1,7 +1,7 @@
 import React from 'react'
 import { validateShortAnswer } from '../../../helpers/validation';
-const FormMultipleChoice = ({data, formData, setFormData, setValidated}) => {
-  const onChange = (evt) => { 
+const FormMultipleChoice = ({data, formData, setFormData, setValidated, setNextSection}) => {
+  const onChange = (evt, next_section) => { 
     // console.log(evt);
     let newFormData = formData;
     newFormData = {...formData,
@@ -10,7 +10,7 @@ const FormMultipleChoice = ({data, formData, setFormData, setValidated}) => {
           ['answer']:parseInt(evt.currentTarget.value), ['requiredError']:false,  
           ['validationError']:false,  
           ['question_type']:data.type}}};
-
+    setNextSection(next_section);
     setFormData(newFormData);
   }
   return (
@@ -23,7 +23,7 @@ const FormMultipleChoice = ({data, formData, setFormData, setValidated}) => {
           {data.answers && data.answers.map((element, key) => (
             <label key={key} className="ebs-option-list d-flex align-items-center">
               <label className="ebs-option ebs-radio">
-                <input name={`item_${data.id}`} type="radio" checked={(formData[data.form_builder_section_id][data.id]['answer'] !== undefined && formData[data.form_builder_section_id][data.id]['answer'] === element.id) ? true : false} value={element.id} onChange={(e)=>{onChange(e)}} />
+                <input name={`item_${data.id}`} type="radio" checked={(formData[data.form_builder_section_id][data.id]['answer'] !== undefined && formData[data.form_builder_section_id][data.id]['answer'] === element.id) ? true : false} value={element.id} onChange={(e)=>{onChange(e, element.next_section)}} />
                 <i className="material-icons"></i>
               </label>
               <div className="ebs-title">{element.label && element.label}</div>
