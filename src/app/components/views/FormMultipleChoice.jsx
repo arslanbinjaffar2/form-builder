@@ -10,7 +10,9 @@ const FormMultipleChoice = ({data, formData, setFormData, setValidated, setNextS
           ['answer']:parseInt(evt.currentTarget.value), ['requiredError']:false,  
           ['validationError']:false,  
           ['question_type']:data.type}}};
-    setNextSection(next_section);
+    if(data.options.section_based === 1){
+      setNextSection(next_section);
+    } 
     setFormData(newFormData);
   }
   return (
