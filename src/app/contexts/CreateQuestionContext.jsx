@@ -21,9 +21,9 @@ const _answerboxparaValidation = {
   value: '',
 };
 
-const _checkboxOption = {
-  response_validation: 0,
-};
+// const _checkboxOption = {
+//   response_validation: 0,
+// };
 
 const _checkboxvalidation = {
   custom_error: '',
@@ -83,7 +83,7 @@ const _timemoduleOptions = {
   time_type: 'TIME'
 };
 const _newquestion = {
-  title: 'Question',
+  title: '',
   type: 'multiple_choice',
   required: 0,
   description: '',
@@ -105,7 +105,7 @@ const _newquestion = {
 };
 const _newsection = {
   title: 'Untitled Section',
-  description: 'Form Description',
+  description: '',
   next_section: 'CONTINUE',
   form_builder_form_id:0,
   active: 0,
@@ -168,7 +168,6 @@ class CreateQuestionContextProvider extends Component {
     const signal = CancelToken.source();
 
     const getFormData = async (event_id, registration_form_id, form_id) => {
-      console.log(form_id);
       this.setState({
         loading:true,
         loadingError:null,
@@ -177,11 +176,15 @@ class CreateQuestionContextProvider extends Component {
       })
       try {
         const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/getForm/${event_id}/${registration_form_id}`, {form_id:form_id}, {cancelToken: signal.token});
-        console.log(response.data.data);
         if(response.data.status === 1){
             this.setState({
               loading:false,
-              data:{...response.data.data, sections:response.data.data.sections.map((item, i)=>({...item, active: i === 0 ? true : false}))},
+              data:{...response.data.data, sections:response.data.data.sections.map((item, i)=>{
+                  if(i === 0 && item.questions !== undefined && item.questions.length > 0){
+                      return   {...item, active: i === 0 ? true : false, questions: item.questions.map((q, i)=>( {...q, active: i === 0 ? true : false} ))};
+                  }
+                  return   {...item, active: i === 0 ? true : false}                
+              })},
             })
         }
         else{
@@ -192,7 +195,6 @@ class CreateQuestionContextProvider extends Component {
         }
        
       } catch (error) {
-        console.error(error);
         this.setState({
           loading:false,
           loadingError:error.message
@@ -201,14 +203,12 @@ class CreateQuestionContextProvider extends Component {
     }
     
     const saveSection = async (data) => {
-      console.log(data);
       this.setState({
         updating:true,
         updatingError:null,
       })
       try {
         const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/saveSection/${this.state.event_id}/${this.state.registration_form_id}`, data, {cancelToken: signal.token});
-        console.log(response.data.data);
         if(response.data.status === 1){
           if(data.id === undefined){
             this.setState({
@@ -230,7 +230,6 @@ class CreateQuestionContextProvider extends Component {
         }
        
       } catch (error) {
-        console.error(error);
         this.setState({
           updating:false,
           updatingError:error.message
@@ -244,7 +243,6 @@ class CreateQuestionContextProvider extends Component {
       })
       try {
         const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/saveSectionSort/${this.state.event_id}/${this.state.registration_form_id}`, data, {cancelToken: signal.token});
-        console.log(response.data.data);
         if(response.data.status === 1){
           this.setState({
             updating:false,
@@ -258,7 +256,6 @@ class CreateQuestionContextProvider extends Component {
         }
         
       } catch (error) {
-        console.error(error);
         this.setState({
           updating:false,
           updatingError:error.message
@@ -266,14 +263,12 @@ class CreateQuestionContextProvider extends Component {
       }
     } 
     const deleteSection = async (data) => {
-      console.log(data);
       this.setState({
         updating:true,
         updatingError:null,
       })
       try {
         const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/deleteSection/${this.state.event_id}/${this.state.registration_form_id}`, data, {cancelToken: signal.token});
-        console.log(response.data.data);
         if(response.data.status === 1){
             this.setState({
               updating:false,
@@ -290,7 +285,6 @@ class CreateQuestionContextProvider extends Component {
         }
        
       } catch (error) {
-        console.error(error);
         this.setState({
           updating:false,
           updatingError:error.message
@@ -299,14 +293,12 @@ class CreateQuestionContextProvider extends Component {
     }
     
     const deleteQuestion = async (data, sectionIndex) => {
-      console.log(data);
       this.setState({
         updating:true,
         updatingError:null,
       })
       try {
         const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/deleteQuestion/${this.state.event_id}/${this.state.registration_form_id}`, data, {cancelToken: signal.token});
-        console.log(response.data.data);
         if(response.data.status === 1){
           const _sections = [...this.state.data.sections];
           _sections[sectionIndex].questions = _sections[sectionIndex].questions.filter((item)=> item.id !== data.question_id);
@@ -325,7 +317,6 @@ class CreateQuestionContextProvider extends Component {
         }
        
       } catch (error) {
-        console.error(error);
         this.setState({
           updating:false,
           updatingError:error.message
@@ -334,14 +325,12 @@ class CreateQuestionContextProvider extends Component {
     }
     
     const cloneQuestion = async (data, sectionIndex, questionIndex) => {
-      console.log(data);
       this.setState({
         updating:true,
         updatingError:null,
       })
       try {
         const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/cloneQuestion/${this.state.event_id}/${this.state.registration_form_id}`, data, {cancelToken: signal.token});
-        console.log(response.data.data);
         if(response.data.status === 1){
           const _sections = [...this.state.data.sections];
             _sections[sectionIndex].questions.splice(questionIndex + 1, 0, response.data.data);
@@ -362,7 +351,6 @@ class CreateQuestionContextProvider extends Component {
         }
        
       } catch (error) {
-        console.error(error);
         this.setState({
           updating:false,
           updatingError:error.message
@@ -371,14 +359,12 @@ class CreateQuestionContextProvider extends Component {
     }
     
     const cloneSection = async (data, sectionIndex) => {
-      console.log(data);
       this.setState({
         updating:true,
         updatingError:null,
       })
       try {
         const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/cloneSection/${this.state.event_id}/${this.state.registration_form_id}`, data, {cancelToken: signal.token});
-        console.log(response.data.data);
         if(response.data.status === 1){
           const _sections = [...this.state.data.sections];
           _sections.splice(sectionIndex + 1, 0, response.data.data);
@@ -398,7 +384,6 @@ class CreateQuestionContextProvider extends Component {
         }
        
       } catch (error) {
-        console.error(error);
         this.setState({
           updating:false,
           updatingError:error.message
@@ -413,7 +398,6 @@ class CreateQuestionContextProvider extends Component {
       })
       try {
         const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/updateQuestionSection/${this.state.event_id}/${this.state.registration_form_id}`, data, {cancelToken: signal.token});
-        console.log(response.data.data);
         if(response.data.status === 1){
           const _sections = [...this.state.data.sections];
           _sections[sectionIndex].questions[questionIndex] = response.data.data;
@@ -431,7 +415,6 @@ class CreateQuestionContextProvider extends Component {
         }
         
       } catch (error) {
-        console.error(error);
         this.setState({
           updating:false,
           updatingError:error.message
@@ -447,7 +430,6 @@ class CreateQuestionContextProvider extends Component {
       })
       try {
         const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/updateQuestionSort/${this.state.event_id}/${this.state.registration_form_id}`, data, {cancelToken: signal.token});
-        console.log(response.data.data);
         if(response.data.status === 1){
           this.setState({
             updating:false,
@@ -461,7 +443,6 @@ class CreateQuestionContextProvider extends Component {
         }
         
       } catch (error) {
-        console.error(error);
         this.setState({
           updating:false,
           updatingError:error.message
@@ -470,19 +451,16 @@ class CreateQuestionContextProvider extends Component {
     } 
     
     const addQuestion = async (data, sectionIndex, questionIndex) => {
-      console.log(data);
       this.setState({
         updating:true,
         updatingError:null,
       })
       try {
         const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/addQuestion/${this.state.event_id}/${this.state.registration_form_id}`, data, {cancelToken: signal.token});
-        console.log(response.data.data);
         if(response.data.status === 1){
           if(data.id === undefined){
             const _sections = [...this.state.data.sections];
             _sections[sectionIndex].questions[questionIndex] = {...response.data.data, active:true};
-            console.log(_sections);
             this.setState({
               updating:false,
               data:{...this.state.data, sections:_sections},
@@ -502,7 +480,6 @@ class CreateQuestionContextProvider extends Component {
         }
        
       } catch (error) {
-        console.error(error);
         this.setState({
           updating:false,
           updatingError:error.message
@@ -517,12 +494,10 @@ class CreateQuestionContextProvider extends Component {
       })
       try {
         const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/updateQuestion/${this.state.event_id}/${this.state.registration_form_id}`, data, {cancelToken: signal.token});
-        console.log(response.data.data);
         if(response.data.status === 1){
           if(data.id === undefined){
             const _sections = [...this.state.data.sections];
             _sections[sectionIndex].questions[questionIndex] = response.data.data;
-            console.log(_sections);
             this.setState({
               updating:false,
               data:{...this.state.data, sections:_sections},
@@ -541,7 +516,6 @@ class CreateQuestionContextProvider extends Component {
         }
        
       } catch (error) {
-        console.error(error);
         this.setState({
           updating:false,
           updatingError:error.message
@@ -572,6 +546,9 @@ class CreateQuestionContextProvider extends Component {
           }
       });
       _sections[sectionIndex].active = true;
+      if(_sections[sectionIndex].questions !== undefined && _sections[sectionIndex].questions.length > 0){
+        _sections[sectionIndex].questions[0].active = true;
+      };
       this.setState({
         data:{...this.state.data, sections:_sections}
       })
@@ -594,7 +571,6 @@ class CreateQuestionContextProvider extends Component {
       })
     }
     const handleSectionSortGrid = (sections) => {
-      console.log(sections);
       this.setState({
         data: {...this.state.data, sections:sections}
       })
@@ -615,7 +591,7 @@ class CreateQuestionContextProvider extends Component {
           let _questionIndex = 0;
           let _clone = JSON.parse(JSON.stringify(_newquestion));
 
-          if(_section[_sectionIndex].questions.length <= 0){
+          if(_section[_sectionIndex].questions === undefined || _section[_sectionIndex].questions.length <= 0){
             _section[_sectionIndex].questions = [_clone];
             _section[_sectionIndex].questions[0].active = true;
           }else{
@@ -638,13 +614,11 @@ class CreateQuestionContextProvider extends Component {
         _section.forEach((element, k) => {
           element.sort_order = k;
         });
-        console.log(_section);
             }
       if (type === 'ADD_TITLE_DESCRIPTION') {
-        console.log("hejo")
         let _questionIndex = 0;
         let _clone = JSON.parse(JSON.stringify(_newtextarea));
-          if(_section[_sectionIndex].questions.length <= 0){
+          if(_section[_sectionIndex].questions === undefined && _section[_sectionIndex].questions.length <= 0){
             _section[_sectionIndex].questions = [_clone];
             _section[_sectionIndex].questions[0].active = true;
           }else{
@@ -665,7 +639,6 @@ class CreateQuestionContextProvider extends Component {
       const _sections = [...this.state.data.sections];
       
       if (parseInt(source.droppableId) !== parseInt(destination.droppableId)) {
-            console.log("hello")
             const sourceSection = _sections[parseInt(source.droppableId)];
             const destSection = _sections[parseInt(destination.droppableId)];
             const sourceQuestions = [...sourceSection.questions]? [...sourceSection.questions] : [];
@@ -709,12 +682,10 @@ class CreateQuestionContextProvider extends Component {
       // handleQuestionChange(parseInt(destination.droppableId), destination.index);
     }
     const handleMultiChoiceReorder = (sectionIndex, questionIndex, index, startIndex, endIndex) => {
-      console.log(sectionIndex, questionIndex);
       const _sections = [...this.state.data.sections];
       var option = _sections[sectionIndex].questions[questionIndex].answers;
       const [removed] = option.splice(startIndex, 1);
       option.splice(endIndex, 0, removed);
-      console.log(_sections);
       // result.forEach((item, k) => item.index = k);
       this.setState({
         data: {...this.state.data, sections:_sections}
@@ -730,7 +701,6 @@ class CreateQuestionContextProvider extends Component {
       }
       const [removed] = option.splice(startIndex, 1);
       option.splice(endIndex, 0, removed);
-      console.log(_sections);
       // result.forEach((item, k) => item.index = k);
       this.setState({
         data: {...this.state.data, sections:_sections}
@@ -1149,11 +1119,14 @@ class CreateQuestionContextProvider extends Component {
 
     }
     
-    const deleteAnswers = async (sectionIndex, questionIndex, type, key) => {
+    const deleteAnswers = async (sectionIndex, questionIndex, key) => {
       const _sections = [...this.state.data.sections];
       const _query = _sections[sectionIndex].questions[questionIndex];
 
-      _query.answers.splice(key, 1)
+      const removedAnswer =  _query.answers.splice(key, 1);
+          if(removedAnswer[0].type !== undefined && removedAnswer[0].type === 'other'){
+              _query.options.add_other = false;
+          }
           this.setState({
           data: {...this.state.data, sections:_sections}
         })
@@ -1167,7 +1140,9 @@ class CreateQuestionContextProvider extends Component {
       let _number = _query.answers.length + 1;
       const _option = {
         label: `Option ${_number}`,
-        next_section: 'CONTINUE'
+        next_section: 'CONTINUE',
+        type: 'regular'
+
       }
       _query.answers.push(_option);
 
@@ -1177,14 +1152,14 @@ class CreateQuestionContextProvider extends Component {
 
     }
    
-    const removeOther = async (sectionIndex, questionIndex, type, key) => {
+    const removeOther = async (sectionIndex, questionIndex, key) => {
       const _sections = [...this.state.data.sections];
       const _query = _sections[sectionIndex].questions[questionIndex];
 
       _query.options.add_other = false;
 
-
       _query.answers.splice(key, 1)
+
           this.setState({
           data: {...this.state.data, sections:_sections}
         })
@@ -1195,10 +1170,16 @@ class CreateQuestionContextProvider extends Component {
       const _sections = [...this.state.data.sections];
       const _query = _sections[sectionIndex].questions[questionIndex];
 
-      _query.options.add_other = true;
+          _query.options.add_other = true;
 
+          let _number = _query.answers.length + 1;
+          const _option = {
+            label: `Other`,
+            next_section: 'CONTINUE',
+            type: 'other'
+          }
+          _query.answers.push(_option);
 
-      _query.answers.splice(key, 1)
           this.setState({
           data: {...this.state.data, sections:_sections}
         })
@@ -1222,7 +1203,6 @@ class CreateQuestionContextProvider extends Component {
     }
     
     const setDescription = async (sectionIndex, questionIndex) => {
-      console.log(sectionIndex);
       const _sections = [...this.state.data.sections];
       const _query = _sections[sectionIndex].questions[questionIndex];
 

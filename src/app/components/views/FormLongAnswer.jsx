@@ -1,7 +1,6 @@
-import React, {useState} from 'react';
+import React from 'react';
 import { validateShortAnswer } from '../../../helpers/validation';
 const FormLongAnswer = ({data, formData, setFormData, setValidated}) => {
-  const [error, setError] = useState(false);
   const handleTextaera = (evt) => {
     const element = evt.target;
     element.style.height = "35px";
@@ -12,9 +11,9 @@ const FormLongAnswer = ({data, formData, setFormData, setValidated}) => {
     newFormData = {...formData,
        [data.form_builder_section_id]:{...formData[data.form_builder_section_id], 
         [data.id]:{ ...formData[data.form_builder_section_id][data.id], 
-          ['answer']:evt.currentTarget.value, ['requiredError']:false,  
-          ['validationError']:!valid,  
-          ['question_type']:data.type}}};
+          answer:evt.currentTarget.value, requiredError:false,  
+          validationError:!valid,  
+          question_type:data.type}}};
 
     console.log(newFormData);
     setFormData(newFormData);

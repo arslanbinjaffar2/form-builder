@@ -31,7 +31,7 @@ export default class DateTimeModule extends Component {
     window.removeEventListener('click',this.onBodyClick.bind(this), false)
   }
   render() {
-    const {active, descVisible, options, required, type, index, id } = this.props.data;
+    const {active,  options, required, type, id } = this.props.data;
     return (
       <React.Fragment>
       <div className="ebs-datetime-grid">

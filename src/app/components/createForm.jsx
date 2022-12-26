@@ -1,4 +1,4 @@
-import React, { Component, useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import AppNavbar from "@/AppNavbar";
 import Section from "@/const/Section";
 import Question from "./questions/Question";
@@ -31,20 +31,21 @@ const customStyles = {
 };
 
 
-const PageBreak = ({data, index, onChange}) => {
-  const item =  index;
+const PageBreak = ({data, index, onChange, item}) => {
   var newArray = [{ value: 'CONTINUE', label: 'Continue to next section' },
   { value: 'SUBMIT', label: 'Submit form' }];
   data.forEach((element, key) => {
-    const _new = {
-      value: element.id,
-      label: `Go to Section ${key + 1} (${element.title})`,
+    if(item.id !== element.id){
+      const _new = {
+        value: element.id,
+        label: `Go to Section ${key + 1} (${element.title})`,
+      }
+      newArray.push(_new)
     }
-    newArray.push(_new)
   });
   return (
     <div className="ebs-page-break-section d-flex align-items-center">
-      <div className="ebs-title">After Section {item}</div>
+      <div className="ebs-title">After Section "{item.title}"</div>
       <div className="ebs-select">
         <Select
           menuColor='red'
@@ -52,8 +53,8 @@ const PageBreak = ({data, index, onChange}) => {
           menuPlacement="auto"
           isSearchable={false}
           styles={customStyles}
-          value={newArray[newArray.findIndex(x => x.value === data[item].nextSection)]}
-          onChange={(e) => onChange(e.value, item)}
+          value={newArray[newArray.findIndex(x => x.value == data[index].next_section)]}
+          onChange={(e) => onChange(e.value, index)}
           components={{ IndicatorSeparator: () => null }}
           theme={theme => ({
             ...theme,
@@ -115,6 +116,7 @@ const createForm = (props) => {
   return (
     <React.Fragment>
       <AppNavbar showpanel event_id={props.match.params.event_id} registration_form_id={props.match.params.registration_form_id} />
+      
       {loading && data.length <= 0 &&  <div className="ebs-loader-backdrop">
           <div className="ebs-loader-wrapper">
             <div className="ebs-loader"></div>
@@ -151,40 +153,19 @@ const createForm = (props) => {
                     {data && data.sections &&
                       data.sections.map((item, k) => (
                         <React.Fragment key={k}>
-                          {k === 0 && (
+                         
                             <Section
                               data={sections}
                               onClick={handleChange}
                               index={k}
                               value={item}
                             />
-                          )}
-                          {k > 0 && (
-                            <React.Fragment key={k}>
-                                  <div
-                                   
-                                  >
-                                  <PageBreak onChange={handleChangeSectionSelect} data={[...data.sections]} index={k} />
-                                  </div>
-                                  <div
-                                   
-                                  >
-                                    <Section
-                                      data={sections}
-                                      onClick={handleChange}
-                                      index={k}
-                                      value={item}
-                                    />
-                                  </div>
-                            </React.Fragment>
-                          )}
-                          
                           <Droppable droppableId={`${k}`} key={`droppable-section-${k}`}>
                             {(provided, snapshot) => (
                               <div 
-                                ref={provided.innerRef}    
-                                {...provided.droppableProps}
-                                >
+                              ref={provided.innerRef}    
+                              {...provided.droppableProps}
+                              >
                                   {item.questions && item.questions.map((question, j)=>{
                                      return (question.type === "multiple_choice" ||
                                         question.type === "checkboxes" ||
@@ -197,14 +178,14 @@ const createForm = (props) => {
                                         question.type === "date" ||
                                         question.type === "time") && (
                                           <Draggable
-                                            key={`draggable-question-${question.id ? question.id : question.sort_order}`}
-                                            draggableId={`draggable-question-${question.id ? question.id : question.sort_order}`}
-                                            index={j}>
+                                          key={`draggable-question-${question.id ? question.id : question.sort_order}`}
+                                          draggableId={`draggable-question-${question.id ? question.id : question.sort_order}`}
+                                          index={j}>
                                             {(provided, snapshot) => (
                                               <div
-                                                ref={provided.innerRef}
-                                                {...provided.draggableProps}
-                                                >
+                                              ref={provided.innerRef}
+                                              {...provided.draggableProps}
+                                              >
                                                 <Question
                                                   isDragging={snapshot.isDragging}
                                                   dragHandle={provided.dragHandleProps}
@@ -224,6 +205,9 @@ const createForm = (props) => {
                               </div>
                             )}
                           </Droppable>
+                        {k !== (data.sections.length -1) &&
+                          <PageBreak onChange={handleChangeSectionSelect} data={[...data.sections]} index={k} item={item} />
+                        }
                         </React.Fragment>
                       ))}
                 </DragDropContext>

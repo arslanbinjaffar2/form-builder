@@ -10,9 +10,9 @@ const FormLinearScale = ({data, formData, setFormData, setValidated}) => {
     newFormData = {...formData,
        [data.form_builder_section_id]:{...formData[data.form_builder_section_id], 
         [data.id]:{ ...formData[data.form_builder_section_id][data.id], 
-          ['answer']:evt.currentTarget.value, ['requiredError']:false,  
-          ['validationError']:!valid,  
-          ['question_type']:data.type}}};
+          answer:evt.currentTarget.value, requiredError:false,  
+          validationError:!valid,  
+          question_type:data.type}}};
 
     console.log(newFormData);
     setFormData(newFormData);

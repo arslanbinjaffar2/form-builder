@@ -1,5 +1,4 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { FormDataContext } from "app/contexts/FormDataContext";
 import { CreateQuestionContext } from "app/contexts/CreateQuestionContext";
 import AppNavbar from "@/AppNavbar";
 

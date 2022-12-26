@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { CreateQuestionContext } from "app/contexts/CreateQuestionContext";
 import SaveBtn from '../ui/SaveBtn';
 function handleClick() {
@@ -16,7 +16,7 @@ function handleClick() {
   });
 }
 const Section = ({ onClick, value, data, index,  }) => {
-  const [section, setSection] = useState(index);
+  const [section ] = useState(index);
   const {handleSectionArea,handleSectionPanel,handleSectionSort, cloneSection, saveSection, deleteSection} = useContext(CreateQuestionContext);
   handleClick()
   const handlebtnClick = (e) => {
