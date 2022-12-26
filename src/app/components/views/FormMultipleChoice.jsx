@@ -1,5 +1,4 @@
 import React from 'react'
-import { validateShortAnswer } from '../../../helpers/validation';
 const FormMultipleChoice = ({data, formData, setFormData, setValidated, setNextSection}) => {
   const onChange = (evt, next_section) => { 
     // console.log(evt);
@@ -7,9 +6,9 @@ const FormMultipleChoice = ({data, formData, setFormData, setValidated, setNextS
     newFormData = {...formData,
        [data.form_builder_section_id]:{...formData[data.form_builder_section_id], 
         [data.id]:{ ...formData[data.form_builder_section_id][data.id], 
-          ['answer']:parseInt(evt.currentTarget.value), ['requiredError']:false,  
-          ['validationError']:false,  
-          ['question_type']:data.type}}};
+          answer:parseInt(evt.currentTarget.value), requiredError:false,  
+          validationError:false,  
+          question_type:data.type}}};
     if(data.options.section_based === 1){
       setNextSection(next_section);
     } 

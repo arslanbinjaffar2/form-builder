@@ -33,9 +33,9 @@ const FormDropDown = ({data, formData, setFormData, setValidated}) => {
     newFormData = {...formData,
        [data.form_builder_section_id]:{...formData[data.form_builder_section_id], 
         [data.id]:{ ...formData[data.form_builder_section_id][data.id], 
-          ['answer']:parseInt(evt.id), ['requiredError']:false,  
-          ['validationError']:!valid,  
-          ['question_type']:data.type}}};
+          answer:parseInt(evt.id), requiredError:false,  
+          validationError:!valid,  
+          question_type:data.type}}};
 
     console.log(newFormData);
     setFormData(newFormData);
@@ -59,7 +59,7 @@ const FormDropDown = ({data, formData, setFormData, setValidated}) => {
         components={{ IndicatorSeparator: () => null }}
         onChange={(item)=> onChange(item)}
         options={data.answers}
-        defaultValue={formData[data.form_builder_section_id][data.id]['answer'] !== undefined ? data.answers.find((answer)=>(answer.id == formData[data.form_builder_section_id][data.id]['answer'])) : null}
+        defaultValue={formData[data.form_builder_section_id][data.id]['answer'] !== undefined ? data.answers.find((answer)=>(parseInt(answer.id) === parseInt(formData[data.form_builder_section_id][data.id]['answer']))) : null}
         theme={theme => ({
           ...theme,
           borderRadius: 0,
