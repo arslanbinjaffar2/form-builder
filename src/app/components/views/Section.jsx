@@ -31,10 +31,27 @@ const Section = ({section, sections, active, setactive, formData, setFormData}) 
 
             await section.questions.forEach(question => {
                      if(question.required === 1){
-                        if(formData2[section.id][question.id].answer === "" || formData2[section.id][question.id].answer.length <= 0){
+                        if(formData2[section.id][question.id].answer === "" || formData2[section.id][question.id].answer.length <= 0 ){
                             formData2 = {...formData2, [question.form_builder_section_id]:{...formData2[section.id], [question.id]: { ...formData2[section.id][question.id], requiredError:true}}}
                             notValidatedFor.push(question.id);
                         }
+                        
+                        if((question.type === "tick_box_grid")){
+                            let answerdRows = section.questions.find((item)=>(item.id === question.id)).grid_questions.filter((item)=>( formData2[section.id][question.id].answer[item.id] !== undefined && formData2[section.id][question.id].answer[item.id].length > 0 ? true : false ))
+                            if(answerdRows.length !== section.questions.find((item)=>(item.id === question.id)).grid_questions.length){
+                                formData2 = {...formData2, [question.form_builder_section_id]:{...formData2[section.id], [question.id]: { ...formData2[section.id][question.id], requiredError:true}}}
+                                notValidatedFor.push(question.id);
+                            }
+                        }
+                        
+                        if((question.type === "multiple_choice_grid")){
+                            let answerdRows = section.questions.find((item)=>(item.id === question.id)).grid_questions.filter((item)=>( formData2[section.id][question.id].answer[item.id] !== undefined ? true : false ))
+                            if(answerdRows.length !== section.questions.find((item)=>(item.id === question.id)).grid_questions.length){
+                                formData2 = {...formData2, [question.form_builder_section_id]:{...formData2[section.id], [question.id]: { ...formData2[section.id][question.id], requiredError:true}}}
+                                notValidatedFor.push(question.id);
+                            }
+                        }
+
                         if(question.validation.type !== undefined){
                             if(!validateShortAnswer(question.validation, formData2[section.id][question.id].answer)){
                                 formData2 = {...formData2, [question.form_builder_section_id]:{...formData2[section.id], [question.id]: { ...formData2[section.id][question.id], validationError:true}}}

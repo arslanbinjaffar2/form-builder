@@ -25,7 +25,7 @@ function viewForm(props) {
   useEffect(() => {
     if(data && data.sections){
       setSection([...data.sections]);
-      setFormData(data.sections.reduce((ack, section)=> ( {...ack, [section.id]: section.questions ? section.questions.reduce((ack, question)=> ({...ack, [question.id]: {requiredError:false, validationError:false, question_type:question.type, answer:question.type !== "checkboxes" ? "" : []} }) , {}) : [] } ), {}));
+      setFormData(data.sections.reduce((ack, section)=> ( {...ack, [section.id]: section.questions ? section.questions.reduce((ack, question)=> ({...ack, [question.id]: {requiredError:false, validationError:false, question_type:question.type, answer:(question.type === "checkboxes") ? [] : (question.type === "tick_box_grid" || question.type === "multiple_choice_grid") ? {} : "" } }) , {}) : [] } ), {}));
     }
     return () => {
     }
