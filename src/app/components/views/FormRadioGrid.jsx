@@ -1,5 +1,34 @@
-import React from 'react';
-const FormRadioGrid = ({data}) => {
+import React, {useState} from 'react';
+const FormRadioGrid = ({data, formData, setFormData, setValidated}) => {
+  const onChange = (evt, anwser_id, question_id) => { 
+    let answers2 = formData[data.form_builder_section_id][data.id]['answer'] 
+    let valid = true;
+
+    if(data.options.limit !== undefined && data.options.limit === 1){
+      if(Object.keys(answers2).findIndex((item)=>(answers2[item] === anwser_id)) > -1){
+          return;
+      }
+    }
+
+    answers2[question_id] = anwser_id;
+
+    if(data.required !== undefined && data.required === 1){
+      let answerdRows = data.grid_questions.filter((item)=>( answers2[item.id] !== undefined ? true : false ))
+      valid = answerdRows.length === data.grid_questions.length ? true : false;
+    }
+
+    let newFormData = formData;
+    newFormData = {...formData,
+       [data.form_builder_section_id]:{...formData[data.form_builder_section_id], 
+        [data.id]:{ ...formData[data.form_builder_section_id][data.id], 
+          answer:answers2, requiredError:false,  
+          validationError:!valid,  
+          question_type:data.type}}};
+
+    console.log(newFormData);
+    setFormData(newFormData);
+    setValidated(valid);
+  }
   return (
     <div className="ebs-formview-mulitple">
       <div className="form-view-title">
@@ -18,16 +47,18 @@ const FormRadioGrid = ({data}) => {
             {data.grid_questions && data.grid_questions.map((items,key) => 
               <div key={key} className="ebs-question-grid-header">
                 <div className="ebs-question-grid-th ebs-grid-title">{items.label}</div>
-                {data.answers && data.answers.map((list,k) => 
+                {data.answers && data.answers.map((element,k) => 
                   <div key={k} className="ebs-question-grid-th ebs-grid-checkbox">
                       <label className="ebs-option ebs-radio">
-                        <input name={`item_${key}`} defaultValue={data.index} type="radio" />
+                        <input name={`item_${key}`} defaultValue={data.index} type="radio" checked={(formData[data.form_builder_section_id][data.id].answer !== undefined && 
+                        formData[data.form_builder_section_id][data.id].answer[items.id] !== undefined && formData[data.form_builder_section_id][data.id].answer[items.id] === element.id) ? true : false} value={element.id} onChange={(e)=>{onChange(e, element.id, items.id)}} />
                         <i className="material-icons"></i>
                       </label>
                   </div>
                 )}
               </div>
             )}
+            {formData[data.form_builder_section_id][data.id]['requiredError'] === true && "This question is required"}
           </div>
         </div>
       </div>
