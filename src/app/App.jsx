@@ -9,7 +9,7 @@ const App = (props) => {
   useEffect(() => {
    let unlisten = props.history.listen((location, action) => {
       if (window && window.parent) {
-        window.parent.postMessage(location.pathname, REACT_APP_EVENTCENTER_URL);
+        window.parent.postMessage(location.pathname, process.env.REACT_APP_EVENTCENTER_URL);
       }
     });
   
