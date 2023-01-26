@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Select  from "react-select";
-
+import moment from 'moment/moment';
 
 const customStyles = {
   control: base => ({
@@ -20,11 +20,57 @@ const _dropdown_min = [
   { value: 'PM', label: `PM`}
 ];
 
-const FormTimebox = ({data}) => {
+const FormTimebox = ({data,  setFormData, formData}) => {
 const [state, setstate] = useState(0)
 const [hour, sethour] = useState('');
 const [minutes, setminutes] = useState('');
 const [seconds, setseconds] = useState('');
+
+const [error, setError] = useState('');
+
+useEffect(() => {
+  // if(){
+    handleCheckDate();
+  // }
+}, [state, hour, minutes, seconds,  error])
+
+const handleCheckDate = () => {
+  setError('');
+  let _valid = true;
+ if(data.options.time_type == "DURATION" && seconds == ''){
+   _valid = false;
+   setError("Seconds is required..")
+ }
+ else if((minutes === '' || hours === '')){
+   _valid = false;
+   setError("Hour and minutes are required..")
+ }
+  let hours = data.options.time_type == "DURATION" ? `${hour}:${minutes}:${seconds}`: `${hour}:${minutes}`;
+    
+  console.log(new Date(hours));
+   _valid = moment(new Date(hours), 'h:mm').isValid();
+   
+   if(!_valid){
+     setError("Invalid Date");
+    }
+    
+  hours = `${hours} ${state == 0 ? "AM" : "PM"}`;
+    
+  // console.log(_valid);
+  setError(!_valid);
+  let newFormData = formData;
+
+  newFormData = {...formData,
+    [data.form_builder_section_id]:{...formData[data.form_builder_section_id], 
+     [data.id]:{ ...formData[data.form_builder_section_id][data.id], 
+       answer:hours, requiredError:false,  
+       validationError:!_valid,  
+       question_type:data.type}}};
+
+ setFormData(newFormData);
+
+};
+
 const handleSelect = (e) => {
   setstate(_dropdown_min.findIndex(x => x.label === e.value))
 }

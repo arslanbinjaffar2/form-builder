@@ -55,6 +55,7 @@ useEffect(() => {
     date = data.options.time ? `${date} ${hour}:${minutes}` : date;  
     console.log(new Date(date));
      _valid = moment(new Date(date)).isValid();
+     console.log(date)
    if(!_valid){
       setError("Invalid Date");
    }
@@ -125,14 +126,15 @@ const  handleSelect = (e) =>
                  onFocus={(e) => e.target.select()} 
                  onChange={(e) => handleInputChange(e, 'DAYS')} 
                  type="text" placeholder="00" 
-                 value={days} />
+                 value={days}
+              />
             </div>
             <div className="ebs-box-sep">/</div>
             <div className="ebs-box">
               <div className="ebs-title">MM</div>
               <input minLength="2" maxLength="2" onFocus={(e) => e.target.select()} onChange={(e) => handleInputChange(e, 'MONTHS')} type="text" placeholder="00" value={months} />
             </div>
-            {data.options.year && 
+            {data.options.year === 1 && 
             <React.Fragment>
               <div className="ebs-box-sep">/</div>
               <div style={{width: 50,textAlign: 'center'}} className="ebs-box">
@@ -143,7 +145,7 @@ const  handleSelect = (e) =>
             }
           </div>
         </div>
-      {data.options.time &&
+      {data.options.time === 1 &&
         <div className="ebs-time-form-view">
           <h4>Time</h4>
           <div className="ebs-time-grid d-flex align-items-center">
