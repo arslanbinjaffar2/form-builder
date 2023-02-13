@@ -242,10 +242,10 @@ export default class AnswerBox extends Component {
                   <div className="ebs-title-tooltip">Show</div>
                   <div
                     onClick ={(e) => {setDescription(this.props.sectionIndex, this.props.questionIndex)}} 
-                  className={`ebs-tooltip-item ${options.description_visible ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><div className="ebs-title">Description</div></div>
+                  className={`ebs-tooltip-item ${options.description_visible === 1 ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><div className="ebs-title">Description</div></div>
                   <div 
                    onClick ={(e) => setResponseValidation(this.props.sectionIndex, this.props.questionIndex, e.target)} 
-                  className={`ebs-tooltip-item ${options.response_validation ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><span className="ebs-title">Response Valdiation</span></div>
+                  className={`ebs-tooltip-item ${options.response_validation === 1 ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><span className="ebs-title">Response Valdiation</span></div>
                 </div>
             </div>
          </div>

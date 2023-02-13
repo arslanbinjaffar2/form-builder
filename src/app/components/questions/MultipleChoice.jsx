@@ -231,7 +231,7 @@ export default class MultipleChoice extends Component {
                     onChange={(e) => setResponseValidationCheckBoxValue(this.props.sectionIndex, this.props.questionIndex, e.target.value)} placeholder="Number" />
                 </div>
                 <div className="col-6">
-                  <input type="text" value={validation.error}
+                  <input type="text" value={validation.custom_error}
                     onChange={(e) => setResponseValidationCheckBoxError(this.props.sectionIndex, this.props.questionIndex, e.target.value)}
                     placeholder="Custom error validation" />
                 </div>

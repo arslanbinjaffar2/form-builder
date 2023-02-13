@@ -66,10 +66,10 @@ const Section = ({section, sections, active, setactive, formData, setFormData}) 
                 if(type === 'next'){
                     setactive(nextSection === "CONTINUE" ? active + 1 : sections.findIndex((sect)=> parseInt(sect.id) === parseInt(nextSection)));
                 } 
+                if(type === 'submit'){
+                   setSubmitForm(true);
+                }
             }
-         if(type === 'submit'){
-            setSubmitForm(true);
-         }
 
       };
 

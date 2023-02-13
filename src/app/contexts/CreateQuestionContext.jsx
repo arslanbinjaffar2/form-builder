@@ -670,8 +670,8 @@ class CreateQuestionContextProvider extends Component {
           const [removed] = copiedQuestions.splice(source.index, 1);
           copiedQuestions.splice(destination.index, 0, removed);
           _sections[source.droppableId].questions = copiedQuestions.map((item,k)=>({...item, sort_order:k}));
-          // this.state.data.sections.reduce((ack, item)=>({...ack,[item.id]:item.sort_order}), {})
-          // saveQuestionSortBackend({section_one:_sections[parseInt(source.droppableId)].questions.reduce((ack, item)=>({...ack,[item.id]:item.sort_order}), {})});
+          this.state.data.sections.reduce((ack, item)=>({...ack,[item.id]:item.sort_order}), {})
+          saveQuestionSortBackend({section_one:_sections[parseInt(source.droppableId)].questions.reduce((ack, item)=>({...ack,[item.id]:item.sort_order}), {})});
           // save in backend
         }
       }
@@ -757,14 +757,16 @@ class CreateQuestionContextProvider extends Component {
       let _sections = [...this.state.data.sections];
       let _section = [];
       const _id = id;
+      console.log(_id);
       for (let i = _id; i < _sections.length; i++) {
         const element = _sections[i];
-        if (i !== _id && element.type === "SECTION") {
+        if (i !== _id) {
           break;
         } else {
           _section.push(element);
         }
       }
+      console.log(_section);
       if (type === "DELETE") {
         _sections = _sections.filter((el) => !_section.includes(el));
       }
@@ -1212,11 +1214,6 @@ class CreateQuestionContextProvider extends Component {
         _query.options = {description_visible: 1};
       }
     
-
-      if (_query.options.description_visible === 1) {
-        _query.description = '';
-      }
-
           this.setState({
           data: {...this.state.data, sections:_sections}
         })
