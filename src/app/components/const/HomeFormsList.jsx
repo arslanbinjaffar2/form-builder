@@ -6,15 +6,35 @@ const lastModified = (date) => {
   return moment(date).format('DD MMM, YYYY');
 }
 const HomeFormsList = (props) => {
-  console.log(props, 'props');
   const { data, getForms, processing, cancelAllRequests, setCurrentForm } = useContext(FormDataContext);
+  const [source, setsource] = useState(null)
+
   useEffect(() => {
     getForms(parseInt(props.event_id), parseInt(props.registration_form_id));
     return () => {
           cancelAllRequests();
     }
-  }, [])
-  
+  }, []);
+
+
+  useEffect(() => {
+    setsource(data);
+  }, [data]);
+
+
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const query = e.target.value;
+    if (query === '') {
+      setsource(data);
+    } else {
+      const searchList = data.slice().filter(item => item.title.toLowerCase().includes(query.toLowerCase()));
+      if (searchList) {
+        setsource(searchList);
+      }
+    }
+  }
     return (
       <React.Fragment>
         {data.length <= 0 && processing && 
@@ -33,12 +53,20 @@ const HomeFormsList = (props) => {
               </div>
               <div className="col-8 d-flex justify-content-end">
                 <div className="ebs-panel">
-                  <span className="ebs-btn">
-                    <img src={require('img/ico-list.svg')} alt="" />
-                  </span>
-                  <span className="ebs-btn">
+                  <div className="ebs-more-option-panel ebs-option-panel-medium">
+                    <button className="ebs-btn tooltip-small">
+                      <img src={require('img/ico-list.svg')} alt="" />
+                    </button>
+                    <div className="ebs-app-tooltip">
+                      <div className="ebs-tooltip-item ebs-active"><i className="material-icons ebs-icon">check</i>Sort by name</div>
+                      <div className="ebs-tooltip-item">Sort by date</div>
+                      <div className="ebs-tooltip-item">Sort by name</div>
+                    </div>
+                  </div>
+                  <label className="ebs-btn">
                     <img src={require('img/ico-search.svg')} alt="" />
-                  </span>
+                    <input placeholder=' ' type="text" onChange={handleSearch} />
+                  </label>
                 </div>
               </div>
               </div>
@@ -47,7 +75,7 @@ const HomeFormsList = (props) => {
           <div className="ebs-form-list">
             <div className="container">
               <div className="row d-flex align-items center">
-                {data.map((item,k) => 
+                {source && source.map((item,k) => 
                   <div key={k} className="col-lg-3 col-md-4" onClick={()=>{ setCurrentForm(parseInt(props.event_id), parseInt(props.registration_form_id), item.id) }}>
                     <div className="ebs-form-box">
                       <div className="ebs-box-image">
@@ -65,6 +93,7 @@ const HomeFormsList = (props) => {
                     </div>
                   </div>
                 )}
+                {source && source.length === 0 && <div className='col-md-12'><p>No record found.</p></div>}
               </div>
             </div>
           </div>

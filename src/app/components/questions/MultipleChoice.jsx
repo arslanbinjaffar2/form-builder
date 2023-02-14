@@ -45,19 +45,6 @@ export default class MultipleChoice extends Component {
     }
     this.context.handleMultiChoiceReorder(this.props.data.data.index, result.source.index, result.destination.index);
   }
-  handleClick = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    e.target.classList.toggle('ebs-btn-active');
-    const _rect = e.target.getBoundingClientRect();
-    const _wHeight = window.innerHeight;
-    const _position = _wHeight - (_rect.top + 168);
-    if (_position <= 0) {
-      e.target.classList.add('ebs-position-top');
-    } else {
-      e.target.classList.remove('ebs-position-top');
-    }
-  }
   componentDidMount() {
     this.generateSelect();
     window.addEventListener('click', this.onBodyClick.bind(this), false)
@@ -285,7 +272,7 @@ export default class MultipleChoice extends Component {
               </label>
             </div>
             <div className="ebs-more-option-panel">
-              <button onClick={this.handleClick.bind(this)} className={`ebs-btn ${type === 'checkboxes' ? 'tooltip-medium' : ''}`}><span style={{ pointerEvents: 'none' }} className="material-icons">more_vert</span></button>
+              <button onClick={(e) => this.context.handleClick(e)} className={`ebs-btn ${type === 'checkboxes' ? 'tooltip-medium' : ''}`}><span style={{ pointerEvents: 'none' }} className="material-icons">more_vert</span></button>
               <div className="ebs-app-tooltip">
                 <div className="ebs-title-tooltip">Show</div>
                 <div

@@ -61,7 +61,28 @@
         display: inline-block;
         cursor: pointer;
         margin-left: 20px;
-
+      }
+      label.ebs-btn {
+        cursor: pointer;
+        input {
+          transition: width 0.2s linear;
+          width: 150px;
+          border: 0;
+          padding: 0;
+          margin-left: 4px;
+          background: transparent;
+          border-bottom: 1px solid $color-secondary;
+          font-size: 14px;
+          color: $text;
+          padding-bottom: 4px;
+          &:placeholder-shown {
+            width: 0;
+          }
+          &:focus {
+            width: 150px;
+            outline: none;
+          }
+        }
       }
     }
   }
@@ -515,6 +536,11 @@
   .ebs-btn.ebs-btn-active.tooltip-medium + {
     .ebs-app-tooltip  {
       max-width: 260px;
+    }
+  }
+  .ebs-btn.ebs-btn-active.tooltip-small + {
+    .ebs-app-tooltip  {
+      max-width: 200px;
     }
   }
   .ebs-btn.ebs-btn-active.ebs-position-top + {
@@ -1390,5 +1416,22 @@ align-items: center;
   &:hover{
     outline: none;
     background: rgba(112, 112, 112, 0.1);
+  }
+}
+
+.ebs-error-container {
+  margin-top: 15px;
+  background: rgba($color-danger,0.8);
+  padding: 8px 10px 8px 36px;
+  border-radius: 4px;
+  color: #fff;
+  position: relative;
+  &::before {
+    content: 'info';
+    position: absolute;
+    left: 10px;
+    top: 4px;
+    font-family: $iconFont;
+    font-size: 20px;
   }
 }

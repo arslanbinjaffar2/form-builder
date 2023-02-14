@@ -88,6 +88,20 @@ const createForm = (props) => {
     }
   }, [])
   
+  useEffect(() => {
+    document.body.addEventListener('click',onBodyClick, false);
+    return () => {
+      document.body.removeEventListener('click',onBodyClick, false);
+    }
+  }, [])
+  const onBodyClick = (e) => {
+    var _tooltip = document.querySelectorAll('.ebs-more-option-panel .ebs-btn');
+    if (_tooltip) {
+      _tooltip.forEach(item => {
+        item.classList.remove('ebs-btn-active');
+      })
+    }
+  }
 
   useEffect(() => {
     if(data && data.sections){

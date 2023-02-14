@@ -1,11 +1,12 @@
-import React, { Component } from 'react';
+import React, { Component, useContext } from 'react';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { CreateQuestionContext } from 'app/contexts/CreateQuestionContext';
 import SaveBtn from "@/ui/SaveBtn";
+import { FormDataContext } from "app/contexts/FormDataContext";
 
 
 const ContentBox = ({data,active,onDrag,index,type,onChange,parentType,sectionIndex, questionIndex}) => {
-  console.log(data);
+  const {handleClick} = useContext(FormDataContext);
   return (
    <DragDropContext onDragEnd={onDrag}>
     <Droppable droppableId={type === 'rows' ? 'rows_items' : 'columns_items'}>
@@ -54,32 +55,6 @@ export default class MutipleChoiceGrid extends Component {
       return;
     }
     this.context.handleMultiChoiceGridReorder(this.props.sectionIndex, this.props.questionIndex, result.source.index, result.destination.index, result.source.droppableId);
-  }
-  handleClick = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    e.target.classList.toggle('ebs-btn-active');
-    const _rect = e.target.getBoundingClientRect();
-    const _wHeight = window.innerHeight;
-    const _position = _wHeight - (_rect.top + 168);
-    if (_position <= 0 ) {
-      e.target.classList.add('ebs-position-top');
-    } else {
-      e.target.classList.remove('ebs-position-top'); 
-    }
-  }
-  componentDidMount() {
-    window.addEventListener('click',this.onBodyClick.bind(this), false)
-  }
-
-  onBodyClick = (e) => {
-    var _tooltip = document.querySelector('.ebs-more-option-panel .ebs-btn');
-    if (_tooltip) {
-      _tooltip.classList.remove('ebs-btn-active');
-    }
-  }
-  componentWillUnmount () {
-    window.removeEventListener('click',this.onBodyClick.bind(this), false)
   }
   render() {
     const {active, options, required, type, answers, grid_questions, columns, sort_order, id } = this.props.data;
@@ -198,9 +173,9 @@ export default class MutipleChoiceGrid extends Component {
               </label>
             </div>
             <div className="ebs-more-option-panel">
-                <button  onClick={this.handleClick.bind(this)} className="ebs-btn"><span style={{pointerEvents: 'none'}} className="material-icons">more_vert</span></button>
+                <button  onClick={(e) => this.context.handleClick(e)} className="ebs-btn"><span style={{pointerEvents: 'none'}} className="material-icons">more_vert</span></button>
                 <div  className="ebs-app-tooltip">
-                  <div className="ebs-title-tooltip">Show</div>
+                  <div className="ebs-title-tooltip">Show now</div>
                   <div
                   onClick ={(e) => this.context.setDescription(this.props.sectionIndex, this.props.questionIndex, e.target)} 
                   className={`ebs-tooltip-item ${options.description_visible ? 'ebs-active' : ''}`}><span className="material-icons ebs-icon">check</span><div className="ebs-title">Description</div></div>
