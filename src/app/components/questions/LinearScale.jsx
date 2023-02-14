@@ -63,6 +63,10 @@ export default class LinearScale extends Component {
   render() {
     
     const {active, descVisible, options, required, index, id } = this.props.data;
+    if(typeof options !== 'object'){
+      return null;
+    }
+    
     return (
       <React.Fragment>
       <div className="ebs-linear-scale">
@@ -134,7 +138,7 @@ export default class LinearScale extends Component {
                 <div className="ebs-label"></div>
                 <div className="ebs-value"><div className="ebs-value-inner">{options.min_label}</div></div>
               </div>
-               {Array.apply(null,Array((Number(options.max) - (Number(options.min) === 0 ? 0 : 1))+1)).map((e,i) => (
+               {Array.apply(null,Array()).map((e,i) => (
                  <div key={i} className="ebs-linear-box d-flex">
                   <div className="ebs-label">{i + (Number(options.min) === 0 ? 0 : 1)}</div>
                   <div className="ebs-value"><i className="material-icons">radio_button_unchecked</i></div>

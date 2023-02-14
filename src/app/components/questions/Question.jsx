@@ -178,7 +178,7 @@ export default class Question extends Component {
             </div>
           )}
         </div>
-        {options.description_visible && (
+        {options.description_visible === 1 && (
           <div className="ebs-description-wrapper">
             <textarea
               onChange={(e) =>
@@ -193,7 +193,7 @@ export default class Question extends Component {
               ref={this.textDescRef}
               className="ebs-title-description"
               placeholder="Description"
-            />
+              />
           </div>
         )}
         {(type === "multiple_choice" ||

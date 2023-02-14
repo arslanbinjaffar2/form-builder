@@ -1,6 +1,18 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
+import {shuffleArray} from '../../../helpers/validation';
 const FormTickGrid = ({data, formData, setFormData, setValidated}) => {
   const [answeredColumn, setAnsweredColumn] = useState([]);
+  const [gridQuestions, setQridQuestions] = useState([]);
+  const mountRef = useRef(null);
+  useEffect(() => {
+    if(mountRef.current === null){
+      setQridQuestions(data.options.shuffle === 1 && data.grid_questions.length > 0 ? shuffleArray(data.grid_questions) : data.grid_questions);
+      mountRef.current = 1;
+    }
+
+  }, [])
+
+
   const onChange = (evt, anwser_id, question_id) => { 
     let answers2 = formData[data.form_builder_section_id][data.id]['answer'];
     let newAnswer = answers2[question_id] === undefined ? [] : answers2[question_id];
@@ -35,12 +47,13 @@ const FormTickGrid = ({data, formData, setFormData, setValidated}) => {
     setFormData(newFormData);
     setValidated(valid);
   }
+
   return (
     <div className="ebs-formview-mulitple">
       <div className="form-view-title">
         {data.title && data.title} {data.required === 1 && <span className="required">*</span>}
       </div>
-      {(data.options.description_visible && data.description) && <div className="form-view-description">{data.description}</div>}
+      {(data.options.description_visible === 1 && data.description) && <div className="form-view-description">{data.description}</div>}
       <div className="ebs-options-view">
         <div className="ebs-question-grid-view">
           <div className="ebs-question-grid-wrapp">
@@ -50,7 +63,7 @@ const FormTickGrid = ({data, formData, setFormData, setValidated}) => {
                 <div key={k} className="ebs-question-grid-th">{list.label}</div>
               )}
             </div>
-            {data.grid_questions && data.grid_questions.map((items,key) => 
+            {data.grid_questions && gridQuestions.map((items,key) => 
               <div key={key} className="ebs-question-grid-header">
                 <div className="ebs-question-grid-th ebs-grid-title">{items.label}</div>
                 {data.answers && data.answers.map((element,k) => 
