@@ -10,9 +10,9 @@ const FormLinearScale = ({data, formData, setFormData, setValidated}) => {
     newFormData = {...formData,
        [data.form_builder_section_id]:{...formData[data.form_builder_section_id], 
         [data.id]:{ ...formData[data.form_builder_section_id][data.id], 
-          ['answer']:evt.currentTarget.value, ['requiredError']:false,  
-          ['validationError']:!valid,  
-          ['question_type']:data.type}}};
+          answer:evt.currentTarget.value, requiredError:false,  
+          validationError:!valid,  
+          question_type:data.type}}};
 
     console.log(newFormData);
     setFormData(newFormData);
@@ -24,7 +24,7 @@ const FormLinearScale = ({data, formData, setFormData, setValidated}) => {
       <div className="form-view-title">
         {data.title && data.title} {data.required === 1 && <span className="required">*</span>}
       </div>
-      {(data.options.description_visible && data.description) && <div className="form-view-description">{data.description}</div>}
+      {(data.options.description_visible === 1 && data.description) && <div className="form-view-description">{data.description}</div>}
       <div className="ebs-options-view">
         <div className="ebs-linear-view">
             <div className="ebs-linear-view-wrapper d-flex text-center">

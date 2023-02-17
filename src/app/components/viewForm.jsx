@@ -1,5 +1,4 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { FormDataContext } from "app/contexts/FormDataContext";
 import { CreateQuestionContext } from "app/contexts/CreateQuestionContext";
 import AppNavbar from "@/AppNavbar";
 
@@ -12,8 +11,8 @@ function viewForm(props) {
   const [active, setactive] = useState(0);
   const [formData, setFormData] = useState({});
   useEffect(() => {
-    if(data.length <= 0 && data.id !== props.match.params.id){
-      getFormData(parseInt(props.match.params.id));
+    if(data.length <= 0 || data.id !== props.match.params.id){
+      getFormData(parseInt(props.match.params.event_id), parseInt(props.match.params.registration_form_id), parseInt(props.match.params.id));
     }
     return () => {
       if(loading){
@@ -26,7 +25,7 @@ function viewForm(props) {
   useEffect(() => {
     if(data && data.sections){
       setSection([...data.sections]);
-      setFormData(data.sections.reduce((ack, section)=> ( {...ack, [section.id]: section.questions ? section.questions.reduce((ack, question)=> ({...ack, [question.id]: {requiredError:false, validationError:false, question_type:question.type, answer:question.type !== "checkboxes" ? "" : []} }) , {}) : [] } ), {}));
+      setFormData(data.sections.reduce((ack, section)=> ( {...ack, [section.id]: section.questions ? section.questions.reduce((ack, question)=> ({...ack, [question.id]: {requiredError:false, validationError:false, question_type:question.type, answer:(question.type === "checkboxes") ? [] : (question.type === "tick_box_grid" || question.type === "multiple_choice_grid") ? {} : "" } }) , {}) : [] } ), {}));
     }
     return () => {
     }
@@ -34,7 +33,7 @@ function viewForm(props) {
 
   return (
     <React.Fragment>
-      <AppNavbar showpanel event_id={props.match.params.event_id} registration_form_id={props.match.params.registration_form_id} />
+      <AppNavbar showpanel view event_id={props.match.params.event_id} registration_form_id={props.match.params.registration_form_id} />
         <div className="ebs-form-preview">
           <div className="ebs-form-preview-wrapper">
 

@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import FormMultipleChoice from './FormMultipleChoice';
 import FormCheckboxes from './FormCheckboxes';
 import FormDropDown from './FormDropDown';
@@ -14,24 +14,47 @@ import { validateShortAnswer } from '../../../helpers/validation';
 
 const Section = ({section, sections, active, setactive, formData, setFormData}) => {
     const [validated, setValidated] = useState(true);
+    const [nextSection, setNextSection] = useState(section.next_section);
+    const [sectionHistory, setSectionHistory] = useState([]);
+    const [stepType, setStepType] = useState("next");
+    const [submitForm, setSubmitForm] = useState(false);
     const ValidateSection = async (e, type) => {
         e.preventDefault();
+        setStepType(type);
         if(type === 'back'){
-             setactive(active - 1);
+             let newSectionHistory = sectionHistory;
+             let removehistory = newSectionHistory.pop();
+             setactive(removehistory.previous);
          }
        let notValidatedFor = [];
        let formData2 = formData;
-    //    console.log(validated);
 
             await section.questions.forEach(question => {
                      if(question.required === 1){
-                        if(formData2[section.id][question.id]['answer'] === "" || formData2[section.id][question.id]['answer'].length <= 0){
-                            formData2 = {...formData2, [question.form_builder_section_id]:{...formData2[section.id], [question.id]: { ...formData2[section.id][question.id], ['requiredError']:true}}}
+                        if(formData2[section.id][question.id].answer === "" || formData2[section.id][question.id].answer.length <= 0 ){
+                            formData2 = {...formData2, [question.form_builder_section_id]:{...formData2[section.id], [question.id]: { ...formData2[section.id][question.id], requiredError:true}}}
                             notValidatedFor.push(question.id);
                         }
+                        
+                        if((question.type === "tick_box_grid")){
+                            let answerdRows = section.questions.find((item)=>(item.id === question.id)).grid_questions.filter((item)=>( formData2[section.id][question.id].answer[item.id] !== undefined && formData2[section.id][question.id].answer[item.id].length > 0 ? true : false ))
+                            if(answerdRows.length !== section.questions.find((item)=>(item.id === question.id)).grid_questions.length){
+                                formData2 = {...formData2, [question.form_builder_section_id]:{...formData2[section.id], [question.id]: { ...formData2[section.id][question.id], requiredError:true}}}
+                                notValidatedFor.push(question.id);
+                            }
+                        }
+                        
+                        if((question.type === "multiple_choice_grid")){
+                            let answerdRows = section.questions.find((item)=>(item.id === question.id)).grid_questions.filter((item)=>( formData2[section.id][question.id].answer[item.id] !== undefined ? true : false ))
+                            if(answerdRows.length !== section.questions.find((item)=>(item.id === question.id)).grid_questions.length){
+                                formData2 = {...formData2, [question.form_builder_section_id]:{...formData2[section.id], [question.id]: { ...formData2[section.id][question.id], requiredError:true}}}
+                                notValidatedFor.push(question.id);
+                            }
+                        }
+
                         if(question.validation.type !== undefined){
-                            if(!validateShortAnswer(question.validation, formData2[section.id][question.id]['answer'])){
-                                formData2 = {...formData2, [question.form_builder_section_id]:{...formData2[section.id], [question.id]: { ...formData2[section.id][question.id], ['validationError']:true}}}
+                            if(!validateShortAnswer(question.validation, formData2[section.id][question.id].answer)){
+                                formData2 = {...formData2, [question.form_builder_section_id]:{...formData2[section.id], [question.id]: { ...formData2[section.id][question.id], validationError:true}}}
                                 setValidated(false);
                                 notValidatedFor.push(question.id);
                             }
@@ -39,16 +62,35 @@ const Section = ({section, sections, active, setactive, formData, setFormData}) 
                     }
             });
             setFormData(formData2);
-            // console.log(notValidatedFor);
-            // console.log(validated);
             if (notValidatedFor.length <= 0 &&  validated === true){
                 if(type === 'next'){
-                    setactive(active + 1);
+                    setactive(nextSection === "CONTINUE" ? active + 1 : sections.findIndex((sect)=> parseInt(sect.id) === parseInt(nextSection)));
                 } 
+                if(type === 'submit'){
+                   setSubmitForm(true);
+                }
             }
+
       };
+
+    useEffect(() => {
+        
+        if(stepType === 'back'){
+            let newSectionHistory = sectionHistory;
+            newSectionHistory.pop();
+            setSectionHistory(newSectionHistory)
+        }
+
+        if(stepType === 'next'){
+            let newSectionHistory = [...sectionHistory, { previous:sectionHistory.length > 0 ? sectionHistory[sectionHistory.length -1].current : 0, current:active}];
+            setSectionHistory(newSectionHistory);
+        }
+     
+    }, [active])
+    
+
   return (
-    <React.Fragment>
+    !submitForm ? <React.Fragment>
         {sections && section &&
             <div className="ebs-form-wrapper">
                 <div className="ebs-sub-section">
@@ -63,7 +105,7 @@ const Section = ({section, sections, active, setactive, formData, setFormData}) 
             {section.questions.map((item, itemIndex) => {
 
                     if(item.type === "multiple_choice"){
-                    return <FormMultipleChoice key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
+                    return <FormMultipleChoice key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} setNextSection={setNextSection} />
                     }
                     else if(item.type === "checkboxes") {
                     return  <FormCheckboxes key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
@@ -94,8 +136,9 @@ const Section = ({section, sections, active, setactive, formData, setFormData}) 
                         return <FormDatebox key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
                     }
                     else if(item.type === "TEXT_BLOCK"){
-                            <FormTextBlock key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
-                        return 
+                        return <FormTextBlock key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
+                    }else{
+                        return null;
                     }
 
             })}
@@ -112,7 +155,7 @@ const Section = ({section, sections, active, setactive, formData, setFormData}) 
             {active > 0 && (
             <button
                 className="btn btn-default"
-                onClick={() => setactive(active - 1)}
+                onClick={(e) => ValidateSection(e, 'back')}
             >
                 Back
             </button>
@@ -133,10 +176,14 @@ const Section = ({section, sections, active, setactive, formData, setFormData}) 
             >
             Back
             </button>
-            <button className="btn btn-default btn-submit" onClick={(e) => ValidateSection(e, 'next')} >Submit</button>
+            <button className="btn btn-default btn-submit" onClick={(e) => ValidateSection(e, 'submit')} >Submit</button>
         </div>
         )}
-    </React.Fragment>
+    </React.Fragment> :
+        <React.Fragment>
+            Form Submitted successfully
+        </React.Fragment>
+
   )
 }
 

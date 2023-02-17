@@ -33,9 +33,9 @@ const FormDropDown = ({data, formData, setFormData, setValidated}) => {
     newFormData = {...formData,
        [data.form_builder_section_id]:{...formData[data.form_builder_section_id], 
         [data.id]:{ ...formData[data.form_builder_section_id][data.id], 
-          ['answer']:parseInt(evt.id), ['requiredError']:false,  
-          ['validationError']:!valid,  
-          ['question_type']:data.type}}};
+          answer:parseInt(evt.id), requiredError:false,  
+          validationError:!valid,  
+          question_type:data.type}}};
 
     //console.log(newFormData);
     setFormData(newFormData);
@@ -47,7 +47,7 @@ const FormDropDown = ({data, formData, setFormData, setValidated}) => {
       <div className="form-view-title">
         {data.title && data.title} {data.required === 1 && <span className="required">*</span>}
       </div>
-      {(data.options.description_visible && data.description) && <div className="form-view-description">{data.description}</div>}
+      {(data.options.description_visible === 1 && data.description) && <div className="form-view-description">{data.description}</div>}
       <div className="ebs-options-view">
       <Select
         menuColor='red'
@@ -59,7 +59,7 @@ const FormDropDown = ({data, formData, setFormData, setValidated}) => {
         components={{ IndicatorSeparator: () => null }}
         onChange={(item)=> onChange(item)}
         options={data.answers}
-        value={formData[data.form_builder_section_id][data.id]['answer'] !== undefined ? data.answers.find((answer)=>(answer.id === formData[data.form_builder_section_id][data.id]['answer'])) : null}
+        defaultValue={formData[data.form_builder_section_id][data.id]['answer'] !== undefined ? data.answers.find((answer)=>(parseInt(answer.id) === parseInt(formData[data.form_builder_section_id][data.id]['answer']))) : null}
         theme={theme => ({
           ...theme,
           borderRadius: 0,

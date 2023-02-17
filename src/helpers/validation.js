@@ -34,7 +34,7 @@ export function validateNumber(validation, input){
                 return   parseFloat(input) <= parseFloat(validation.value) ? true : false;
             }
             else if(validation.rule === "EQUAL_TO"){
-                return   parseFloat(input) == parseFloat(validation.value) ? true : false;
+                return   parseFloat(input) === parseFloat(validation.value) ? true : false;
             }
             else if(validation.rule === "NOT_EQUAL_TO"){
                 return   parseFloat(input) !== parseFloat(validation.value) ? true : false;
@@ -109,7 +109,24 @@ export function validateOptions(validation, input){
         return input.length <= parseInt(validation.value);
     }
     else if(validation.type === "EXACTLY"){
-        return input.length ==  parseInt(validation.value);
+        return input.length ===  parseInt(validation.value);
     }
 }
 
+export function shuffleArray(array) {
+    let currentIndex = array.length,  randomIndex;
+  
+    // While there remain elements to shuffle.
+    while (currentIndex != 0) {
+  
+      // Pick a remaining element.
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+  
+      // And swap it with the current element.
+      [array[currentIndex], array[randomIndex]] = [
+        array[randomIndex], array[currentIndex]];
+    }
+  
+    return array;
+  }

@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React from 'react'
 import { validateShortAnswer } from '../../../helpers/validation';
 const FormCheckboxes = ({data, formData, setFormData, setValidated}) => {
 
@@ -15,9 +15,9 @@ const FormCheckboxes = ({data, formData, setFormData, setValidated}) => {
     newFormData = {...formData,
        [data.form_builder_section_id]:{...formData[data.form_builder_section_id], 
         [data.id]:{ ...formData[data.form_builder_section_id][data.id], 
-          ['answer']:answers2, ['requiredError']:false,  
-          ['validationError']:!valid,  
-          ['question_type']:data.type}}};
+          answer:answers2, requiredError:false,  
+          validationError:!valid,  
+          question_type:data.type}}};
 
     console.log(newFormData);
     setFormData(newFormData);
@@ -28,7 +28,7 @@ const FormCheckboxes = ({data, formData, setFormData, setValidated}) => {
       <div className="form-view-title">
         {data.title && data.title} {data.required === 1 && <span className="required">*</span>}
       </div>
-      {(data.options.description_visible && data.description) && <div className="form-view-description">{data.description}</div>}
+      {(data.options.description_visible === 1 && data.description) && <div className="form-view-description">{data.description}</div>}
         <div className="ebs-options-view">
           {data.answers && data.answers.map((element,key) =>
             <label key={key} className="ebs-option-list d-flex align-items-center">

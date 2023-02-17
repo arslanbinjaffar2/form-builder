@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { CreateQuestionContext } from "app/contexts/CreateQuestionContext";
 import SaveBtn from '../ui/SaveBtn';
-function handleClickbox() {
+function handleClick() {
   const items = document.querySelectorAll('.ebs-textarea-title');
   const desc = document.querySelectorAll('.ebs-textarea-desc');
   items.forEach(element => {
@@ -16,10 +16,22 @@ function handleClickbox() {
   });
 }
 const Section = ({ onClick, value, data, index,  }) => {
-  const [section, setSection] = useState(index);
-  const {handleSectionArea,handleSectionPanel,handleSectionSort, cloneSection, saveSection, deleteSection, handleClick} = useContext(CreateQuestionContext);
-  handleClickbox()
-
+  const [section ] = useState(index);
+  const {handleSectionArea,handleSectionPanel,handleSectionSort, cloneSection, saveSection, deleteSection} = useContext(CreateQuestionContext);
+  handleClick()
+  const handlebtnClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    e.target.classList.toggle('ebs-btn-active');
+    const _rect = e.target.getBoundingClientRect();
+    const _wHeight = window.innerHeight;
+    const _position = _wHeight - (_rect.top + 168);
+    if (_position <= 0) {
+      e.target.classList.add('ebs-position-top');
+    } else {
+      e.target.classList.remove('ebs-position-top');
+    }
+  }
   return (
     <React.Fragment>
       <div 

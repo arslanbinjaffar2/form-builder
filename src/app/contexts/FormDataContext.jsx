@@ -80,7 +80,7 @@ class FormDataContextProvider extends Component {
             ,
             () => {
                 callBack();
-                this.props.history.push( `/form/update/${response.data.data.id}`);
+                this.props.history.push( `/${event_id}/${registration_form_id}/form/update/${response.data.data.id}`);
               }
             )
         }
