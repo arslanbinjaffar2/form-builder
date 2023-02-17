@@ -40,10 +40,17 @@ const HomeFormsList = (props) => {
   const handleClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    const _window = window.innerWidth;
     e.target.classList.toggle('ebs-btn-active');
     const _rect = e.target.getBoundingClientRect();
+    const _left = Math.round((_window - _rect.left) - 340);
     const _wHeight = window.innerHeight;
     const _position = _wHeight - (_rect.top + 168);
+    if (_left <= 0) {
+      e.target.classList.add('ebs-position-left');
+    } else {
+      e.target.classList.remove('ebs-position-left');
+    }
     if (_position <= 0 ) {
       e.target.classList.add('ebs-position-top');
     } else {
@@ -104,8 +111,10 @@ const HomeFormsList = (props) => {
               <div className="row d-flex align-items center">
                 {source && source.map((item,k) => 
                   <div key={k} className="col-lg-3 col-md-4">
-                    <div className="ebs-form-box" onClick={()=>{ setCurrentForm(parseInt(props.event_id), parseInt(props.registration_form_id), item.id) }}>
-                      <div className="ebs-box-image">
+                    <div className="ebs-form-box">
+                      <div
+                        onClick={()=>{ setCurrentForm(parseInt(props.event_id), parseInt(props.registration_form_id), item.id) }} 
+                        className="ebs-box-image">
                         <img src={item.screenShot ? item.screenShot : require('img/template.svg') } alt="" />
                       </div>
                       <div className="ebs-desc-box">
@@ -114,14 +123,15 @@ const HomeFormsList = (props) => {
                           <div className="ebs-timedate d-flex align-items-center w-100">
                           <span style={{color: 'rgba($black,0.1)'}} className="material-icons">description</span>
                           Opened {lastModified(item.updated_at)}</div>
-                          <div className="ebs-more-option-panel ebs-option-panel-medium">
+                          <div className="ebs-more-option-panel ebs-option-panel-medium ico-visible">
                             <button onClick={handleClick} className="ebs-btn tooltip-small">
                               <span style={{pointerEvents: 'none'}} className="material-icons">more_vert</span>
                             </button>
                             <div className="ebs-app-tooltip">
-                              <div className="ebs-tooltip-item ebs-active"><i className="material-icons ebs-icon">check</i>Sort by name</div>
-                              <div className="ebs-tooltip-item">Sort by date</div>
-                              <div className="ebs-tooltip-item">Sort by name</div>
+                              <div className="ebs-tooltip-item"><i className="material-icons ebs-icon">text_fields</i>Rename</div>
+                              <div className="ebs-tooltip-item"><i className="material-icons ebs-icon">content_copy</i>Copy</div>
+                              <div className="ebs-tooltip-item"><i className="material-icons ebs-icon">delete_outline</i>Delete</div>
+                              <div className="ebs-tooltip-item"><i className="material-icons ebs-icon">signal_cellular_alt</i>Results</div>
                             </div>
                           </div>
                         </div>

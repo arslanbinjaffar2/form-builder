@@ -143,9 +143,7 @@ export default class MutipleChoiceGrid extends Component {
                   form_builder_section_id: this.props.sectionId,
                 }, this.props.sectionIndex, this.props.questionIndex);
               }}
-            >
-              Save Question
-            </SaveBtn>
+             />
           </div>
           <div className="ebs-left-area d-flex">
             <span onClick ={(e) => {e.stopPropagation();this.context.cloneQuestion({question_id:id}, this.props.sectionIndex, this.props.questionIndex)}}  className="ebs-btn">
