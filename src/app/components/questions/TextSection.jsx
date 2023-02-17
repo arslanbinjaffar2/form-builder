@@ -26,19 +26,6 @@ export default class TextSection extends Component {
   componentWillUnmount () {
     window.removeEventListener('load',handleClick(),false)
   }
-  handlebtnClick = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    e.target.classList.toggle('ebs-btn-active');
-    const _rect = e.target.getBoundingClientRect();
-    const _wHeight = window.innerHeight;
-    const _position = _wHeight - (_rect.top + 168);
-    if (_position <= 0) {
-      e.target.classList.add('ebs-position-top');
-    } else {
-      e.target.classList.remove('ebs-position-top');
-    }
-  }
   render() {
     const {  data,  index, dragHandle } = this.props;
     return (

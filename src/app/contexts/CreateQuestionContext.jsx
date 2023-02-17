@@ -1228,7 +1228,26 @@ class CreateQuestionContextProvider extends Component {
         this.props.history.push(`/${event_id}/${registration_form_id}/form/update/${this.state.data.id}`);
       }
     }
-
+    const handleClick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const _window = window.innerWidth;
+      e.target.classList.toggle('ebs-btn-active');
+      const _rect = e.target.getBoundingClientRect();
+      const _left = Math.round((_window - _rect.left) - 340);
+      const _wHeight = window.innerHeight;
+      const _position = _wHeight - (_rect.top + 168);
+      if (_left <= 0) {
+        e.target.classList.add('ebs-position-left');
+      } else {
+        e.target.classList.remove('ebs-position-left');
+      }
+      if (_position <= 0 ) {
+        e.target.classList.add('ebs-position-top');
+      } else {
+        e.target.classList.remove('ebs-position-top'); 
+      }
+    }
 
 
 
@@ -1282,7 +1301,8 @@ class CreateQuestionContextProvider extends Component {
           addQuestion,
           updateQuestion,
           deleteSection,
-          previewForm
+          previewForm,
+          handleClick
         }}
       >
         {this.props.children}

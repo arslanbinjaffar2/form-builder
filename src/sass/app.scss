@@ -61,7 +61,28 @@
         display: inline-block;
         cursor: pointer;
         margin-left: 20px;
-
+      }
+      label.ebs-btn {
+        cursor: pointer;
+        input {
+          transition: width 0.2s linear;
+          width: 150px;
+          border: 0;
+          padding: 0;
+          margin-left: 4px;
+          background: transparent;
+          border-bottom: 1px solid $color-secondary;
+          font-size: 14px;
+          color: $text;
+          padding-bottom: 4px;
+          &:placeholder-shown {
+            width: 0;
+          }
+          &:focus {
+            width: 150px;
+            outline: none;
+          }
+        }
       }
     }
   }
@@ -72,10 +93,9 @@
   .ebs-form-box {
     border: 1px solid $border;
     border-radius: 12px;
-    overflow: hidden;
-    cursor: pointer;
     margin-bottom: 40px;
     .ebs-box-image {
+      cursor: pointer;
       min-height: 230px;
       display: flex;
       align-items: center;
@@ -95,6 +115,12 @@
         font-size: 18px;
         font-weight: 600;
         margin-bottom: 5px;
+      }
+      .ebs-bottom-panel {
+        .ebs-timedate {
+          gap: 5px;
+          font-size: 13px;
+        }
       }
     }
   }
@@ -517,10 +543,30 @@
       max-width: 260px;
     }
   }
+  .ebs-btn.ebs-btn-active.tooltip-small + {
+    .ebs-app-tooltip  {
+      max-width: 200px;
+      .ebs-tooltip-item {
+        height: 40px;
+        padding-left: 40px;
+        .ebs-icon {
+          left: 10px;
+          top: 10px;
+          font-size: 20px;
+        }
+      }
+    }
+  }
   .ebs-btn.ebs-btn-active.ebs-position-top + {
     .ebs-app-tooltip {
       top: auto;
       bottom: 110%;
+    }
+  }
+  .ebs-btn.ebs-btn-active.ebs-position-left + {
+    .ebs-app-tooltip {
+      left: auto;
+      right: 10px;
     }
   }
   .ebs-app-tooltip {
@@ -572,6 +618,13 @@
         overflow: hidden;
         padding-right: 20px;
 
+      }
+    }
+  }
+  &.ico-visible {
+    .ebs-tooltip-item {
+      .ebs-icon {
+        display: block;
       }
     }
   }
@@ -916,6 +969,7 @@
   border-radius: 8px;
   background: $white;
   padding: 5px 0;
+  z-index: 9;
   ul {
     list-style: none;
     padding: 0;
@@ -1251,25 +1305,40 @@
     background: $white;
     border-radius: 6px;
     box-shadow: 0 2px 1px -1px rgba($black,0.2),0 1px 1px 0 rgba($black,0.141),0 1px 3px 0 rgba($black,0.122);
+    overflow: hidden;
     .ebs-header-popup {
       h5 {
         font-size: 16px;
         font-weight: 500;
         line-height: 24px;
-        margin: 18px 24px 16px 24px;
+        padding: 18px 24px 16px 24px;
+        color: $white;
+        background: $borderhover;
+        margin: 0;
       }
     }
     .ebs-listing-section {
       .ebs-sortlist {
         border-top: 1px solid $border;
-        padding: 15px 50px;
+        padding: 8px 50px;
         background: $white;
+        position: relative;
+        &::before {
+          content: '\E945';
+          font-family: "Material Icons";
+          position: absolute;
+          left: 13px;
+          top: 50%;
+          font-size: 24px;
+          transform: translateY(-50%);
+          opacity: 0.5;
+        }
         h4 {
-          margin: 0 0 5px;
+          margin: 0 0 2px;
           font-size: 14px;
         }
         p {
-          margin: 0;
+          margin: 0 0 2px 0;
           font-size: 13px;
           color: $text;
         }
@@ -1280,14 +1349,20 @@
       border-top: 1px solid $border;
       text-align: right;
       .btn {
+        border-radius: 3px;
         margin-left: 15px;
         padding: 6px 20px;
         box-shadow: 0 2px 1px -1px rgba($black,0.2),0 1px 1px 0 rgba($black,0.141),0 1px 3px 0 rgba($black,0.122);
         background: $color-secondary;
-        font-weight: 600;
+        font-weight: 500;
         color: $white;
         text-transform: uppercase;
         cursor: pointer;
+        &.btn-bordered {
+          background: transparent;
+          border: 1px solid $color-secondary;
+          color: $color-secondary;
+        }
       }
     }
   }
@@ -1390,5 +1465,22 @@ align-items: center;
   &:hover{
     outline: none;
     background: rgba(112, 112, 112, 0.1);
+  }
+}
+
+.ebs-error-container {
+  margin-top: 15px;
+  background: rgba($color-danger,0.8);
+  padding: 8px 10px 8px 36px;
+  border-radius: 4px;
+  color: #fff;
+  position: relative;
+  &::before {
+    content: 'info';
+    position: absolute;
+    left: 10px;
+    top: 4px;
+    font-family: $iconFont;
+    font-size: 20px;
   }
 }

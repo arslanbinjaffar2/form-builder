@@ -93,7 +93,7 @@ export default class SortSection extends Component {
           </div>
           }
           <div className="ebs-footer-popup">
-            <span onClick={handleSectionSort} className="btn btn-default">Cancel</span>
+            <span onClick={handleSectionSort} className="btn btn-bordered btn-default">Cancel</span>
             <span onClick={() => handleSectionSortGrid(this.state.section)} className="btn btn-default">Save</span>
           </div>
         </div>
