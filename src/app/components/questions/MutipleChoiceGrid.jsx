@@ -2,11 +2,8 @@ import React, { Component, useContext } from 'react';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { CreateQuestionContext } from 'app/contexts/CreateQuestionContext';
 import SaveBtn from "@/ui/SaveBtn";
-import { FormDataContext } from "app/contexts/FormDataContext";
-
 
 const ContentBox = ({data,active,onDrag,index,type,onChange,parentType,sectionIndex, questionIndex}) => {
-  const {handleClick} = useContext(FormDataContext);
   return (
    <DragDropContext onDragEnd={onDrag}>
     <Droppable droppableId={type === 'rows' ? 'rows_items' : 'columns_items'}>

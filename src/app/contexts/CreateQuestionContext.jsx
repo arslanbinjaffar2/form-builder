@@ -1247,7 +1247,6 @@ class CreateQuestionContextProvider extends Component {
     const handleClick = (e) => {
       e.preventDefault();
       e.stopPropagation();
-      alert('here');
       e.target.classList.toggle('ebs-btn-active');
       const _rect = e.target.getBoundingClientRect();
       const _wHeight = window.innerHeight;

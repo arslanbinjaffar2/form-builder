@@ -86,19 +86,7 @@ export default class AnswerBox extends Component {
     dropdown_one: [], 
     dropdown_two: [], 
   }
-  handleClick = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    e.target.classList.toggle('ebs-btn-active');
-    const _rect = e.target.getBoundingClientRect();
-    const _wHeight = window.innerHeight;
-    const _position = _wHeight - (_rect.top + 168);
-    if (_position <= 0 ) {
-      e.target.classList.add('ebs-position-top');
-    } else {
-      e.target.classList.remove('ebs-position-top'); 
-    }
-  }
+
   componentDidMount() {
     let _data = this.props.data;
     // eslint-disable-next-line no-eval
@@ -109,15 +97,8 @@ export default class AnswerBox extends Component {
           dropdown_one: _data.type === 'short_answer' ? _options : _options_para,
           dropdown_two: _evaldropdown ? _evaldropdown : _IS_NUMBER
         })
-    window.addEventListener('click',this.onBodyClick.bind(this), false)
   }
 
-  onBodyClick = (e) => {
-  var _tooltip = document.querySelector('.ebs-more-option-panel .ebs-btn');
-  if (_tooltip) {
-    _tooltip.classList.remove('ebs-btn-active');
-  }
-  }
 
   componentWillReceiveProps(nextProps) {
       let _data = this.props.data;
@@ -129,9 +110,7 @@ export default class AnswerBox extends Component {
           })
     
    }
-  componentWillUnmount () {
-    window.removeEventListener('click',this.onBodyClick.bind(this), false)
-  }
+
   render() {
     const {
       cloneQuestion, 
@@ -237,7 +216,7 @@ export default class AnswerBox extends Component {
               </label>
             </div>
             <div className="ebs-more-option-panel">
-                <button  onClick={this.handleClick.bind(this)} className="ebs-btn tooltip-medium"><span style={{pointerEvents: 'none'}} className="material-icons">more_vert</span></button>
+                <button  onClick={(e) => this.context.handleClick(e)} className="ebs-btn tooltip-medium"><span style={{pointerEvents: 'none'}} className="material-icons">more_vert</span></button>
                 <div  className="ebs-app-tooltip">
                   <div className="ebs-title-tooltip">Show</div>
                   <div

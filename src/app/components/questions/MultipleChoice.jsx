@@ -47,7 +47,6 @@ export default class MultipleChoice extends Component {
   }
   componentDidMount() {
     this.generateSelect();
-    window.addEventListener('click', this.onBodyClick.bind(this), false)
   }
   componentWillReceiveProps(nextProps) {
     this.generateSelect();
@@ -68,15 +67,6 @@ export default class MultipleChoice extends Component {
     this.setState({
       sectionTo: newArray
     })
-  }
-  onBodyClick = (e) => {
-    var _tooltip = document.querySelector('.ebs-more-option-panel .ebs-btn');
-    if (_tooltip) {
-      _tooltip.classList.remove('ebs-btn-active');
-    }
-  }
-  componentWillUnmount() {
-    window.removeEventListener('click', this.onBodyClick.bind(this), false)
   }
   render() {
     const { 

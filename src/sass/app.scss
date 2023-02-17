@@ -93,7 +93,6 @@
   .ebs-form-box {
     border: 1px solid $border;
     border-radius: 12px;
-    overflow: hidden;
     cursor: pointer;
     margin-bottom: 40px;
     .ebs-box-image {
@@ -541,6 +540,15 @@
   .ebs-btn.ebs-btn-active.tooltip-small + {
     .ebs-app-tooltip  {
       max-width: 200px;
+      .ebs-tooltip-item {
+        height: 40px;
+        padding-left: 40px;
+        .ebs-icon {
+          left: 10px;
+          top: 12px;
+          font-size: 20px;
+        }
+      }
     }
   }
   .ebs-btn.ebs-btn-active.ebs-position-top + {

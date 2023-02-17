@@ -22,7 +22,34 @@ const HomeFormsList = (props) => {
   }, [data]);
 
 
+  useEffect(() => {
+    document.body.addEventListener('click',onBodyClick, false);
+    return () => {
+      document.body.removeEventListener('click',onBodyClick, false);
+    }
+  }, [])
+  const onBodyClick = (e) => {
+    var _tooltip = document.querySelectorAll('.ebs-more-option-panel .ebs-btn');
+    if (_tooltip) {
+      _tooltip.forEach(item => {
+        item.classList.remove('ebs-btn-active');
+      })
+    }
+  }
 
+  const handleClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    e.target.classList.toggle('ebs-btn-active');
+    const _rect = e.target.getBoundingClientRect();
+    const _wHeight = window.innerHeight;
+    const _position = _wHeight - (_rect.top + 168);
+    if (_position <= 0 ) {
+      e.target.classList.add('ebs-position-top');
+    } else {
+      e.target.classList.remove('ebs-position-top'); 
+    }
+  }
   const handleSearch = (e) => {
     e.preventDefault();
     const query = e.target.value;
@@ -47,15 +74,15 @@ const HomeFormsList = (props) => {
         {data && !processing && <div className="ebs-all-forms">
           <div className="ebs-top-panel">
             <div className="container">
-            <div className="row d-flex">
+            <div className="row d-flex align-items-center">
               <div className="col-4">
                 <h4>All forms</h4>
               </div>
               <div className="col-8 d-flex justify-content-end">
                 <div className="ebs-panel">
                   <div className="ebs-more-option-panel ebs-option-panel-medium">
-                    <button className="ebs-btn tooltip-small">
-                      <img src={require('img/ico-list.svg')} alt="" />
+                    <button onClick={handleClick} className="ebs-btn tooltip-small">
+                      <img style={{pointerEvents: 'none'}} src={require('img/ico-list.svg')} alt="" />
                     </button>
                     <div className="ebs-app-tooltip">
                       <div className="ebs-tooltip-item ebs-active"><i className="material-icons ebs-icon">check</i>Sort by name</div>
@@ -76,18 +103,27 @@ const HomeFormsList = (props) => {
             <div className="container">
               <div className="row d-flex align-items center">
                 {source && source.map((item,k) => 
-                  <div key={k} className="col-lg-3 col-md-4" onClick={()=>{ setCurrentForm(parseInt(props.event_id), parseInt(props.registration_form_id), item.id) }}>
-                    <div className="ebs-form-box">
+                  <div key={k} className="col-lg-3 col-md-4">
+                    <div className="ebs-form-box" onClick={()=>{ setCurrentForm(parseInt(props.event_id), parseInt(props.registration_form_id), item.id) }}>
                       <div className="ebs-box-image">
                         <img src={item.screenShot ? item.screenShot : require('img/template.svg') } alt="" />
                       </div>
                       <div className="ebs-desc-box">
                         <h3>{item.title ? item.title : 'Untitled form'}</h3>
-                        <div className="ebs-bottom-panel">
-                          <div className="ebs-timedate">
+                        <div className="ebs-bottom-panel d-flex align-items-center">
+                          <div className="ebs-timedate d-flex align-items-center w-100">
                           <span style={{color: 'rgba($black,0.1)'}} className="material-icons">description</span>
                           Opened {lastModified(item.updated_at)}</div>
-                          
+                          <div className="ebs-more-option-panel ebs-option-panel-medium">
+                            <button onClick={handleClick} className="ebs-btn tooltip-small">
+                              <span style={{pointerEvents: 'none'}} className="material-icons">more_vert</span>
+                            </button>
+                            <div className="ebs-app-tooltip">
+                              <div className="ebs-tooltip-item ebs-active"><i className="material-icons ebs-icon">check</i>Sort by name</div>
+                              <div className="ebs-tooltip-item">Sort by date</div>
+                              <div className="ebs-tooltip-item">Sort by name</div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
