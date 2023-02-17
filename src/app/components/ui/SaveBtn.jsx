@@ -2,7 +2,7 @@ import React from 'react'
 
 const SaveBtn = ({children, ...rest}) => {
   return (
-    <button {...rest} className="ebs-save-btn" >{children}</button>
+    <span {...rest} className="ebs-btn" ><i className="material-icons">save</i></span>
 
   )
 }

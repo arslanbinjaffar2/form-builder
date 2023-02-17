@@ -46,7 +46,7 @@ const Section = ({ onClick, value, data, index,  }) => {
             </div>
             {data.length > 1 && value.active && <div className="col-1">
               <div className="ebs-more-option-panel">
-                <button onClick={handlebtnClick} className={`ebs-btn tooltip-medium`}><span style={{ pointerEvents: 'none' }} className="material-icons">more_vert</span></button>
+                <button onClick={(e) => handleClick(e)} className={`ebs-btn tooltip-medium`}><span style={{ pointerEvents: 'none' }} className="material-icons">more_vert</span></button>
                 <div className="ebs-app-tooltip">
                   <div
                     onClick={(e) => cloneSection({section_id: value.id}, index)}

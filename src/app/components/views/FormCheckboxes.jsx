@@ -4,8 +4,8 @@ const FormCheckboxes = ({data, formData, setFormData, setValidated}) => {
 
   const onChange = (evt) => { 
     let answers2 = formData[data.form_builder_section_id][data.id]['answer'] 
-    if(answers2.findIndex((item)=>(item == parseInt(evt.currentTarget.value))) > -1){
-      answers2 = answers2.filter((item)=>(item != parseInt(evt.currentTarget.value)))
+    if(answers2.findIndex((item)=>(item === parseInt(evt.currentTarget.value))) > -1){
+      answers2 = answers2.filter((item)=>(item !== parseInt(evt.currentTarget.value)))
     }
     else{
       answers2 = [...answers2, parseInt(evt.currentTarget.value)];
@@ -40,7 +40,7 @@ const FormCheckboxes = ({data, formData, setFormData, setValidated}) => {
             </label> 
           )}
            {formData[data.form_builder_section_id][data.id]['validationError'] === true && data.validation.custom_error}
-           {formData[data.form_builder_section_id][data.id]['requiredError'] === true && "This question is required"}
+           {formData[data.form_builder_section_id][data.id]['requiredError'] === true && <div className='ebs-error-container'>This question is required</div>}
      
       </div>
     </div>

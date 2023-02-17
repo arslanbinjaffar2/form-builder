@@ -17,7 +17,7 @@ const customStyles = {
     ...styles,
     whiteSpace: 'nowrap',
     overflow: 'hidden',
-    maxWidth: 350,
+    maxWidth: '100%',
     textOverflow: 'ellipsis'
 
   })
@@ -27,7 +27,7 @@ const customStyles = {
 
 const FormDropDown = ({data, formData, setFormData, setValidated}) => {
   const onChange = (evt) => { 
-    // console.log(evt);
+    console.log(evt);
     let newFormData = formData;
     const valid = evt.id !== "" && data.validation.type !== undefined ? validateShortAnswer(data.validation, evt.id) : true;
     newFormData = {...formData,
@@ -37,7 +37,7 @@ const FormDropDown = ({data, formData, setFormData, setValidated}) => {
           validationError:!valid,  
           question_type:data.type}}};
 
-    console.log(newFormData);
+    //console.log(newFormData);
     setFormData(newFormData);
     setValidated(valid);
   }
@@ -70,6 +70,7 @@ const FormDropDown = ({data, formData, setFormData, setValidated}) => {
             primary: '#E39840',
           },
         })}/>
+        {formData[data.form_builder_section_id][data.id]['requiredError'] && <div className='ebs-error-container'>This question is required</div>}
       </div>
     </div>
   )
