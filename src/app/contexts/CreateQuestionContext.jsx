@@ -112,12 +112,34 @@ const _newsection = {
   sort_order: 0,
 };
 const _newtextarea = {
-  type: 'TEXT_BLOCK',
-  title: 'Untitled Section',
-  description: 'Form Description',
+  type: 'text_block',
+  title: 'Text section',
+  description: '',
   required: 0,
   active: 0,
   sort_order:0,
+  form_builder_form_id:0,
+  form_builder_section_id:0,
+};
+const _newVideoBlock = {
+  type: 'video_block',
+  title: 'Upload video',
+  description: '',
+  required: 0,
+  active: 0,
+  sort_order:0,
+  form_builder_form_id:0,
+  form_builder_section_id:0,
+};
+const _newImageBlock = {
+  type: 'image_block',
+  title: 'Upload Image',
+  description: '',
+  required: 0,
+  active: 0,
+  sort_order:0,
+  form_builder_form_id:0,
+  form_builder_section_id:0,
 };
 
 // const _data = [
@@ -631,6 +653,38 @@ class CreateQuestionContextProvider extends Component {
             });          
           }
       }
+      if (type === 'ADD_PHOTO') {
+        let _questionIndex = 0;
+        let _clone = JSON.parse(JSON.stringify(_newImageBlock));
+          if(_section[_sectionIndex].questions === undefined && _section[_sectionIndex].questions.length <= 0){
+            _section[_sectionIndex].questions = [_clone];
+            _section[_sectionIndex].questions[0].active = true;
+          }else{
+            _questionIndex = _section[_sectionIndex].questions.findIndex(x => x.active === true) !== -1 ? _section[_sectionIndex].questions.findIndex(x => x.active === true) : 0;
+            _section[_sectionIndex].questions.splice(_questionIndex + 1, 0, _clone);
+            _section[_sectionIndex].questions[_questionIndex].active = false;
+            _section[_sectionIndex].questions[_questionIndex + 1].active = true;
+            _section[_sectionIndex].questions.forEach((element, k) => {
+              element.sort_order = k;
+            });          
+          }
+      }
+      if (type === 'ADD_VIDEO') {
+        let _questionIndex = 0;
+        let _clone = JSON.parse(JSON.stringify(_newVideoBlock));
+          if(_section[_sectionIndex].questions === undefined && _section[_sectionIndex].questions.length <= 0){
+            _section[_sectionIndex].questions = [_clone];
+            _section[_sectionIndex].questions[0].active = true;
+          }else{
+            _questionIndex = _section[_sectionIndex].questions.findIndex(x => x.active === true) !== -1 ? _section[_sectionIndex].questions.findIndex(x => x.active === true) : 0;
+            _section[_sectionIndex].questions.splice(_questionIndex + 1, 0, _clone);
+            _section[_sectionIndex].questions[_questionIndex].active = false;
+            _section[_sectionIndex].questions[_questionIndex + 1].active = true;
+            _section[_sectionIndex].questions.forEach((element, k) => {
+              element.sort_order = k;
+            });          
+          }
+      }
       this.setState({
         data: {...this.state.data, sections:_section}
       })
@@ -899,6 +953,13 @@ class CreateQuestionContextProvider extends Component {
 
         }
         if (type === 'checkboxes' && _prevType !== 'checkboxes') {
+          _query.options.section_based = false;
+          _query.validation = JSON.parse(JSON.stringify(_checkboxvalidation));
+          _query.answers.forEach(element => {
+            element.next_section = 'CONTINUE'
+          });
+        }
+        if (type === 'file_upload' && _prevType !== 'file_upload') {
           _query.options.section_based = false;
           _query.validation = JSON.parse(JSON.stringify(_checkboxvalidation));
           _query.answers.forEach(element => {

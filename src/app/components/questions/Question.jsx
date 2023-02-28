@@ -5,6 +5,7 @@ import AnswerBox from "./AnswerBox";
 import LinearScale from "./LinearScale";
 import MutipleChoiceGrid from "./MutipleChoiceGrid";
 import DateTimeModule from "./DateTimeModule";
+import FileUpload from "./FileUpload";
 import { CreateQuestionContext } from "app/contexts/CreateQuestionContext";
 import SaveBtn from "@/ui/SaveBtn";
 const { Option, SingleValue } = components;
@@ -238,6 +239,15 @@ export default class Question extends Component {
         )}
         {(type === "date" || type === "time") && (
           <DateTimeModule
+            data={this.props.data}
+            sectionIndex={this.props.sectionIndex}
+            questionIndex={this.props.questionIndex}
+            formId={this.props.formId}
+            sectionId={this.props.sectionId}
+          />
+        )}
+        {(type === "file_upload") && (
+          <FileUpload
             data={this.props.data}
             sectionIndex={this.props.sectionIndex}
             questionIndex={this.props.questionIndex}
