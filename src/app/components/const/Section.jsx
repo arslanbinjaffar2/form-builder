@@ -17,8 +17,8 @@ function handleClick() {
 }
 const Section = ({ onClick, value, data, index,  }) => {
   const [section ] = useState(index);
-  const {handleSectionArea,handleSectionPanel,handleSectionSort, cloneSection, saveSection, deleteSection} = useContext(CreateQuestionContext);
-  handleClick()
+  const {handleSectionArea,handleSectionPanel,handleSectionSort, cloneSection, saveSection, deleteSection, handleClick} = useContext(CreateQuestionContext);
+  // handleClick()
   const handlebtnClick = (e) => {
     e.preventDefault();
     e.stopPropagation();

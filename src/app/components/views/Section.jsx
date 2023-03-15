@@ -135,7 +135,7 @@ const Section = ({section, sections, active, setactive, formData, setFormData}) 
                     else if(item.type === "date"){
                         return <FormDatebox key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
                     }
-                    else if(item.type === "TEXT_BLOCK"){
+                    else if(item.type === "text_block"){
                         return <FormTextBlock key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
                     }else{
                         return null;
