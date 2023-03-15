@@ -151,12 +151,12 @@ const createForm = (props) => {
                 <li onClick={(e) => handleTooltip("ADD_TITLE_DESCRIPTION", props.match.params.id)}>
                   <span className="material-icons">text_fields</span>
                 </li>
-                <li onClick={(e) => handleTooltip("ADD_PHOTO", props.match.params.id)}>
+                {/* <li onClick={(e) => handleTooltip("ADD_PHOTO", props.match.params.id)}>
                   <span className="material-icons">photo</span>
                 </li>
                 <li onClick={(e) => handleTooltip("ADD_VIDEO", props.match.params.id)}>
                   <span className="material-icons">slideshow</span>
-                </li>
+                </li> */}
                 <li
                   onClick={(e) => handleTooltip("ADD_SECTION", props.match.params.id)}
                 >
