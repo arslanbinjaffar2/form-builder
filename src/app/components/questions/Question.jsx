@@ -52,7 +52,7 @@ const qustionTypeOptions = [
   { value: "multiple_choice", label: "Multiple choice", icon: "ico-radio.svg" },
   { value: "checkboxes", label: "Checkboxes", icon: "ico-checkbox.svg" },
   { value: "drop_down", label: "Drop down", icon: "ico-dropdown.svg" },
-  // { value: "file_upload", label: "File upload", icon: "ico-cloud.svg" },
+  { value: "file_upload", label: "File upload", icon: "ico-cloud.svg" },
   { value: "linear_scale", label: "Linear scale", icon: "ico-linear.svg" },
   {
     value: "multiple_choice_grid",

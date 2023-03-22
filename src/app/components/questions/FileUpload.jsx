@@ -7,6 +7,7 @@ const FileUpload = (props) => {
   return (
     active && <div className="ebs-footer-wrapper">
         <div className="ebs-left-area d-flex">
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus voluptatem cum illo reiciendis voluptas autem perferendis sapiente magni architecto tempora.</p>
               <SaveBtn
               onClick={() => {
                 this.props.data.id !== undefined ?

@@ -77,7 +77,7 @@ const Section = ({ onClick, value, data, index,  }) => {
             </div>}
           </div>
           <textarea onChange={(e) => handleSectionArea(e.target,'description',index)} placeholder="Form Description" className="ebs-textarea-desc" value={value.description} />
-          <SaveBtn onClick={()=>{saveSection(value)}}>Save Section</SaveBtn>
+          {/* <SaveBtn onClick={()=>{saveSection(value)}}>Save Section</SaveBtn> */}
         </div>
       </div>
     </React.Fragment>

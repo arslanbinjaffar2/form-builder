@@ -50,8 +50,8 @@ const CreateFormModal = ({event_id, registration_form_id, open, close}) => {
                     <textarea placeholder="description" type="text" onChange={(e)=>{setDescription(e.currentTarget.value)}} />
                 </div>
                 <div>
-                    <button type="submit" className='ebs-btn' onClick={()=>{addForm()}} >Create Form</button>
-                    {processing && <span>Processing....</span>}
+                    <button type="submit"  style={{padding: '8px 15px',fontSize: '13px'}} className='btn' onClick={()=>{addForm()}} >Create form</button>
+                    {processing && <span style={{paddingLeft: '15px'}}>Processing....</span>}
                 </div>
             </div>
         </div>

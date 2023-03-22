@@ -508,6 +508,11 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  .ebs-left-area {
+    &:first-of-type {
+      padding-right: 0;
+    }
+  }
 }
 
 .ebs-more-option-panel {
