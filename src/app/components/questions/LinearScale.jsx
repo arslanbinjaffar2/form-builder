@@ -112,7 +112,7 @@ export default class LinearScale extends Component {
                 <div className="ebs-label"></div>
                 <div className="ebs-value"><div className="ebs-value-inner">{options.min_label}</div></div>
               </div>
-               {Array.apply(null,Array()).map((e,i) => (
+               {[...Array(Number(options.max || 2))].map((e,i) => (
                  <div key={i} className="ebs-linear-box d-flex">
                   <div className="ebs-label">{i + (Number(options.min) === 0 ? 0 : 1)}</div>
                   <div className="ebs-value"><i className="material-icons">radio_button_unchecked</i></div>
