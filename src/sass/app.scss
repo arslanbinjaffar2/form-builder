@@ -106,6 +106,19 @@
         max-height: 100%;
       }
     }
+    .ebs-vert-box-image {
+      cursor: pointer;
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba($black,0.05);
+      width: 250px;
+      img {
+        max-width: 100%;
+        max-height: 100%;
+      }
+    }
     .ebs-desc-box {
       padding: 15px 20px;
       background: $white;
@@ -1503,4 +1516,10 @@ align-items: center;
     color: #bdbdbd;
     outline: none;
     transition: border .24s ease-in-out;
+}
+
+.list-view{
+  div:first-child{
+    width: 100%;
+  }
 }
