@@ -5,26 +5,35 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 const lastModified = (date) => {
   return moment(date).format('DD MMM, YYYY');
 }
-const FormListView = ({source,  handleClick, setCurrentForm, registration_form_id, event_id}) => {
-    const onDragStart = (result) => {
-        // console.log(document.activeElement);
+
+const reorder = (list, startIndex, endIndex) => {
+    const result = Array.from(list);
+    const [removed] = result.splice(startIndex, 1);
+    result.splice(endIndex, 0, removed);
+  
+    return result.map((item,index)=>({...item, sort_order:index }));
+};
+
+const FormListView = ({source,  handleClick, setCurrentForm, registration_form_id, event_id, setSource}) => {
+   const onDragStart = (result) => {
         document.activeElement.blur();
       }
-      const onDragEnd = (result) => {
+    const  onDragEnd = (result) => {
         // dropped outside the list
-        console.log(result);
         if (!result.destination) {
           return;
         }
-        const { source, destination } = result;
-        // console.log(source, 'source');
-        // console.log(destination, 'destination');
-        // handleReorder(source, destination);
+        const items = reorder(
+          source,
+          result.source.index,
+          result.destination.index
+        );
+        setSource(items)
       }
   return (
     <React.Fragment>
-        <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
-            <Droppable style={{width:"100%"}}>
+        <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd} >
+            <Droppable style={{width:"100%"}} droppableId="droppablesection" >
                 {(provided, snapshot) => (
                     <div 
                     ref={provided.innerRef}    

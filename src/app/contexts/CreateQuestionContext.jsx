@@ -284,6 +284,32 @@ class CreateQuestionContextProvider extends Component {
         })
       }
     } 
+    const saveFormSortBackend = async (data) => {
+      this.setState({
+        updating:true,
+        updatingError:null,
+      })
+      try {
+        const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/saveFormSort/${this.state.event_id}/${this.state.registration_form_id}`, data, {cancelToken: signal.token});
+        if(response.data.status === 1){
+          this.setState({
+            updating:false,
+          })
+        }
+        else{
+          this.setState({
+            updating:false,
+            updatingError:response.data.message
+          })
+        }
+        
+      } catch (error) {
+        this.setState({
+          updating:false,
+          updatingError:error.message
+        })
+      }
+    } 
     const deleteSection = async (data) => {
       this.setState({
         updating:true,

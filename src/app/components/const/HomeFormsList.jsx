@@ -7,7 +7,7 @@ import FormListView from '../ui/FormListView';
 
 const HomeFormsList = (props) => {
   const { data, getForms, processing, cancelAllRequests, setCurrentForm } = useContext(FormDataContext);
-  const [source, setsource] = useState(null)
+  const [source, setSource] = useState(null)
   const [listView, setListView] = useState(false);
 
   useEffect(() => {
@@ -19,7 +19,7 @@ const HomeFormsList = (props) => {
 
 
   useEffect(() => {
-    setsource(data);
+    setSource(data);
   }, [data]);
 
 
@@ -62,11 +62,11 @@ const HomeFormsList = (props) => {
     e.preventDefault();
     const query = e.target.value;
     if (query === '') {
-      setsource(data);
+      setSource(data);
     } else {
       const searchList = data.slice().filter(item => item.title.toLowerCase().includes(query.toLowerCase()));
       if (searchList) {
-        setsource(searchList);
+        setSource(searchList);
       }
     }
   }
@@ -89,7 +89,12 @@ const HomeFormsList = (props) => {
               <div className="col-8 d-flex justify-content-end">
                 <div className="ebs-panel">
                   <div className="ebs-more-option-panel ebs-option-panel-medium">
-                    <button onClick={()=> setListView(!listView)} className="ebs-btn tooltip-small">
+                    <button onClick={()=> { 
+                      if(!listView){
+                        setSource(data);
+                      }
+                      setListView(!listView)
+                     }} className="ebs-btn tooltip-small">
                       <img style={{pointerEvents: 'none'}} src={require('img/ico-list.svg')} alt="" />
                     </button>
                     {/* <div className="ebs-app-tooltip">
@@ -98,10 +103,10 @@ const HomeFormsList = (props) => {
                       <div className="ebs-tooltip-item">Sort by name</div>
                     </div> */}
                   </div>
-                  <label className="ebs-btn">
+                  {!listView && <label className="ebs-btn">
                     <img src={require('img/ico-search.svg')} alt="" />
                     <input placeholder=' ' type="text" onChange={handleSearch} />
-                  </label>
+                  </label>}
                 </div>
               </div>
               </div>
@@ -110,8 +115,8 @@ const HomeFormsList = (props) => {
           <div className="ebs-form-list">
             <div className="container">
               <div className={`row d-flex align-items center ${listView ? 'list-view' : ''}`}>
-                {!listView ? <FormGridView source={source}   handleClick={handleClick} setCurrentForm={setCurrentForm} registration_form_id={props.registration_form_id} event_id={props.event_id} />
-                 : <FormListView source={source}   handleClick={handleClick} setCurrentForm={setCurrentForm} registration_form_id={props.registration_form_id} event_id={props.event_id} />}
+                {!listView ? <FormGridView source={source}  handleClick={handleClick} setCurrentForm={setCurrentForm} registration_form_id={props.registration_form_id} event_id={props.event_id} />
+                 : <FormListView source={source} setSource={setSource}  handleClick={handleClick} setCurrentForm={setCurrentForm} registration_form_id={props.registration_form_id} event_id={props.event_id} />}
                 </div>
             </div>
           </div>
