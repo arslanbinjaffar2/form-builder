@@ -41,8 +41,9 @@ const Section = ({ onClick, value, data, index,  }) => {
         </div>}
         <div className="ebs-section-box">
           <div className="row d-flex">
-            <div className={data.length > 1 ? 'col-11 pr-0' : 'col-12'}>
+            <div className={data.length > 1 ? 'col-11 pr-0 pb-4' : 'col-12 pb-4'}>
               <textarea onChange={(e) => handleSectionArea(e.target,'title',index)} placeholder="Untitled form" className="ebs-textarea-title" value={value.title} />
+              <textarea onChange={(e) => handleSectionArea(e.target,'description',index)}  placeholder="Form Description" className="ebs-textarea-desc" value={value.description} />
             </div>
             {data.length > 1 && value.active && <div className="col-1">
               <div className="ebs-more-option-panel">
@@ -76,8 +77,11 @@ const Section = ({ onClick, value, data, index,  }) => {
               </div>
             </div>}
           </div>
-          <textarea onChange={(e) => handleSectionArea(e.target,'description',index)} placeholder="Form Description" className="ebs-textarea-desc" value={value.description} />
-          <SaveBtn onClick={()=>{saveSection(value)}}>Save Section</SaveBtn>
+          <div className="ebs-footer-wrapper">
+            <div className="ebs-left-area d-flex">
+              <SaveBtn onClick={()=>{saveSection(value)}}>Save Section</SaveBtn>
+            </div>
+          </div>
         </div>
       </div>
     </React.Fragment>
