@@ -207,8 +207,94 @@ class FormDataContextProvider extends Component {
         })
       }
     } 
+    
+    const saveFormTitle = async (data, callBack) => {
+      this.setState({
+        updating:true,
+        updatingError:null,
+      })
+      try {
+        const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/renameForm/${this.state.event_id}/${this.state.registration_form_id}`, data, {cancelToken: signal.token});
+        if(response.data.status === 1){
+          this.setState({
+            updating:false,
+            data:this.state.data.map((item)=>{ if(item.id !==  data.form_id){ return item}else{ return {...item, title:data.title} } })
+          })
+          callBack();
+        }
+        else{
+          this.setState({
+            updating:false,
+            updatingError:response.data.message
+          })
+        }
+        
+      } catch (error) {
+        this.setState({
+          updating:false,
+          updatingError:error.message
+        })
+      }
+    } 
+
+    const deleteForm = async (data) => {
+      this.setState({
+        updating:true,
+        updatingError:null,
+      })
+      try {
+        const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/deleteForm/${this.state.event_id}/${this.state.registration_form_id}`, data, {cancelToken: signal.token});
+        if(response.data.status === 1){
+          this.setState({
+            updating:false,
+            data:[...response.data.data.data]
+          })
+        }
+        else{
+          this.setState({
+            updating:false,
+            updatingError:response.data.message
+          })
+        }
+        
+      } catch (error) {
+        this.setState({
+          updating:false,
+          updatingError:error.message
+        })
+      }
+    } 
+    
+    const copyForm = async (data) => {
+      this.setState({
+        updating:true,
+        updatingError:null,
+      })
+      try {
+        const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/copyForm/${this.state.event_id}/${this.state.registration_form_id}`, data, {cancelToken: signal.token});
+        console.log(response.data.data);
+        if(response.data.status === 1){
+          this.setState({
+            updating:false,
+            data:[...response.data.data.data]
+          })
+        }
+        else{
+          this.setState({
+            updating:false,
+            updatingError:response.data.message
+          })
+        }
+        
+      } catch (error) {
+        this.setState({
+          updating:false,
+          updatingError:error.message
+        })
+      }
+    } 
     return (
-     <FormDataContext.Provider value={{...this.state,handleSave, createForm, cancelAllRequests, getForms, setCurrentForm, saveFormSortBackend, saveFormStatus}}>
+     <FormDataContext.Provider value={{...this.state,handleSave, createForm, copyForm, deleteForm, cancelAllRequests, saveFormTitle, getForms, setCurrentForm, saveFormSortBackend, saveFormStatus}}>
         {this.props.children}
      </FormDataContext.Provider>
     )
