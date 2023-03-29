@@ -3,7 +3,7 @@ import moment from 'moment';
 const lastModified = (date) => {
   return moment(date).format('DD MMM, YYYY');
 }
-const FormGridView = ({source,  handleClick, setCurrentForm, registration_form_id, event_id}) => {
+const FormGridView = ({source,  handleClick, setCurrentForm, registration_form_id, event_id, changeStatus}) => {
   return (
     <React.Fragment>
       {source && source.map((item,k) => 
@@ -28,7 +28,7 @@ const FormGridView = ({source,  handleClick, setCurrentForm, registration_form_i
                     <div className="ebs-tooltip-item"><i className="material-icons ebs-icon">text_fields</i>Rename</div>
                     <div className="ebs-tooltip-item"><i className="material-icons ebs-icon">content_copy</i>Copy</div>
                     <div className="ebs-tooltip-item"><i className="material-icons ebs-icon">delete_outline</i>Delete</div>
-                    <div className="ebs-tooltip-item"><i className="material-icons ebs-icon">toggle_on</i>Active</div>
+                    <div className="ebs-tooltip-item" onClick={() =>changeStatus({form_id:item.id, status:!item.active})}><i className="material-icons ebs-icon">{item.active == 0 ? 'toggle_off' : 'toggle_on'}</i>{item.active == 0 ? 'Inactive' : 'Active'}</div>
                   </div>
                 </div>
               </div>

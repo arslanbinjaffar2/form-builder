@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import moment from 'moment';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { FormDataContext } from 'app/contexts/FormDataContext';
 
 const lastModified = (date) => {
   return moment(date).format('DD MMM, YYYY');
@@ -14,7 +15,9 @@ const reorder = (list, startIndex, endIndex) => {
     return result.map((item,index)=>({...item, sort_order:index }));
 };
 
-const FormListView = ({source,  handleClick, setCurrentForm, registration_form_id, event_id, setSource}) => {
+const FormListView = ({source,  handleClick, setCurrentForm, registration_form_id, event_id, setSource, changeStatus}) => {
+  const {  saveFormSortBackend } = useContext(FormDataContext);
+
    const onDragStart = (result) => {
         document.activeElement.blur();
       }
@@ -28,7 +31,8 @@ const FormListView = ({source,  handleClick, setCurrentForm, registration_form_i
           result.source.index,
           result.destination.index
         );
-        setSource(items)
+        setSource(items);
+        saveFormSortBackend(items);
       }
   return (
     <React.Fragment>
@@ -71,7 +75,7 @@ const FormListView = ({source,  handleClick, setCurrentForm, registration_form_i
                                                     <div className="ebs-tooltip-item"><i className="material-icons ebs-icon">text_fields</i>Rename</div>
                                                     <div className="ebs-tooltip-item"><i className="material-icons ebs-icon">content_copy</i>Copy</div>
                                                     <div className="ebs-tooltip-item"><i className="material-icons ebs-icon">delete_outline</i>Delete</div>
-                                                    <div className="ebs-tooltip-item"><i className="material-icons ebs-icon">toggle_on</i>Active</div>
+                                                    <div className="ebs-tooltip-item" onClick={() =>changeStatus({form_id:item.id, status:!item.active})}><i className="material-icons ebs-icon">{item.active == 0 ? 'toggle_off' : 'toggle_on'}</i>{item.active == 0 ? 'Inactive' : 'Active'}</div>
                                                 </div>
                                                 </div>
                                             </div>

@@ -1,4 +1,4 @@
-import React, {useEffect, useContext, useState }  from 'react';
+import React, {useEffect, useContext, useState, useCallback }  from 'react';
 import { FormDataContext } from 'app/contexts/FormDataContext';
 import moment from 'moment';
 import FormGridView from '../ui/FormGridView';
@@ -6,9 +6,10 @@ import FormListView from '../ui/FormListView';
 
 
 const HomeFormsList = (props) => {
-  const { data, getForms, processing, cancelAllRequests, setCurrentForm } = useContext(FormDataContext);
+  const { data, getForms, processing, cancelAllRequests, setCurrentForm, saveFormStatus } = useContext(FormDataContext);
   const [source, setSource] = useState(null)
   const [listView, setListView] = useState(false);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     getForms(parseInt(props.event_id), parseInt(props.registration_form_id));
@@ -19,7 +20,12 @@ const HomeFormsList = (props) => {
 
 
   useEffect(() => {
-    setSource(data);
+    if(search !== ""){
+     let searchData = data.slice().filter(item => item.title.toLowerCase().includes(search.toLowerCase()));
+      setSource(searchData);
+    }else{
+      setSource(data);
+    }
   }, [data]);
 
 
@@ -61,6 +67,7 @@ const HomeFormsList = (props) => {
   const handleSearch = (e) => {
     e.preventDefault();
     const query = e.target.value;
+    setSearch(query);
     if (query === '') {
       setSource(data);
     } else {
@@ -70,6 +77,13 @@ const HomeFormsList = (props) => {
       }
     }
   }
+  const changeStatus = useCallback(
+    (data) => {
+      saveFormStatus(data);
+    },
+    [],
+  )
+  
     return (
       <React.Fragment>
         {data.length <= 0 && processing && 
@@ -105,7 +119,7 @@ const HomeFormsList = (props) => {
                   </div>
                   {!listView && <label className="ebs-btn">
                     <img src={require('img/ico-search.svg')} alt="" />
-                    <input placeholder=' ' type="text" onChange={handleSearch} />
+                    <input placeholder=' ' type="text" value={search} onChange={handleSearch} />
                   </label>}
                 </div>
               </div>
@@ -115,8 +129,8 @@ const HomeFormsList = (props) => {
           <div className="ebs-form-list">
             <div className="container">
               <div className={`row d-flex align-items center ${listView ? 'list-view' : ''}`}>
-                {!listView ? <FormGridView source={source}  handleClick={handleClick} setCurrentForm={setCurrentForm} registration_form_id={props.registration_form_id} event_id={props.event_id} />
-                 : <FormListView source={source} setSource={setSource}  handleClick={handleClick} setCurrentForm={setCurrentForm} registration_form_id={props.registration_form_id} event_id={props.event_id} />}
+                {!listView ? <FormGridView source={source} changeStatus={changeStatus}  handleClick={handleClick} setCurrentForm={setCurrentForm} registration_form_id={props.registration_form_id} event_id={props.event_id} />
+                 : <FormListView source={source} changeStatus={changeStatus} setSource={setSource}  handleClick={handleClick} setCurrentForm={setCurrentForm} registration_form_id={props.registration_form_id} event_id={props.event_id} />}
                 </div>
             </div>
           </div>
