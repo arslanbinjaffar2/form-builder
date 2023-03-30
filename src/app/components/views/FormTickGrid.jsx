@@ -19,14 +19,14 @@ const FormTickGrid = ({data, formData, setFormData, setValidated}) => {
     let valid = true;
     
     if(data.options.limit !== undefined && data.options.limit === 1){
-        if(answeredColumn.findIndex((item:any)=>(item === anwser_id)) > -1 && newAnswer.findIndex((item:any)=>(item === anwser_id)) < 0){
+        if(answeredColumn.findIndex((item)=>(item === anwser_id)) > -1 && newAnswer.findIndex((item)=>(item === anwser_id)) < 0){
             return;
         }
     }
 
-    if(newAnswer.findIndex((item:any)=>(item === anwser_id)) > -1){
-        newAnswer = newAnswer.filter((item:any)=>(item !== anwser_id))
-        setAnsweredColumn(answeredColumn.filter((item:any)=>(item !== anwser_id)));
+    if(newAnswer.findIndex((item)=>(item === anwser_id)) > -1){
+        newAnswer = newAnswer.filter((item)=>(item !== anwser_id))
+        setAnsweredColumn(answeredColumn.filter((item)=>(item !== anwser_id)));
     }else{
         newAnswer =[...newAnswer, anwser_id]; 
         setAnsweredColumn([...answeredColumn, anwser_id]);
@@ -71,7 +71,7 @@ const FormTickGrid = ({data, formData, setFormData, setValidated}) => {
                   <div key={k} className="ebs-question-grid-th ebs-grid-checkbox">
                       <label className="ebs-option ebs-radio">
                         <input name={`item_${key}`} defaultValue={data.index} type="checkbox" checked={(formData[data.form_builder_section_id][data.id].answer_id !== undefined && 
-                          formData[data.form_builder_section_id][data.id].answer_id[items.id] !== undefined && formData[data.form_builder_section_id][data.id].answer_id[items.id].findIndex((item:any)=>(item === element.id)) > -1) ? true : false} value={element.id} onChange={(e)=>{onChange(e, element.id, items.id)}} />
+                          formData[data.form_builder_section_id][data.id].answer_id[items.id] !== undefined && formData[data.form_builder_section_id][data.id].answer_id[items.id].findIndex((item)=>(item === element.id)) > -1) ? true : false} value={element.id} onChange={(e)=>{onChange(e, element.id, items.id)}} />
                         <i className="material-icons"></i>
                       </label>
                   </div>

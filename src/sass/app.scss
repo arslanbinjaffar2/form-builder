@@ -1162,6 +1162,26 @@
       content: "\e834";
     }
   }
+
+  input[type="checkbox"].radio-checkbox{
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    &:checked ~ .material-icons{
+      color: $borderhover;
+    }
+    & ~ .material-icons::before {
+      font-family: "Material Icons";
+      content: "\e836";
+    }
+    &:checked ~ .material-icons::before {
+      content: "\e837";
+    }
+  }
+
   &:hover {
     box-shadow: 0 0 0 5px rgba($text, 0.1);
   }
