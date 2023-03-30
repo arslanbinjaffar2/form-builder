@@ -1108,8 +1108,14 @@ class CreateQuestionContextProvider extends Component {
     const setResponseValidationCheckBoxValue = async (sectionIndex, questionIndex, value) => {
       const _sections = [...this.state.data.sections];
       const _query = _sections[sectionIndex].questions[questionIndex];
-
+      if(typeof _query.validation === "object"){
         _query.validation.value = value;
+      }else{
+        _query.validation = {
+          value:value,
+          type:'checkbox'
+        }
+      }
 
         this.setState({
           data: {...this.state.data, sections:_sections}
@@ -1121,8 +1127,14 @@ class CreateQuestionContextProvider extends Component {
       const _sections = [...this.state.data.sections];
       const _query = _sections[sectionIndex].questions[questionIndex];
 
-        _query.validation.custom_error = error;
-
+      if(typeof _query.validation === "object"){
+          _query.validation.custom_error = error;
+        }else{
+          _query.validation = {
+            custom_error:error,
+            type:'checkbox'
+          }
+        }
 
         this.setState({
           data: {...this.state.data, sections:_sections}
@@ -1131,11 +1143,17 @@ class CreateQuestionContextProvider extends Component {
     }
     
     
-    const setResponseValidationCheckBoxType = async (sectionIndex, questionIndex, type) => {
+    const setResponseValidationCheckBoxType = async (sectionIndex, questionIndex, rule) => {
       const _sections = [...this.state.data.sections];
       const _query = _sections[sectionIndex].questions[questionIndex];
-
-        _query.validation.type = type;
+        if(typeof _query.validation === "object"){
+          _query.validation.rule = rule;
+        }else{
+          _query.validation = {
+            rule:rule,
+            type:'checkbox'
+          }
+        }
 
         this.setState({
           data: {...this.state.data, sections:_sections}

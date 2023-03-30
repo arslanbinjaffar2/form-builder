@@ -189,7 +189,7 @@ export default class MultipleChoice extends Component {
                     menuPlacement="auto"
                     isSearchable={false}
                     styles={customStyles}
-                    value={_options[_options.findIndex(x => x.value === validation.type)]}
+                    value={_options[_options.findIndex(x => x.value === (typeof validation === "object" && validation.rule !== undefined ? validation.rule : 0))]}
                     onChange={(e) => setResponseValidationCheckBoxType(this.props.sectionIndex, this.props.questionIndex, e.value)}
                     components={{ IndicatorSeparator: () => null }}
                     theme={theme => ({
@@ -204,11 +204,11 @@ export default class MultipleChoice extends Component {
                     options={_options} />
                 </div>
                 <div className="col-3">
-                  <input type="text" value={validation.value}
+                  <input type="text" value={(typeof validation === "object" && validation.value !== undefined ? validation.value : '')}
                     onChange={(e) => setResponseValidationCheckBoxValue(this.props.sectionIndex, this.props.questionIndex, e.target.value)} placeholder="Number" />
                 </div>
                 <div className="col-6">
-                  <input type="text" value={validation.custom_error}
+                  <input type="text" value={(typeof validation === "object" && validation.custom_error !== undefined ? validation.custom_error : '')}
                     onChange={(e) => setResponseValidationCheckBoxError(this.props.sectionIndex, this.props.questionIndex, e.target.value)}
                     placeholder="Custom error validation" />
                 </div>
