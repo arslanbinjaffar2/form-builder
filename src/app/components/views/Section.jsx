@@ -37,7 +37,7 @@ const Section = ({section, sections, active, setactive, formData, setFormData}) 
                         }
                         
                         if((question.type === "tick_box_grid")){
-                            let answerdRows = section.questions.find((item)=>(item.id === question.id)).grid_questions.filter((item)=>( formData2[section.id][question.id].answer[item.id] !== undefined && formData2[section.id][question.id].answer[item.id].length > 0 ? true : false ))
+                            let answerdRows = section.questions.find((item)=>(item.id === question.id)).grid_questions.filter((item)=>( formData2[section.id][question.id].answer_id[item.id] !== undefined && formData2[section.id][question.id].answer_id[item.id].length > 0 ? true : false ))
                             if(answerdRows.length !== section.questions.find((item)=>(item.id === question.id)).grid_questions.length){
                                 formData2 = {...formData2, [question.form_builder_section_id]:{...formData2[section.id], [question.id]: { ...formData2[section.id][question.id], requiredError:true}}}
                                 notValidatedFor.push(question.id);
