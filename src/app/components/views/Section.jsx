@@ -60,6 +60,10 @@ const Section = ({section, sections, active, setactive, formData, setFormData}) 
                             }
                         }
                     }
+                    if(formData2[section.id][question.id].validationError){
+                        setValidated(false);
+                        notValidatedFor.push(question.id);
+                    }
             });
             setFormData(formData2);
             if (notValidatedFor.length <= 0 &&  validated === true){

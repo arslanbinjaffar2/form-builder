@@ -12,6 +12,8 @@ const FormCheckboxes = ({data, formData, setFormData, setValidated}) => {
     }
     let newFormData = formData;
     const valid = evt.currentTarget.value !== "" && data.validation.type !== undefined ? validateShortAnswer(data.validation, answers2) : true;
+    console.log(valid)
+    console.log(answers2)
     newFormData = {...formData,
        [data.form_builder_section_id]:{...formData[data.form_builder_section_id], 
         [data.id]:{ ...formData[data.form_builder_section_id][data.id], 
@@ -19,7 +21,6 @@ const FormCheckboxes = ({data, formData, setFormData, setValidated}) => {
           validationError:!valid,  
           question_type:data.type}}};
 
-    console.log(newFormData);
     setFormData(newFormData);
     setValidated(valid);
   }

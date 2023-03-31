@@ -119,6 +119,7 @@ export default class AnswerBox extends Component {
       setResponseValidationType, 
       setResponseValidationRule,
       setResponseValidationFeildValue,
+      setResponseValidationFeildValue2,
       setResponseValidationFeildError,
       setQuestionResponseValidation,
       changeQuestionRequiredStatus,
@@ -150,11 +151,15 @@ export default class AnswerBox extends Component {
                 options={this.state.dropdown_two} />
               </div>
               <div className={validation.type === 'NUMBER' || validation.type === 'LENGTH' ? 'col-2' : 'col-3'}>
-                {(validation.type === 'NUMBER' || validation.type === 'LENGTH') &&
+                {(validation.type === 'NUMBER' || validation.type === 'LENGTH') && (validation.rule !== 'IS_NUMBER' && validation.rule !== 'WHOLE_NUMBER') &&
                  <input 
                   onChange={(e) => setResponseValidationFeildValue(this.props.sectionIndex, this.props.questionIndex, e.target.value)}
                   value={validation.value ? validation.value: ''} placeholder="Number" className="" type="text" />}
-                {validation.type === 'TEXT' && <input
+                {(validation.type === 'NUMBER') && (validation.rule === 'BETWEEN' || validation.rule === 'NOT_BETWEEN') &&
+                 <input 
+                  onChange={(e) => setResponseValidationFeildValue2(this.props.sectionIndex, this.props.questionIndex, e.target.value)}
+                  value={validation.value_2 ? validation.value_2 : ''} placeholder="Number" className="" type="text" />}
+                {validation.type === 'TEXT' && (validation.rule !== 'EMAIL' && validation.rule !== 'URL') && <input
                 onChange={(e) => setResponseValidationFeildValue(this.props.sectionIndex, this.props.questionIndex, e.target.value)}
                  value={validation.value ? validation.value: ''} placeholder="Text" className="" type="text" />}
                 {validation.type === 'REGULAR_EXPRESSION' && 

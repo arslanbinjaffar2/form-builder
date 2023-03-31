@@ -1,7 +1,7 @@
 import validator from "validator";
 
 export function validateShortAnswer(validation, input){
-    // console.log(validation);
+    console.log(validation);
     if(validation.type === "NUMBER"){
          return   validateNumber(validation, input);
     }
@@ -16,6 +16,9 @@ export function validateShortAnswer(validation, input){
     }
     else if(validation.rule === "OPTION"){
         return validateOptions(validation, input);
+    }
+    else if(validation.type === "checkboxes"){
+        return validateCheckboxes(validation, input);
     }
 }
 
@@ -83,11 +86,11 @@ export function validateLength(validation, input){
 
 export function validateRegexp(validation, input){
     if(validation.rule === "CONTAINS"){
-        return validator.contains(input, validation.value);
+        return validator.matches(input, validation.value);
 
     }
     else if(validation.rule === "NOT_CONTAINS"){
-        return !validator.contains(input, validation.value);
+        return !validator.matches(input, validation.value);
 
     }
     else if(validation.rule === "MATCHES"){
@@ -109,6 +112,20 @@ export function validateOptions(validation, input){
         return input.length <= parseInt(validation.value);
     }
     else if(validation.type === "EXACTLY"){
+        return input.length ===  parseInt(validation.value);
+    }
+}
+
+export function validateCheckboxes(validation, input){
+    console.log(input);
+    if(validation.rule === "AT_LEAST"){
+        return input.length >=   parseInt(validation.value);
+    }
+    else if(validation.rule === "AT_MOST"){
+        console.log(input.length);
+        return input.length <= parseInt(validation.value);
+    }
+    else if(validation.rule === "EXACTLY"){
         return input.length ===  parseInt(validation.value);
     }
 }

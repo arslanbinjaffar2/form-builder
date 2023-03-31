@@ -10,6 +10,7 @@ const _answerboxshortValidation = {
   type: 'NUMBER',
   rule: 'GREATER_THAN',
   value: '',
+  value_2: '',
 };
 const _answerboxparaOption = {
   response_validation: 0,
@@ -19,6 +20,7 @@ const _answerboxparaValidation = {
   type: 'LENGTH',
   rule: 'MAX_CHAR_COUNT',
   value: '',
+  value_2: '',
 };
 
 // const _checkboxOption = {
@@ -27,9 +29,10 @@ const _answerboxparaValidation = {
 
 const _checkboxvalidation = {
   custom_error: '',
-  type: 'AT_LEAST',
-  rule: 'OPTION',
+  type: 'checkboxes',
+  rule: 'AT_LEAST',
   value: '',
+  value_2: '',
 };
 
 const _linearscaleOption = {
@@ -1092,6 +1095,18 @@ class CreateQuestionContextProvider extends Component {
 
     }
     
+    const setResponseValidationFeildValue2 = async (sectionIndex, questionIndex, type) => {
+      const _sections = [...this.state.data.sections];
+      const _query = _sections[sectionIndex].questions[questionIndex];
+
+        _query.validation.value_2 = type;
+     
+        this.setState({
+          data: {...this.state.data, sections:_sections}
+        })
+
+    }
+    
     const setResponseValidationFeildError = async (sectionIndex, questionIndex, type) => {
       const _sections = [...this.state.data.sections];
       const _query = _sections[sectionIndex].questions[questionIndex];
@@ -1110,6 +1125,7 @@ class CreateQuestionContextProvider extends Component {
       const _query = _sections[sectionIndex].questions[questionIndex];
       if(typeof _query.validation === "object"){
         _query.validation.value = value;
+        _query.validation.type = 'checkboxes';
       }else{
         _query.validation = {
           value:value,
@@ -1129,6 +1145,7 @@ class CreateQuestionContextProvider extends Component {
 
       if(typeof _query.validation === "object"){
           _query.validation.custom_error = error;
+          _query.validation.type = 'checkboxes';
         }else{
           _query.validation = {
             custom_error:error,
@@ -1148,6 +1165,7 @@ class CreateQuestionContextProvider extends Component {
       const _query = _sections[sectionIndex].questions[questionIndex];
         if(typeof _query.validation === "object"){
           _query.validation.rule = rule;
+          _query.validation.type = 'checkboxes';
         }else{
           _query.validation = {
             rule:rule,
@@ -1362,6 +1380,7 @@ class CreateQuestionContextProvider extends Component {
           setResponseValidationType,
           setResponseValidationRule,
           setResponseValidationFeildValue,
+          setResponseValidationFeildValue2,
           setResponseValidationFeildError,
           setResponseValidationCheckBoxValue,
           setResponseValidationCheckBoxError,

@@ -7,6 +7,9 @@
  padding: 22px 40px;
  border-bottom: 1px solid $border;
  background: $white; 
+ position: sticky;
+ top: 0px;
+ z-index: 9999;
  .ebs-title {
    white-space: nowrap;
    overflow: hidden;
