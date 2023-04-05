@@ -46,7 +46,7 @@ export function validateNumber(validation, input){
                 return   (parseFloat(input) > parseFloat(validation.value) && parseFloat(input) < parseFloat(validation.value_2)) ? true : false;
             }
             else if(validation.rule === "NOT_BETWEEN"){
-                return   (parseFloat(input) < parseFloat(validation.value) && parseFloat(input) > parseFloat(validation.value_2)) ? true : false;
+                return   ((parseFloat(input) < parseFloat(validation.value) ) || (parseFloat(input) > parseFloat(validation.value_2))) ? true : false;
             }
             else if(validation.rule === "IS_NUMBER"){
                 return   validator.isNumeric(input) ? true : false;

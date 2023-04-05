@@ -9,7 +9,7 @@ const CreateFormModal = ({event_id, registration_form_id, open, close}) => {
 
     const addForm = async () => {
         setError(false);
-        if(title === '' || description === ''){
+        if(title === ''){
             setError(true);
             return;
         }
@@ -28,6 +28,7 @@ const CreateFormModal = ({event_id, registration_form_id, open, close}) => {
             cancelAllRequests();
         }
       }
+
     }, [])
     
 
@@ -41,14 +42,18 @@ const CreateFormModal = ({event_id, registration_form_id, open, close}) => {
                 </div>
             </div>
             <div className="ebs-create-form-modal-body">
-                {processError !== null && <span className="error">{processError}</span>}
-                {error && <span className="error">Title and Description both feilds are required</span>}
                 <div className="ebs-input-response">
                     <input placeholder="Title" type="text" style={{maxWidth:'100%'}} onChange={(e)=>{setTitle(e.currentTarget.value)}}  />
                 </div>
                 <div className="ebs-input-response">
                     <textarea placeholder="description" type="text" style={{maxWidth:'100%'}} onChange={(e)=>{setDescription(e.currentTarget.value)}} />
                 </div>
+                {processError !== null &&  <div className="ebs-input-response">
+                    { <span className="ebs-error-container">{processError}</span>}
+                </div>}
+                {error && <div className="ebs-input-response">
+                    {<span className="ebs-error-container">Title feild is required</span>}
+                </div>}
                 <div>
                     <button type="submit"  style={{padding: '8px 15px',fontSize: '13px', backgroundColor:"#333333", fontWeight:'bold', width:"100%"}} className='btn' onClick={()=>{addForm()}} >{processing ? 'Processing....' : 'Create' }</button>
                     

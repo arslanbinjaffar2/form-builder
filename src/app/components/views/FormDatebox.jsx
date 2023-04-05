@@ -39,7 +39,7 @@ const FormDatebox = ({data, setFormData, formData, setValidated}) => {
       {(data.options.description_visible === 1 && data.description) && <div className="form-view-description">{data.description}</div>}
         <div className="ebs-options-view">
         <DateTime
-            input={false}
+            input={true}
             dateFormat={data.options.year === 1 ? 'MM/DD/YYYY' : 'MM/DD'}
             timeFormat={data.options.time === 1} 
             value={formData[data.form_builder_section_id][data.id]['answer'] !== '' ? moment(new Date(formData[data.form_builder_section_id][data.id]['answer'])) : ""}

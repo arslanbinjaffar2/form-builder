@@ -29,7 +29,7 @@ const FormShortAnswer = ({data, formData, setFormData, setValidated}) => {
             value={formData[data.form_builder_section_id][data.id]['answer']}
             onChange={(e)=>{onChange(e)}}  
            />
-           {formData[data.form_builder_section_id][data.id]['validationError'] === true && data.validation.custom_error}
+            {formData[data.form_builder_section_id][data.id]['validationError'] === true && <div className='ebs-error-container'> {data.validation.custom_error} </div>}
            {formData[data.form_builder_section_id][data.id]['requiredError'] === true && <div className='ebs-error-container'>This question is required</div>}
         </div>
       </div>

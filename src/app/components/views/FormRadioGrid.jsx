@@ -32,6 +32,7 @@ const FormRadioGrid = ({data, formData, setFormData, setValidated}) => {
     if(data.required !== undefined && data.required === 1){
       let answerdRows = data.grid_questions.filter((item)=>( answers2[item.id] !== undefined ? true : false ))
       valid = answerdRows.length === data.grid_questions.length ? true : false;
+      console.log(valid);
     }
 
     let newFormData = formData;
@@ -42,8 +43,6 @@ const FormRadioGrid = ({data, formData, setFormData, setValidated}) => {
           validationError:!valid,
           was_answered:true,
           question_type:data.type}}};
-
-    console.log(newFormData);
     setFormData(newFormData);
     setValidated(valid);
   }
@@ -77,7 +76,7 @@ const FormRadioGrid = ({data, formData, setFormData, setValidated}) => {
                 )}
               </div>
             )}
-            {formData[data.form_builder_section_id][data.id]['requiredError'] === true && "This question is required"}
+           {formData[data.form_builder_section_id][data.id]['requiredError'] === true && <div className='ebs-error-container'>This question is required</div>}
           </div>
         </div>
       </div>

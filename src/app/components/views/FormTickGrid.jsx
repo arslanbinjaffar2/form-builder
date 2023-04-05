@@ -78,7 +78,8 @@ const FormTickGrid = ({data, formData, setFormData, setValidated}) => {
                 )}
               </div>
             )}
-            {formData[data.form_builder_section_id][data.id]['requiredError'] === true && "This question is required"}
+            {formData[data.form_builder_section_id][data.id]['requiredError'] === true && <div className='ebs-error-container'>This question is required</div>}
+
           </div>
         </div>
       </div>

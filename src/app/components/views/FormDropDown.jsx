@@ -26,6 +26,7 @@ const customStyles = {
 
 
 const FormDropDown = ({data, formData, setFormData, setValidated}) => {
+  
   const onChange = (evt) => { 
     console.log(evt);
     let newFormData = formData;
@@ -41,6 +42,10 @@ const FormDropDown = ({data, formData, setFormData, setValidated}) => {
     setFormData(newFormData);
     setValidated(valid);
   }
+
+const answer = formData[data.form_builder_section_id][data.id]['answer'] !== undefined ? data.answers.find((answer)=>(parseInt(answer.id) === parseInt(formData[data.form_builder_section_id][data.id]['answer']))) : null;
+
+console.log(answer);
   console.log(formData[data.form_builder_section_id][data.id]['answer']);
   return (
     <div className="ebs-formview-mulitple">
@@ -58,8 +63,8 @@ const FormDropDown = ({data, formData, setFormData, setValidated}) => {
         styles={customStyles}
         components={{ IndicatorSeparator: () => null }}
         onChange={(item)=> onChange(item)}
-        options={data.answers}
-        defaultValue={formData[data.form_builder_section_id][data.id]['answer'] !== undefined ? data.answers.find((answer)=>(parseInt(answer.id) === parseInt(formData[data.form_builder_section_id][data.id]['answer']))) : null}
+        options={data.answers.map((item)=>({label:item.label, value:item.id}))}
+        Value={(answer !== null && answer !== undefined) ? {label:answer.label, value:answer.id}: null}
         theme={theme => ({
           ...theme,
           borderRadius: 0,
@@ -69,7 +74,8 @@ const FormDropDown = ({data, formData, setFormData, setValidated}) => {
             primary25: '#F4F4F4',
             primary: '#E39840',
           },
-        })}/>
+        })}
+        />
         {formData[data.form_builder_section_id][data.id]['requiredError'] && <div className='ebs-error-container'>This question is required</div>}
       </div>
     </div>

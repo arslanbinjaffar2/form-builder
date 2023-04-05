@@ -53,7 +53,7 @@ export default class LinearScale extends Component {
               menuPlacement="auto"
               isSearchable={false}
               styles={customStyles}
-              value={_dropdown_min[_dropdown_min.findIndex(x => x.value === options.min)]} 
+              value={_dropdown_min[_dropdown_min.findIndex(x => x.value == options.min)]} 
               onChange={(e) => this.context.handleLinerChange(this.props.sectionIndex, this.props.questionIndex, e.value, 'LINEAR_MIN' )}
               components={{IndicatorSeparator: () => null }}
               theme={theme => ({
@@ -75,7 +75,7 @@ export default class LinearScale extends Component {
                 menuPlacement="auto"
                 isSearchable={false}
                 styles={customStyles}
-                value={_dropdown_max[_dropdown_max.findIndex(x => x.value === options.max)]} 
+                value={_dropdown_max[_dropdown_max.findIndex(x => x.value == options.max)]} 
                 onChange={(e) => this.context.handleLinerChange(this.props.sectionIndex, this.props.questionIndex, e.value, 'LINEAR_MAX' )}
                 components={{IndicatorSeparator: () => null }}
                 theme={theme => ({

@@ -70,7 +70,7 @@ const handleInputChange = (target,type) => {
       {(data.options.description_visible === 1 && data.description) && <div className="form-view-description">{data.description}</div>}
       <div className="ebs-options-view">
         {data.options.time_type === "TIME" && <DateTime
-          input={false}
+          input={true}
           dateFormat={false}
           timeFormat={'hh:mm A'} 
           value={formData[data.form_builder_section_id][data.id]['answer'] !== undefined ? formData[data.form_builder_section_id][data.id]['answer'] : ""}
@@ -96,7 +96,9 @@ const handleInputChange = (target,type) => {
           </div>
         </div>
         }
-        {formData[data.form_builder_section_id][data.id]['validationError'] === true && "Invalid Date"}
+        
+        {formData[data.form_builder_section_id][data.id]['validationError'] === true && <div className='ebs-error-container'> Invalid Date </div>}
+
         {formData[data.form_builder_section_id][data.id]['requiredError'] === true && <div className='ebs-error-container'>This question is required</div>}
      
       </div>
