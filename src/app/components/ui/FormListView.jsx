@@ -121,7 +121,7 @@ const FormItem = ({item, setCurrentForm, event_id, registration_form_id, changeS
                                                     <div className="ebs-tooltip-item" onClick={() =>setRename(!rename)}><i className="material-icons ebs-icon">text_fields</i>Rename</div>
                                                     <div className="ebs-tooltip-item" onClick={() =>onCopyForm()} ><i className="material-icons ebs-icon">content_copy</i>Copy</div>
                                                     <div className="ebs-tooltip-item" onClick={() =>onDeleteForm()} ><i className="material-icons ebs-icon">delete_outline</i>Delete</div>
-                                                    <div className="ebs-tooltip-item" onClick={() =>changeStatus({form_id:item.id, status:!item.active})}><i className="material-icons ebs-icon">{item.active == 0 ? 'toggle_off' : 'toggle_on'}</i>{item.active == 0 ? 'Inactive' : 'Active'}</div>
+                                                    <div className="ebs-tooltip-item" onClick={() =>changeStatus({form_id:item.id, status:!item.active})}><i className="material-icons ebs-icon">{item.active == 0 ? 'toggle_on' : 'toggle_off'}</i>{item.active == 0 ? 'Activate' : 'Deactivate'}</div>
                                                 </div>
                                                 </div>
                                             </div>
