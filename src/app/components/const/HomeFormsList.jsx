@@ -1,13 +1,15 @@
-import React, {useEffect, useContext }  from 'react';
+import React, {useEffect, useContext, useState, useCallback }  from 'react';
 import { FormDataContext } from 'app/contexts/FormDataContext';
 import moment from 'moment';
+import FormGridView from '../ui/FormGridView';
+import FormListView from '../ui/FormListView';
 
-const lastModified = (date) => {
-  return moment(date).format('DD MMM, YYYY');
-}
+
 const HomeFormsList = (props) => {
-  const { data, getForms, processing, cancelAllRequests, setCurrentForm } = useContext(FormDataContext);
-  const [source, setsource] = useState(null)
+  const { data, getForms, processing, cancelAllRequests, setCurrentForm, saveFormStatus } = useContext(FormDataContext);
+  const [source, setSource] = useState(null)
+  const [listView, setListView] = useState(false);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     getForms(parseInt(props.event_id), parseInt(props.registration_form_id));
@@ -18,7 +20,12 @@ const HomeFormsList = (props) => {
 
 
   useEffect(() => {
-    setsource(data);
+    if(search !== ""){
+     let searchData = data.slice().filter(item => item.title.toLowerCase().includes(search.toLowerCase()));
+      setSource(searchData);
+    }else{
+      setSource(data);
+    }
   }, [data]);
 
 
@@ -60,15 +67,23 @@ const HomeFormsList = (props) => {
   const handleSearch = (e) => {
     e.preventDefault();
     const query = e.target.value;
+    setSearch(query);
     if (query === '') {
-      setsource(data);
+      setSource(data);
     } else {
       const searchList = data.slice().filter(item => item.title.toLowerCase().includes(query.toLowerCase()));
       if (searchList) {
-        setsource(searchList);
+        setSource(searchList);
       }
     }
   }
+  const changeStatus = useCallback(
+    (data) => {
+      saveFormStatus(data);
+    },
+    [],
+  )
+  
     return (
       <React.Fragment>
         {data.length <= 0 && processing && 
@@ -88,19 +103,24 @@ const HomeFormsList = (props) => {
               <div className="col-8 d-flex justify-content-end">
                 <div className="ebs-panel">
                   <div className="ebs-more-option-panel ebs-option-panel-medium">
-                    <button onClick={handleClick} className="ebs-btn tooltip-small">
+                    <button onClick={()=> { 
+                      if(!listView){
+                        setSource(data);
+                      }
+                      setListView(!listView)
+                     }} className="ebs-btn tooltip-small">
                       <img style={{pointerEvents: 'none'}} src={require('img/ico-list.svg')} alt="" />
                     </button>
-                    <div className="ebs-app-tooltip">
+                    {/* <div className="ebs-app-tooltip">
                       <div className="ebs-tooltip-item ebs-active"><i className="material-icons ebs-icon">check</i>Sort by name</div>
                       <div className="ebs-tooltip-item">Sort by date</div>
                       <div className="ebs-tooltip-item">Sort by name</div>
-                    </div>
+                    </div> */}
                   </div>
-                  <label className="ebs-btn">
+                  {!listView && <label className="ebs-btn">
                     <img src={require('img/ico-search.svg')} alt="" />
-                    <input placeholder=' ' type="text" onChange={handleSearch} />
-                  </label>
+                    <input placeholder=' ' type="text" value={search} onChange={handleSearch} />
+                  </label>}
                 </div>
               </div>
               </div>
@@ -108,39 +128,10 @@ const HomeFormsList = (props) => {
           </div>
           <div className="ebs-form-list">
             <div className="container">
-              <div className="row d-flex align-items center">
-                {source && source.map((item,k) => 
-                  <div key={k} className="col-lg-3 col-md-4">
-                    <div className="ebs-form-box">
-                      <div
-                        onClick={()=>{ setCurrentForm(parseInt(props.event_id), parseInt(props.registration_form_id), item.id) }} 
-                        className="ebs-box-image">
-                        <img src={item.screenShot ? item.screenShot : require('img/template.svg') } alt="" />
-                      </div>
-                      <div className="ebs-desc-box">
-                        <h3>{item.title ? item.title : 'Untitled form'}</h3>
-                        <div className="ebs-bottom-panel d-flex align-items-center">
-                          <div className="ebs-timedate d-flex align-items-center w-100">
-                          <span style={{color: 'rgba($black,0.1)'}} className="material-icons">description</span>
-                          Opened {lastModified(item.updated_at)}</div>
-                          <div className="ebs-more-option-panel ebs-option-panel-medium ico-visible">
-                            <button onClick={handleClick} className="ebs-btn tooltip-small">
-                              <span style={{pointerEvents: 'none'}} className="material-icons">more_vert</span>
-                            </button>
-                            <div className="ebs-app-tooltip">
-                              <div className="ebs-tooltip-item"><i className="material-icons ebs-icon">text_fields</i>Rename</div>
-                              <div className="ebs-tooltip-item"><i className="material-icons ebs-icon">content_copy</i>Copy</div>
-                              <div className="ebs-tooltip-item"><i className="material-icons ebs-icon">delete_outline</i>Delete</div>
-                              <div className="ebs-tooltip-item"><i className="material-icons ebs-icon">signal_cellular_alt</i>Results</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                {source && source.length === 0 && <div className='col-md-12'><p>No record found.</p></div>}
-              </div>
+              <div className={`row d-flex align-items center ${listView ? 'list-view' : ''}`}>
+                {!listView ? <FormGridView source={source} changeStatus={changeStatus}  handleClick={handleClick} setCurrentForm={setCurrentForm} registration_form_id={props.registration_form_id} event_id={props.event_id} />
+                 : <FormListView source={source} changeStatus={changeStatus} setSource={setSource}  handleClick={handleClick} setCurrentForm={setCurrentForm} registration_form_id={props.registration_form_id} event_id={props.event_id} />}
+                </div>
             </div>
           </div>
         </div>}

@@ -37,16 +37,16 @@ const Section = ({section, sections, active, setactive, formData, setFormData}) 
                         }
                         
                         if((question.type === "tick_box_grid")){
-                            let answerdRows = section.questions.find((item)=>(item.id === question.id)).grid_questions.filter((item)=>( formData2[section.id][question.id].answer[item.id] !== undefined && formData2[section.id][question.id].answer[item.id].length > 0 ? true : false ))
-                            if(answerdRows.length !== section.questions.find((item)=>(item.id === question.id)).grid_questions.length){
+                            let answerdRows = question.grid_questions.filter((item)=>( formData2[section.id][question.id].answer_id[item.id] !== undefined && formData2[section.id][question.id].answer_id[item.id].length > 0 ? true : false ))
+                            if(answerdRows.length !== question.grid_questions.length){
                                 formData2 = {...formData2, [question.form_builder_section_id]:{...formData2[section.id], [question.id]: { ...formData2[section.id][question.id], requiredError:true}}}
                                 notValidatedFor.push(question.id);
                             }
                         }
                         
                         if((question.type === "multiple_choice_grid")){
-                            let answerdRows = section.questions.find((item)=>(item.id === question.id)).grid_questions.filter((item)=>( formData2[section.id][question.id].answer[item.id] !== undefined ? true : false ))
-                            if(answerdRows.length !== section.questions.find((item)=>(item.id === question.id)).grid_questions.length){
+                            let answerdRows = question.grid_questions.filter((item)=>( formData2[section.id][question.id].answer_id[item.id] !== undefined ? true : false ))
+                            if(answerdRows.length !== question.grid_questions.length){
                                 formData2 = {...formData2, [question.form_builder_section_id]:{...formData2[section.id], [question.id]: { ...formData2[section.id][question.id], requiredError:true}}}
                                 notValidatedFor.push(question.id);
                             }
@@ -60,8 +60,13 @@ const Section = ({section, sections, active, setactive, formData, setFormData}) 
                             }
                         }
                     }
+                    if(formData2[section.id][question.id].validationError){
+                        setValidated(false);
+                        notValidatedFor.push(question.id);
+                    }
             });
             setFormData(formData2);
+            console.log(notValidatedFor);
             if (notValidatedFor.length <= 0 &&  validated === true){
                 if(type === 'next'){
                     setactive(nextSection === "CONTINUE" ? active + 1 : sections.findIndex((sect)=> parseInt(sect.id) === parseInt(nextSection)));
@@ -135,7 +140,7 @@ const Section = ({section, sections, active, setactive, formData, setFormData}) 
                     else if(item.type === "date"){
                         return <FormDatebox key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
                     }
-                    else if(item.type === "TEXT_BLOCK"){
+                    else if(item.type === "text_block"){
                         return <FormTextBlock key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
                     }else{
                         return null;
@@ -147,7 +152,7 @@ const Section = ({section, sections, active, setactive, formData, setFormData}) 
         }
         {sections && sections.length === 1 && (
         <div className="ebs-footer-form">
-            <button className="btn btn-default btn-submit">Submit</button>
+            <button className="btn btn-default btn-submit" onClick={(e) => ValidateSection(e, 'submit')}>Submit</button>
         </div>
         )}
         {sections && sections.length > 1 && active !== sections.length - 1 && (

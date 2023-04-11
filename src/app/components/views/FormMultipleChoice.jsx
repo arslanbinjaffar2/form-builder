@@ -30,7 +30,7 @@ const FormMultipleChoice = ({data, formData, setFormData, setValidated, setNextS
               <div className="ebs-title">{element.label && element.label}</div>
             </label>
           ))}
-          {formData[data.form_builder_section_id][data.id]['validationError'] && data.validation.custom_error}
+          {formData[data.form_builder_section_id][data.id]['validationError'] === true && <div className='ebs-error-container'> {data.validation.custom_error} </div>}
           {formData[data.form_builder_section_id][data.id]['requiredError'] && <div className='ebs-error-container'>This question is required</div>}
       </div>
     </div>

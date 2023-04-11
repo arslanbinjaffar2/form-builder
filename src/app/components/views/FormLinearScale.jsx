@@ -48,6 +48,7 @@ const FormLinearScale = ({data, formData, setFormData, setValidated}) => {
                 <div className="ebs-value"><div className="ebs-value-inner">{data.options.max_label}</div></div>
               </div>
             </div>
+        {formData[data.form_builder_section_id][data.id]['requiredError'] === true && <div className='ebs-error-container'>This question is required</div>}
         </div>
       </div>
     </div>
