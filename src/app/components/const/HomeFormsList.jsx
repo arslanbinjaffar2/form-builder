@@ -6,7 +6,7 @@ import FormListView from '../ui/FormListView';
 
 
 const HomeFormsList = (props) => {
-  const { data, getForms, processing, cancelAllRequests, setCurrentForm, saveFormStatus } = useContext(FormDataContext);
+  const { data, getForms, processing, cancelAllRequests, setCurrentForm, saveFormStatus, updating } = useContext(FormDataContext);
   const [source, setSource] = useState(null)
   const [listView, setListView] = useState(false);
   const [search, setSearch] = useState("");
@@ -135,6 +135,13 @@ const HomeFormsList = (props) => {
             </div>
           </div>
         </div>}
+        {updating && 
+          <div className="ebs-updating-loader-backdrop">
+            <div className="ebs-updating-wrapper">
+              <div className="ebs-loader"></div>
+            </div>
+          </div>
+        }
      </React.Fragment>
     )
 }
