@@ -53,7 +53,7 @@ const answer = formData[data.form_builder_section_id][data.id]['answer'] !== und
       <div className="form-view-title">
         {data.title && data.title} {data.required === 1 && <span className="required">*</span>}
       </div>
-      {(data.options.description_visible === 1 && data.description) && <div className="form-view-description">{data.description}</div>}
+      {(data.options.description_visible === 1 && data.description !== "") && <div className="form-view-description">{data.description}</div>}
       <div className="ebs-options-view">
       <Select
         menuColor='red'

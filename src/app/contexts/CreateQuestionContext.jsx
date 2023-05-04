@@ -238,7 +238,7 @@ class CreateQuestionContextProvider extends Component {
           if(data.id === undefined){
             this.setState({
               updating:false,
-              data:{...this.state.data, sections:this.state.data.sections.map((item)=> item.sort_order === data.sort_order ? { ...response.data.data } : item)},
+              data:{...this.state.data, sections:this.state.data.sections.map((item)=> item.sort_order === data.sort_order ? { ...response.data.data, active:true} : item)},
             })
             saveSectionSortBackend(this.state.data.sections.reduce((ack, item)=>({...ack,[item.id]:item.sort_order}), {}));
           }else{
