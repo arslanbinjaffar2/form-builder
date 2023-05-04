@@ -37,7 +37,7 @@ const FormLinearScale = ({data, formData, setFormData, setValidated}) => {
                   <div className="ebs-label">{i + (Number(data.options.min) === 0 ? 0 : 1)}</div>
                   <div className="ebs-value">
                     <label className="ebs-option ebs-radio">
-                      <input name={`item_${data.id}`} defaultValue={data.index} type="radio" value={i} onChange={(e)=>{onChange(e)}} />
+                      <input name={`item_${data.id}`} defaultValue={data.index} checked={(formData[data.form_builder_section_id][data.id]['answer'] !== undefined && formData[data.form_builder_section_id][data.id]['answer'] == i) ? true : false} type="radio" value={i} onChange={(e)=>{onChange(e)}} />
                       <i className="material-icons"></i>
                     </label>
                   </div>

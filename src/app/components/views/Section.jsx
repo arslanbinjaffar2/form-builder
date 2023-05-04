@@ -117,7 +117,7 @@ const Section = ({section, sections, active, setactive, formData, setFormData}) 
                     }
                     else if(item.type === "drop_down"){
                         
-                        return <FormDropDown key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
+                        return <FormDropDown key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} setNextSection={setNextSection} />
                     }
                     else if(item.type === "linear_scale"){
                         return <FormLinearScale key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />

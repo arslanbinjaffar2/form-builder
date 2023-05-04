@@ -25,28 +25,29 @@ const customStyles = {
 
 
 
-const FormDropDown = ({data, formData, setFormData, setValidated}) => {
+const FormDropDown = ({data, formData, setFormData, setValidated, setNextSection}) => {
   
   const onChange = (evt) => { 
     console.log(evt);
+    const selectedAnswer = data.answers.find((answer)=>(parseInt(answer.id) === parseInt(evt.value))); 
     let newFormData = formData;
     const valid = evt.id !== "" && data.validation.type !== undefined ? validateShortAnswer(data.validation, evt.id) : true;
     newFormData = {...formData,
        [data.form_builder_section_id]:{...formData[data.form_builder_section_id], 
         [data.id]:{ ...formData[data.form_builder_section_id][data.id], 
-          answer:parseInt(evt.id), requiredError:false,  
+          answer:parseInt(evt.value), requiredError:false,  
           validationError:!valid,  
           question_type:data.type}}};
 
     //console.log(newFormData);
     setFormData(newFormData);
     setValidated(valid);
+    if(data.options.section_based === 1){
+      setNextSection(selectedAnswer.next_section);
+    } 
   }
 
 const answer = formData[data.form_builder_section_id][data.id]['answer'] !== undefined ? data.answers.find((answer)=>(parseInt(answer.id) === parseInt(formData[data.form_builder_section_id][data.id]['answer']))) : null;
-
-console.log(answer);
-  console.log(formData[data.form_builder_section_id][data.id]['answer']);
   return (
     <div className="ebs-formview-mulitple">
       <div className="form-view-title">
@@ -64,7 +65,7 @@ console.log(answer);
         components={{ IndicatorSeparator: () => null }}
         onChange={(item)=> onChange(item)}
         options={data.answers.map((item)=>({label:item.label, value:item.id}))}
-        Value={(answer !== null && answer !== undefined) ? {label:answer.label, value:answer.id}: null}
+        defaultValue={(answer !== null && answer !== undefined) ? {label:answer.label, value:answer.id}: null}
         theme={theme => ({
           ...theme,
           borderRadius: 0,
