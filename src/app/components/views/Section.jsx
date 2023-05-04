@@ -109,40 +109,45 @@ const Section = ({section, sections, active, setactive, formData, setFormData}) 
             
             {section.questions.map((item, itemIndex) => {
 
-                    if(item.type === "multiple_choice"){
-                    return <FormMultipleChoice key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} setNextSection={setNextSection} />
+                    if(item.id !== undefined){
+                        if(item.type === "multiple_choice"){
+                            return <FormMultipleChoice key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} setNextSection={setNextSection} />
+                            }
+                            else if(item.type === "checkboxes") {
+                            return  <FormCheckboxes key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
+                            }
+                            else if(item.type === "drop_down"){
+                                
+                                return <FormDropDown key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} setNextSection={setNextSection} />
+                            }
+                            else if(item.type === "linear_scale"){
+                                return <FormLinearScale key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
+                            }
+                            else if(item.type === "short_answer"){
+                                return <FormShortAnswer key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
+                            }
+                            else if(item.type === "paragraph"){
+                                return <FormLongAnswer key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
+                            }
+                            else if(item.type === "multiple_choice_grid"){
+                                return <FormRadioGrid key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
+                            }
+                            else if(item.type === "tick_box_grid"){
+                                return <FormTickGrid key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
+                            }
+                            else if(item.type === "time"){
+                                return <FormTimebox key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
+                            }
+                            else if(item.type === "date"){
+                                return <FormDatebox key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
+                            }
+                            else if(item.type === "text_block"){
+                                return <FormTextBlock key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
+                            }else{
+                                return null;
+                            }
                     }
-                    else if(item.type === "checkboxes") {
-                    return  <FormCheckboxes key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
-                    }
-                    else if(item.type === "drop_down"){
-                        
-                        return <FormDropDown key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} setNextSection={setNextSection} />
-                    }
-                    else if(item.type === "linear_scale"){
-                        return <FormLinearScale key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
-                    }
-                    else if(item.type === "short_answer"){
-                        return <FormShortAnswer key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
-                    }
-                    else if(item.type === "paragraph"){
-                        return <FormLongAnswer key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
-                    }
-                    else if(item.type === "multiple_choice_grid"){
-                        return <FormRadioGrid key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
-                    }
-                    else if(item.type === "tick_box_grid"){
-                        return <FormTickGrid key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
-                    }
-                    else if(item.type === "time"){
-                        return <FormTimebox key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
-                    }
-                    else if(item.type === "date"){
-                        return <FormDatebox key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
-                    }
-                    else if(item.type === "text_block"){
-                        return <FormTextBlock key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
-                    }else{
+                    else{
                         return null;
                     }
 

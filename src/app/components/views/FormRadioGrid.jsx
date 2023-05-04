@@ -52,7 +52,7 @@ const FormRadioGrid = ({data, formData, setFormData, setValidated}) => {
       <div className="form-view-title">
         {data.title && data.title} {data.required === 1 && <span className="required">*</span>}
       </div>
-      {(data.options.description_visible === 1 && data.description) && <div className="form-view-description">{data.description}</div>}
+      {(data.options.description_visible === 1 && data.description !== "") && <div className="form-view-description">{data.description}</div>}
       <div className="ebs-options-view">
         <div className="ebs-question-grid-view">
           <div className="ebs-question-grid-wrapp">
@@ -76,8 +76,8 @@ const FormRadioGrid = ({data, formData, setFormData, setValidated}) => {
                 )}
               </div>
             )}
-           {formData[data.form_builder_section_id][data.id]['requiredError'] === true && <div className='ebs-error-container'>This question is required</div>}
           </div>
+           {formData[data.form_builder_section_id][data.id]['requiredError'] === true && <div className='ebs-error-container'>This question is required</div>}
         </div>
       </div>
     </div>

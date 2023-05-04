@@ -27,7 +27,7 @@ const FormLongAnswer = ({data, formData, setFormData, setValidated}) => {
       <div className="form-view-title">
         {data.title && data.title} {data.required === 1 && <span className="required">*</span>}
       </div>
-      {(data.options.description_visible === 1 && data.description) && <div className="form-view-description">{data.description}</div>}
+      {(data.options.description_visible === 1 && data.description !== "") && <div className="form-view-description">{data.description}</div>}
       <div className="ebs-options-view">
         <div className="ebs-input-response">
           <textarea onChange={handleTextaera} placeholder="Your answer" type="text" value={formData[data.form_builder_section_id][data.id]['answer']}  />
