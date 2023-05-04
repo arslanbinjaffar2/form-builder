@@ -3,9 +3,9 @@ const FormTextBlock = ({data}) => {
   return (
     <div className="ebs-formview-mulitple">
       <div className="form-view-title">
-        {data.title} {data.required && <span className="required">*</span>}
+        {data.title}
       </div>
-      {data.descVisible && data.desc && <div className="form-view-description">{data.desc}</div>}
+      {data.description !== "" && <div className="form-view-description">{data.description}</div>}
     </div>
   )
 }
