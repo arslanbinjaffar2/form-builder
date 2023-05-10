@@ -12,11 +12,10 @@ import FormDatebox from './FormDatebox';
 import FormTextBlock from './FormTextBlock';
 import { validateShortAnswer } from '../../../helpers/validation';
 
-const Section = ({section, sections, active, setactive, formData, setFormData}) => {
+const Section = ({section, sections, active, setactive, formData, setFormData, setStepType, sectionHistory}) => {
     const [validated, setValidated] = useState(true);
     const [nextSection, setNextSection] = useState(section.next_section);
-    const [sectionHistory, setSectionHistory] = useState([]);
-    const [stepType, setStepType] = useState("next");
+    
     const [submitForm, setSubmitForm] = useState(false);
     const ValidateSection = async (e, type) => {
         e.preventDefault();
@@ -25,6 +24,7 @@ const Section = ({section, sections, active, setactive, formData, setFormData}) 
              let newSectionHistory = sectionHistory;
              let removehistory = newSectionHistory.pop();
              setactive(removehistory.previous);
+             return;
          }
        let notValidatedFor = [];
        let formData2 = formData;
@@ -72,27 +72,15 @@ const Section = ({section, sections, active, setactive, formData, setFormData}) 
                     setactive(nextSection === "CONTINUE" ? active + 1 : sections.findIndex((sect)=> parseInt(sect.id) === parseInt(nextSection)));
                 } 
                 if(type === 'submit'){
-                   setSubmitForm(true);
+                    if(nextSection !== "CONTINUE"){
+                        setactive(sections.findIndex((sect)=> parseInt(sect.id) === parseInt(nextSection)));
+                    }else{
+                        setSubmitForm(true);
+                    }
                 }
             }
 
       };
-
-    useEffect(() => {
-        
-        if(stepType === 'back'){
-            let newSectionHistory = sectionHistory;
-            newSectionHistory.pop();
-            setSectionHistory(newSectionHistory)
-        }
-
-        if(stepType === 'next'){
-            let newSectionHistory = [...sectionHistory, { previous:sectionHistory.length > 0 ? sectionHistory[sectionHistory.length -1].current : 0, current:active}];
-            setSectionHistory(newSectionHistory);
-        }
-     
-    }, [active])
-    
 
   return (
     !submitForm ? <React.Fragment>

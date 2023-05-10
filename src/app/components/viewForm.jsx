@@ -10,6 +10,8 @@ function viewForm(props) {
   const [sections, setSection] = useState([]);
   const [active, setactive] = useState(0);
   const [formData, setFormData] = useState({});
+  const [sectionHistory, setSectionHistory] = useState([]);
+  const [stepType, setStepType] = useState("next");
   useEffect(() => {
     if(data.length <= 0 || data.id !== props.match.params.id){
       getFormData(parseInt(props.match.params.event_id), parseInt(props.match.params.registration_form_id), parseInt(props.match.params.id));
@@ -44,6 +46,20 @@ function viewForm(props) {
     }
   }, [data]);
 
+  useEffect(() => {
+    
+    if(stepType === 'back'){
+        let newSectionHistory = [...sectionHistory];
+        newSectionHistory.pop();
+        console.log(newSectionHistory);
+        setSectionHistory(newSectionHistory)
+    }
+
+    if(stepType === 'next'){
+        setSectionHistory((prevState)=>([...prevState, { previous:prevState.length > 0 ? prevState[prevState.length -1].current : 0, current:active}]));
+    }
+    }, [active])
+
   return (
     <React.Fragment>
       <AppNavbar showpanel view event_id={props.match.params.event_id} registration_form_id={props.match.params.registration_form_id} />
@@ -60,7 +76,7 @@ function viewForm(props) {
             )}
 
               {sections.length > 0 && sections.map((section, index)=>(
-                active === index && <Section key={index} section={section} sections={sections} active={active} setactive={setactive} formData={formData} setFormData={setFormData} />
+                active === index && <Section key={index} section={section} sections={sections} active={active} setactive={setactive} formData={formData} sectionHistory={sectionHistory} setFormData={setFormData} setStepType={setStepType} />
               ))}
             
             
