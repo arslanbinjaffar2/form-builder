@@ -12,11 +12,10 @@ import FormDatebox from './FormDatebox';
 import FormTextBlock from './FormTextBlock';
 import { validateShortAnswer } from '../../../helpers/validation';
 
-const Section = ({section, sections, active, setactive, formData, setFormData}) => {
+const Section = ({section, sections, active, setactive, formData, setFormData, setStepType, sectionHistory}) => {
     const [validated, setValidated] = useState(true);
     const [nextSection, setNextSection] = useState(section.next_section);
-    const [sectionHistory, setSectionHistory] = useState([]);
-    const [stepType, setStepType] = useState("next");
+    
     const [submitForm, setSubmitForm] = useState(false);
     const ValidateSection = async (e, type) => {
         e.preventDefault();
@@ -25,6 +24,7 @@ const Section = ({section, sections, active, setactive, formData, setFormData}) 
              let newSectionHistory = sectionHistory;
              let removehistory = newSectionHistory.pop();
              setactive(removehistory.previous);
+             return;
          }
        let notValidatedFor = [];
        let formData2 = formData;
@@ -37,16 +37,16 @@ const Section = ({section, sections, active, setactive, formData, setFormData}) 
                         }
                         
                         if((question.type === "tick_box_grid")){
-                            let answerdRows = section.questions.find((item)=>(item.id === question.id)).grid_questions.filter((item)=>( formData2[section.id][question.id].answer[item.id] !== undefined && formData2[section.id][question.id].answer[item.id].length > 0 ? true : false ))
-                            if(answerdRows.length !== section.questions.find((item)=>(item.id === question.id)).grid_questions.length){
+                            let answerdRows = question.grid_questions.filter((item)=>( formData2[section.id][question.id].answer_id[item.id] !== undefined && formData2[section.id][question.id].answer_id[item.id].length > 0 ? true : false ))
+                            if(answerdRows.length !== question.grid_questions.length){
                                 formData2 = {...formData2, [question.form_builder_section_id]:{...formData2[section.id], [question.id]: { ...formData2[section.id][question.id], requiredError:true}}}
                                 notValidatedFor.push(question.id);
                             }
                         }
                         
                         if((question.type === "multiple_choice_grid")){
-                            let answerdRows = section.questions.find((item)=>(item.id === question.id)).grid_questions.filter((item)=>( formData2[section.id][question.id].answer[item.id] !== undefined ? true : false ))
-                            if(answerdRows.length !== section.questions.find((item)=>(item.id === question.id)).grid_questions.length){
+                            let answerdRows = question.grid_questions.filter((item)=>( formData2[section.id][question.id].answer_id[item.id] !== undefined ? true : false ))
+                            if(answerdRows.length !== question.grid_questions.length){
                                 formData2 = {...formData2, [question.form_builder_section_id]:{...formData2[section.id], [question.id]: { ...formData2[section.id][question.id], requiredError:true}}}
                                 notValidatedFor.push(question.id);
                             }
@@ -60,34 +60,27 @@ const Section = ({section, sections, active, setactive, formData, setFormData}) 
                             }
                         }
                     }
+                    if(formData2[section.id][question.id].validationError){
+                        setValidated(false);
+                        notValidatedFor.push(question.id);
+                    }
             });
             setFormData(formData2);
+            console.log(notValidatedFor);
             if (notValidatedFor.length <= 0 &&  validated === true){
                 if(type === 'next'){
                     setactive(nextSection === "CONTINUE" ? active + 1 : sections.findIndex((sect)=> parseInt(sect.id) === parseInt(nextSection)));
                 } 
                 if(type === 'submit'){
-                   setSubmitForm(true);
+                    if(nextSection !== "CONTINUE"){
+                        setactive(sections.findIndex((sect)=> parseInt(sect.id) === parseInt(nextSection)));
+                    }else{
+                        setSubmitForm(true);
+                    }
                 }
             }
 
       };
-
-    useEffect(() => {
-        
-        if(stepType === 'back'){
-            let newSectionHistory = sectionHistory;
-            newSectionHistory.pop();
-            setSectionHistory(newSectionHistory)
-        }
-
-        if(stepType === 'next'){
-            let newSectionHistory = [...sectionHistory, { previous:sectionHistory.length > 0 ? sectionHistory[sectionHistory.length -1].current : 0, current:active}];
-            setSectionHistory(newSectionHistory);
-        }
-     
-    }, [active])
-    
 
   return (
     !submitForm ? <React.Fragment>
@@ -104,40 +97,45 @@ const Section = ({section, sections, active, setactive, formData, setFormData}) 
             
             {section.questions.map((item, itemIndex) => {
 
-                    if(item.type === "multiple_choice"){
-                    return <FormMultipleChoice key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} setNextSection={setNextSection} />
+                    if(item.id !== undefined){
+                        if(item.type === "multiple_choice"){
+                            return <FormMultipleChoice key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} setNextSection={setNextSection} />
+                            }
+                            else if(item.type === "checkboxes") {
+                            return  <FormCheckboxes key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
+                            }
+                            else if(item.type === "drop_down"){
+                                
+                                return <FormDropDown key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} setNextSection={setNextSection} />
+                            }
+                            else if(item.type === "linear_scale"){
+                                return <FormLinearScale key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
+                            }
+                            else if(item.type === "short_answer"){
+                                return <FormShortAnswer key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
+                            }
+                            else if(item.type === "paragraph"){
+                                return <FormLongAnswer key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
+                            }
+                            else if(item.type === "multiple_choice_grid"){
+                                return <FormRadioGrid key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
+                            }
+                            else if(item.type === "tick_box_grid"){
+                                return <FormTickGrid key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
+                            }
+                            else if(item.type === "time"){
+                                return <FormTimebox key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
+                            }
+                            else if(item.type === "date"){
+                                return <FormDatebox key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
+                            }
+                            else if(item.type === "text_block"){
+                                return <FormTextBlock key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
+                            }else{
+                                return null;
+                            }
                     }
-                    else if(item.type === "checkboxes") {
-                    return  <FormCheckboxes key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
-                    }
-                    else if(item.type === "drop_down"){
-                        
-                        return <FormDropDown key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
-                    }
-                    else if(item.type === "linear_scale"){
-                        return <FormLinearScale key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
-                    }
-                    else if(item.type === "short_answer"){
-                        return <FormShortAnswer key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
-                    }
-                    else if(item.type === "paragraph"){
-                        return <FormLongAnswer key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
-                    }
-                    else if(item.type === "multiple_choice_grid"){
-                        return <FormRadioGrid key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
-                    }
-                    else if(item.type === "tick_box_grid"){
-                        return <FormTickGrid key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
-                    }
-                    else if(item.type === "time"){
-                        return <FormTimebox key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
-                    }
-                    else if(item.type === "date"){
-                        return <FormDatebox key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
-                    }
-                    else if(item.type === "TEXT_BLOCK"){
-                        return <FormTextBlock key={itemIndex}  data={item} setFormData={setFormData} formData={formData} setValidated={setValidated} />
-                    }else{
+                    else{
                         return null;
                     }
 
@@ -147,7 +145,7 @@ const Section = ({section, sections, active, setactive, formData, setFormData}) 
         }
         {sections && sections.length === 1 && (
         <div className="ebs-footer-form">
-            <button className="btn btn-default btn-submit">Submit</button>
+            <button className="btn btn-default btn-submit" onClick={(e) => ValidateSection(e, 'submit')}>Submit</button>
         </div>
         )}
         {sections && sections.length > 1 && active !== sections.length - 1 && (

@@ -7,6 +7,8 @@ import { CreateQuestionContext } from "app/contexts/CreateQuestionContext";
 import { FormDataContext } from "app/contexts/FormDataContext";
 import Select from "react-select";
 import TextSection from "./questions/TextSection";
+import ImageSection from "./questions/ImageSection";
+import VideoSection from "./questions/VideoSection";
 import SortSection from "./SortSection";
 
 const customStyles = {
@@ -149,12 +151,12 @@ const createForm = (props) => {
                 <li onClick={(e) => handleTooltip("ADD_TITLE_DESCRIPTION", props.match.params.id)}>
                   <span className="material-icons">text_fields</span>
                 </li>
-                <li onClick={(e) => handleTooltip("ADD_PHOTO", props.match.params.id)}>
+                {/* <li onClick={(e) => handleTooltip("ADD_PHOTO", props.match.params.id)}>
                   <span className="material-icons">photo</span>
                 </li>
                 <li onClick={(e) => handleTooltip("ADD_VIDEO", props.match.params.id)}>
                   <span className="material-icons">slideshow</span>
-                </li>
+                </li> */}
                 <li
                   onClick={(e) => handleTooltip("ADD_SECTION", props.match.params.id)}
                 >
@@ -181,7 +183,7 @@ const createForm = (props) => {
                               {...provided.droppableProps}
                               >
                                   {item.questions && item.questions.map((question, j)=>{
-                                     return (question.type === "multiple_choice" ||
+                                     if (question.type === "multiple_choice" ||
                                         question.type === "checkboxes" ||
                                         question.type === "drop_down" ||
                                         question.type === "short_answer" ||
@@ -190,8 +192,9 @@ const createForm = (props) => {
                                         question.type === "multiple_choice_grid" ||
                                         question.type === "tick_box_grid" ||
                                         question.type === "date" ||
-                                        question.type === "time") && (
-                                          <Draggable
+                                        question.type === "file_upload" ||
+                                        question.type === "time"){
+                                         return  <Draggable
                                           key={`draggable-question-${question.id ? question.id : question.sort_order}`}
                                           draggableId={`draggable-question-${question.id ? question.id : question.sort_order}`}
                                           index={j}>
@@ -212,7 +215,78 @@ const createForm = (props) => {
                                               </div>
                                             )}
                                           </Draggable>
-                                        )}
+                                        }
+                                      if(question.type === "text_block"){
+                                          return  <Draggable
+                                              key={`draggable-question-${question.id ? question.id : question.sort_order}`}
+                                              draggableId={`draggable-question-${question.id ? question.id : question.sort_order}`}
+                                              index={j}>
+                                                {(provided, snapshot) => (
+                                                  <div
+                                                  ref={provided.innerRef}
+                                                  {...provided.draggableProps}
+                                                  >
+                                                    <TextSection
+                                                      isDragging={snapshot.isDragging}
+                                                      dragHandle={provided.dragHandleProps}
+                                                      data={question}
+                                                      formId={props.match.params.id}
+                                                      sectionId={item.id}
+                                                      sectionIndex={k}
+                                                      questionIndex={j}
+                                                    />
+                                                  </div>
+                                                )}
+                                              </Draggable>
+                                      }
+                                      if(question.type === "image_block"){
+                                          return  <Draggable
+                                              key={`draggable-question-${question.id ? question.id : question.sort_order}`}
+                                              draggableId={`draggable-question-${question.id ? question.id : question.sort_order}`}
+                                              index={j}>
+                                                {(provided, snapshot) => (
+                                                  <div
+                                                  ref={provided.innerRef}
+                                                  {...provided.draggableProps}
+                                                  >
+                                                    <ImageSection
+                                                      isDragging={snapshot.isDragging}
+                                                      dragHandle={provided.dragHandleProps}
+                                                      data={question}
+                                                      formId={props.match.params.id}
+                                                      sectionId={item.id}
+                                                      sectionIndex={k}
+                                                      questionIndex={j}
+                                                    />
+                                                  </div>
+                                                )}
+                                              </Draggable>
+                                      }
+                                      if(question.type === "video_block"){
+                                          return  <Draggable
+                                              key={`draggable-question-${question.id ? question.id : question.sort_order}`}
+                                              draggableId={`draggable-question-${question.id ? question.id : question.sort_order}`}
+                                              index={j}>
+                                                {(provided, snapshot) => (
+                                                  <div
+                                                  ref={provided.innerRef}
+                                                  {...provided.draggableProps}
+                                                  >
+                                                    <VideoSection
+                                                      isDragging={snapshot.isDragging}
+                                                      dragHandle={provided.dragHandleProps}
+                                                      data={question}
+                                                      formId={props.match.params.id}
+                                                      sectionId={item.id}
+                                                      sectionIndex={k}
+                                                      questionIndex={j}
+                                                    />
+                                                  </div>
+                                                )}
+                                              </Draggable>
+                                      }
+                                      
+                                  }
                                     
                                   )}
                                 {provided.placeholder}

@@ -10,6 +10,7 @@ const _answerboxshortValidation = {
   type: 'NUMBER',
   rule: 'GREATER_THAN',
   value: '',
+  value_2: '',
 };
 const _answerboxparaOption = {
   response_validation: 0,
@@ -19,6 +20,7 @@ const _answerboxparaValidation = {
   type: 'LENGTH',
   rule: 'MAX_CHAR_COUNT',
   value: '',
+  value_2: '',
 };
 
 // const _checkboxOption = {
@@ -27,9 +29,10 @@ const _answerboxparaValidation = {
 
 const _checkboxvalidation = {
   custom_error: '',
-  type: 'AT_LEAST',
-  rule: 'OPTION',
+  type: 'checkboxes',
+  rule: 'AT_LEAST',
   value: '',
+  value_2: '',
 };
 
 const _linearscaleOption = {
@@ -112,12 +115,34 @@ const _newsection = {
   sort_order: 0,
 };
 const _newtextarea = {
-  type: 'TEXT_BLOCK',
-  title: 'Untitled Section',
-  description: 'Form Description',
+  type: 'text_block',
+  title: 'Text section',
+  description: '',
   required: 0,
   active: 0,
   sort_order:0,
+  form_builder_form_id:0,
+  form_builder_section_id:0,
+};
+const _newVideoBlock = {
+  type: 'video_block',
+  title: 'Upload video',
+  description: '',
+  required: 0,
+  active: 0,
+  sort_order:0,
+  form_builder_form_id:0,
+  form_builder_section_id:0,
+};
+const _newImageBlock = {
+  type: 'image_block',
+  title: 'Upload Image',
+  description: '',
+  required: 0,
+  active: 0,
+  sort_order:0,
+  form_builder_form_id:0,
+  form_builder_section_id:0,
 };
 
 // const _data = [
@@ -213,7 +238,7 @@ class CreateQuestionContextProvider extends Component {
           if(data.id === undefined){
             this.setState({
               updating:false,
-              data:{...this.state.data, sections:this.state.data.sections.map((item)=> item.sort_order === data.sort_order ? { ...response.data.data } : item)},
+              data:{...this.state.data, sections:this.state.data.sections.map((item)=> item.sort_order === data.sort_order ? { ...response.data.data, active:true} : item)},
             })
             saveSectionSortBackend(this.state.data.sections.reduce((ack, item)=>({...ack,[item.id]:item.sort_order}), {}));
           }else{
@@ -262,6 +287,7 @@ class CreateQuestionContextProvider extends Component {
         })
       }
     } 
+    
     const deleteSection = async (data) => {
       this.setState({
         updating:true,
@@ -631,6 +657,38 @@ class CreateQuestionContextProvider extends Component {
             });          
           }
       }
+      if (type === 'ADD_PHOTO') {
+        let _questionIndex = 0;
+        let _clone = JSON.parse(JSON.stringify(_newImageBlock));
+          if(_section[_sectionIndex].questions === undefined && _section[_sectionIndex].questions.length <= 0){
+            _section[_sectionIndex].questions = [_clone];
+            _section[_sectionIndex].questions[0].active = true;
+          }else{
+            _questionIndex = _section[_sectionIndex].questions.findIndex(x => x.active === true) !== -1 ? _section[_sectionIndex].questions.findIndex(x => x.active === true) : 0;
+            _section[_sectionIndex].questions.splice(_questionIndex + 1, 0, _clone);
+            _section[_sectionIndex].questions[_questionIndex].active = false;
+            _section[_sectionIndex].questions[_questionIndex + 1].active = true;
+            _section[_sectionIndex].questions.forEach((element, k) => {
+              element.sort_order = k;
+            });          
+          }
+      }
+      if (type === 'ADD_VIDEO') {
+        let _questionIndex = 0;
+        let _clone = JSON.parse(JSON.stringify(_newVideoBlock));
+          if(_section[_sectionIndex].questions === undefined && _section[_sectionIndex].questions.length <= 0){
+            _section[_sectionIndex].questions = [_clone];
+            _section[_sectionIndex].questions[0].active = true;
+          }else{
+            _questionIndex = _section[_sectionIndex].questions.findIndex(x => x.active === true) !== -1 ? _section[_sectionIndex].questions.findIndex(x => x.active === true) : 0;
+            _section[_sectionIndex].questions.splice(_questionIndex + 1, 0, _clone);
+            _section[_sectionIndex].questions[_questionIndex].active = false;
+            _section[_sectionIndex].questions[_questionIndex + 1].active = true;
+            _section[_sectionIndex].questions.forEach((element, k) => {
+              element.sort_order = k;
+            });          
+          }
+      }
       this.setState({
         data: {...this.state.data, sections:_section}
       })
@@ -905,6 +963,13 @@ class CreateQuestionContextProvider extends Component {
             element.next_section = 'CONTINUE'
           });
         }
+        if (type === 'file_upload' && _prevType !== 'file_upload') {
+          _query.options.section_based = false;
+          _query.validation = JSON.parse(JSON.stringify(_checkboxvalidation));
+          _query.answers.forEach(element => {
+            element.next_section = 'CONTINUE'
+          });
+        }
 
         this.setState({
           data: {...this.state.data, sections:_sections}
@@ -1030,6 +1095,18 @@ class CreateQuestionContextProvider extends Component {
 
     }
     
+    const setResponseValidationFeildValue2 = async (sectionIndex, questionIndex, type) => {
+      const _sections = [...this.state.data.sections];
+      const _query = _sections[sectionIndex].questions[questionIndex];
+
+        _query.validation.value_2 = type;
+     
+        this.setState({
+          data: {...this.state.data, sections:_sections}
+        })
+
+    }
+    
     const setResponseValidationFeildError = async (sectionIndex, questionIndex, type) => {
       const _sections = [...this.state.data.sections];
       const _query = _sections[sectionIndex].questions[questionIndex];
@@ -1046,8 +1123,15 @@ class CreateQuestionContextProvider extends Component {
     const setResponseValidationCheckBoxValue = async (sectionIndex, questionIndex, value) => {
       const _sections = [...this.state.data.sections];
       const _query = _sections[sectionIndex].questions[questionIndex];
-
+      if(typeof _query.validation === "object"){
         _query.validation.value = value;
+        _query.validation.type = 'checkboxes';
+      }else{
+        _query.validation = {
+          value:value,
+          type:'checkbox'
+        }
+      }
 
         this.setState({
           data: {...this.state.data, sections:_sections}
@@ -1059,8 +1143,15 @@ class CreateQuestionContextProvider extends Component {
       const _sections = [...this.state.data.sections];
       const _query = _sections[sectionIndex].questions[questionIndex];
 
-        _query.validation.custom_error = error;
-
+      if(typeof _query.validation === "object"){
+          _query.validation.custom_error = error;
+          _query.validation.type = 'checkboxes';
+        }else{
+          _query.validation = {
+            custom_error:error,
+            type:'checkbox'
+          }
+        }
 
         this.setState({
           data: {...this.state.data, sections:_sections}
@@ -1069,11 +1160,18 @@ class CreateQuestionContextProvider extends Component {
     }
     
     
-    const setResponseValidationCheckBoxType = async (sectionIndex, questionIndex, type) => {
+    const setResponseValidationCheckBoxType = async (sectionIndex, questionIndex, rule) => {
       const _sections = [...this.state.data.sections];
       const _query = _sections[sectionIndex].questions[questionIndex];
-
-        _query.validation.type = type;
+        if(typeof _query.validation === "object"){
+          _query.validation.rule = rule;
+          _query.validation.type = 'checkboxes';
+        }else{
+          _query.validation = {
+            rule:rule,
+            type:'checkbox'
+          }
+        }
 
         this.setState({
           data: {...this.state.data, sections:_sections}
@@ -1282,6 +1380,7 @@ class CreateQuestionContextProvider extends Component {
           setResponseValidationType,
           setResponseValidationRule,
           setResponseValidationFeildValue,
+          setResponseValidationFeildValue2,
           setResponseValidationFeildError,
           setResponseValidationCheckBoxValue,
           setResponseValidationCheckBoxError,
@@ -1302,7 +1401,8 @@ class CreateQuestionContextProvider extends Component {
           updateQuestion,
           deleteSection,
           previewForm,
-          handleClick
+          handleClick,
+          
         }}
       >
         {this.props.children}

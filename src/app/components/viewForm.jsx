@@ -10,6 +10,8 @@ function viewForm(props) {
   const [sections, setSection] = useState([]);
   const [active, setactive] = useState(0);
   const [formData, setFormData] = useState({});
+  const [sectionHistory, setSectionHistory] = useState([]);
+  const [stepType, setStepType] = useState("next");
   useEffect(() => {
     if(data.length <= 0 || data.id !== props.match.params.id){
       getFormData(parseInt(props.match.params.event_id), parseInt(props.match.params.registration_form_id), parseInt(props.match.params.id));
@@ -25,11 +27,38 @@ function viewForm(props) {
   useEffect(() => {
     if(data && data.sections){
       setSection([...data.sections]);
-      setFormData(data.sections.reduce((ack, section)=> ( {...ack, [section.id]: section.questions ? section.questions.reduce((ack, question)=> ({...ack, [question.id]: {requiredError:false, validationError:false, question_type:question.type, answer:(question.type === "checkboxes") ? [] : (question.type === "tick_box_grid" || question.type === "multiple_choice_grid") ? {} : "" } }) , {}) : [] } ), {}));
+      setFormData(
+        data.sections.reduce((ack, section)=> 
+        ( {...ack, 
+          [section.id]: section.questions ? 
+          section.questions.reduce((ack, question)=> ({...ack, 
+            [question.id]: {
+              requiredError:false, 
+              validationError:false, 
+              question_type:question.type, 
+              answer:(question.type === "checkboxes") ? [] : (question.type === "tick_box_grid" || question.type === "multiple_choice_grid") ? {} : "" ,
+              answer_id:(question.type === "checkboxes") ? [] : (question.type === "tick_box_grid" || question.type === "multiple_choice_grid") ? {} : "" 
+            }
+             }) , {}) : [] } ), {}));
+   
     }
     return () => {
     }
   }, [data]);
+
+  useEffect(() => {
+    
+    if(stepType === 'back'){
+        let newSectionHistory = [...sectionHistory];
+        newSectionHistory.pop();
+        console.log(newSectionHistory);
+        setSectionHistory(newSectionHistory)
+    }
+
+    if(stepType === 'next'){
+        setSectionHistory((prevState)=>([...prevState, { previous:prevState.length > 0 ? prevState[prevState.length -1].current : 0, current:active}]));
+    }
+    }, [active])
 
   return (
     <React.Fragment>
@@ -47,7 +76,7 @@ function viewForm(props) {
             )}
 
               {sections.length > 0 && sections.map((section, index)=>(
-                active === index && <Section key={index} section={section} sections={sections} active={active} setactive={setactive} formData={formData} setFormData={setFormData} />
+                active === index && <Section key={index} section={section} sections={sections} active={active} setactive={setactive} formData={formData} sectionHistory={sectionHistory} setFormData={setFormData} setStepType={setStepType} />
               ))}
             
             

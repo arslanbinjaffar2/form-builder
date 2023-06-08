@@ -24,7 +24,7 @@ const FormLinearScale = ({data, formData, setFormData, setValidated}) => {
       <div className="form-view-title">
         {data.title && data.title} {data.required === 1 && <span className="required">*</span>}
       </div>
-      {(data.options.description_visible === 1 && data.description) && <div className="form-view-description">{data.description}</div>}
+      {(data.options.description_visible === 1 && data.description !== "") && <div className="form-view-description">{data.description}</div>}
       <div className="ebs-options-view">
         <div className="ebs-linear-view">
             <div className="ebs-linear-view-wrapper d-flex text-center">
@@ -37,7 +37,7 @@ const FormLinearScale = ({data, formData, setFormData, setValidated}) => {
                   <div className="ebs-label">{i + (Number(data.options.min) === 0 ? 0 : 1)}</div>
                   <div className="ebs-value">
                     <label className="ebs-option ebs-radio">
-                      <input name={`item_${data.id}`} defaultValue={data.index} type="radio" value={i} onChange={(e)=>{onChange(e)}} />
+                      <input name={`item_${data.id}`}  checked={(formData[data.form_builder_section_id][data.id]['answer'] !== undefined && parseInt(formData[data.form_builder_section_id][data.id]['answer']) === i) ? true : false} type="radio" value={i} onChange={(e)=>{onChange(e)}} />
                       <i className="material-icons"></i>
                     </label>
                   </div>
@@ -48,6 +48,7 @@ const FormLinearScale = ({data, formData, setFormData, setValidated}) => {
                 <div className="ebs-value"><div className="ebs-value-inner">{data.options.max_label}</div></div>
               </div>
             </div>
+        {formData[data.form_builder_section_id][data.id]['requiredError'] === true && <div className='ebs-error-container'>This question is required</div>}
         </div>
       </div>
     </div>

@@ -7,6 +7,9 @@
  padding: 22px 40px;
  border-bottom: 1px solid $border;
  background: $white; 
+ position: sticky;
+ top: 0px;
+ z-index: 9999;
  .ebs-title {
    white-space: nowrap;
    overflow: hidden;
@@ -106,6 +109,19 @@
         max-height: 100%;
       }
     }
+    .ebs-vert-box-image {
+      cursor: pointer;
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba($black,0.05);
+      width: 250px;
+      img {
+        max-width: 100%;
+        max-height: 100%;
+      }
+    }
     .ebs-desc-box {
       padding: 15px 20px;
       background: $white;
@@ -196,7 +212,7 @@
     border: 1px solid $border;
     background: $white;
     border-radius: 10px;
-    padding: 35px 50px 40px 60px;
+    padding: 35px 50px 0px 60px;
     position: relative;
     textarea {
       border: none;
@@ -508,6 +524,11 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  .ebs-left-area {
+    &:first-of-type {
+      padding-right: 0;
+    }
+  }
 }
 
 .ebs-more-option-panel {
@@ -960,7 +981,7 @@
 .ebs-tooltip-wrapper {
   position: sticky;
   right: 0;
-  top: 15px;
+  top: 135px;
   float: right;
   width: 50px;
   margin-top: 0;
@@ -1144,6 +1165,26 @@
       content: "\e834";
     }
   }
+
+  input[type="checkbox"].radio-checkbox{
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    &:checked ~ .material-icons{
+      color: $borderhover;
+    }
+    & ~ .material-icons::before {
+      font-family: "Material Icons";
+      content: "\e836";
+    }
+    &:checked ~ .material-icons::before {
+      content: "\e837";
+    }
+  }
+
   &:hover {
     box-shadow: 0 0 0 5px rgba($text, 0.1);
   }
@@ -1482,5 +1523,26 @@ align-items: center;
     top: 4px;
     font-family: $iconFont;
     font-size: 20px;
+  }
+}
+.dropzone{
+  flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    border-width: 2px;
+    border-radius: 2px;
+    border-color: #eeeeee;
+    border-style: dashed;
+    background-color: #fafafa;
+    color: #bdbdbd;
+    outline: none;
+    transition: border .24s ease-in-out;
+}
+
+.list-view{
+  div:first-child{
+    width: 100%;
   }
 }

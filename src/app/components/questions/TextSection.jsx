@@ -72,7 +72,7 @@ export default class TextSection extends Component {
                   </SaveBtn>
                 </div>
                 <div className="ebs-left-area d-flex p-0">
-                  <span onClick={(e) => { e.stopPropagation(); this.context.handleChangeValueOption(e.target, 'CLONEQUESTION', `${index}`) }} className="ebs-btn">
+                  <span onClick={(e) => { e.stopPropagation(); this.context.cloneQuestion({question_id:data.id}, this.props.sectionIndex, this.props.questionIndex) }} className="ebs-btn">
                     <i className="material-icons">content_copy</i>
                   </span>
                   <span onClick={(e) => { e.stopPropagation(); data.id !== undefined ? 
