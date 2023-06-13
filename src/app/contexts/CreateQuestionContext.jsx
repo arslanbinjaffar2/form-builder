@@ -1326,6 +1326,40 @@ class CreateQuestionContextProvider extends Component {
         this.props.history.push(`/${event_id}/${registration_form_id}/form/update/${this.state.data.id}`);
       }
     }
+    
+    const handleFormSave = async (event_id, registration_form_id) => {
+      this.setState({
+        updating:true,
+        updatingError:null,
+      })
+      try {
+        const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/saveFormGlobal/${this.state.event_id}/${this.state.registration_form_id}`, this.state.data, {cancelToken: signal.token});
+        console.log(response)
+        if(response.data.status === 1){
+          this.setState({
+            loading:false,
+            data:{...response.data.data, sections:response.data.data.sections.map((item, i)=>{
+                if(i === 0 && item.questions !== undefined && item.questions.length > 0){
+                    return   {...item, active: i === 0 ? true : false, questions: item.questions.map((q, i)=>( {...q, active: i === 0 ? true : false} ))};
+                }
+                return   {...item, active: i === 0 ? true : false}                
+            })},
+          })
+      }
+      else{
+        this.setState({
+          loading:false,
+          loadingError:response.data.message
+        })
+      }
+      } catch (error) {
+        this.setState({
+          updating:false,
+          updatingError:error.message
+        })
+      }
+      console.log(this.state.data);
+    }
     const handleClick = (e) => {
       e.preventDefault();
       e.stopPropagation();
@@ -1402,7 +1436,7 @@ class CreateQuestionContextProvider extends Component {
           deleteSection,
           previewForm,
           handleClick,
-          
+          handleFormSave,
         }}
       >
         {this.props.children}
