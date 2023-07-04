@@ -619,6 +619,8 @@ class CreateQuestionContextProvider extends Component {
 
           if(_section[_sectionIndex].questions === undefined || _section[_sectionIndex].questions.length <= 0){
             _section[_sectionIndex].questions = [_clone];
+            _section[_sectionIndex].questions[0].form_builder_form_id = parseInt(form_id);
+            _section[_sectionIndex].questions[0].form_builder_section_id = parseInt(_section[_sectionIndex].id);
             _section[_sectionIndex].questions[0].active = true;
           }else{
             _questionIndex = _section[_sectionIndex].questions.findIndex(x => x.active === true) !== -1 ? _section[_sectionIndex].questions.findIndex(x => x.active === true) : 0;
@@ -626,6 +628,7 @@ class CreateQuestionContextProvider extends Component {
             _section[_sectionIndex].questions[_questionIndex].active = false;
             _section[_sectionIndex].questions[_questionIndex + 1].active = true;
             _section[_sectionIndex].questions[_questionIndex + 1].form_builder_form_id = parseInt(form_id);
+            _section[_sectionIndex].questions[_questionIndex + 1].form_builder_section_id = parseInt(_section[_sectionIndex].id);
             _section[_sectionIndex].questions.forEach((element, k) => {
               element.sort_order = k;
             });          
@@ -1326,6 +1329,40 @@ class CreateQuestionContextProvider extends Component {
         this.props.history.push(`/${event_id}/${registration_form_id}/form/update/${this.state.data.id}`);
       }
     }
+    
+    const handleFormSave = async (event_id, registration_form_id) => {
+      this.setState({
+        updating:true,
+        updatingError:null,
+      })
+      try {
+        const response = await axios.post(`${process.env.REACT_APP_EVENTBUIZZ_API_URL}/saveFormGlobal/${this.state.event_id}/${this.state.registration_form_id}`, this.state.data, {cancelToken: signal.token});
+        console.log(response)
+        if(response.data.status === 1){
+          this.setState({
+            updating:false,
+            data:{...response.data.data, sections:response.data.data.sections.map((item, i)=>{
+                if(i === 0 && item.questions !== undefined && item.questions.length > 0){
+                    return   {...item, active: i === 0 ? true : false, questions: item.questions.map((q, i)=>( {...q, active: i === 0 ? true : false} ))};
+                }
+                return   {...item, active: i === 0 ? true : false}                
+            })},
+          })
+      }
+      else{
+        this.setState({
+          updating:false,
+          updatingError:null,
+        })
+      }
+      } catch (error) {
+        this.setState({
+          updating:false,
+          updatingError:error.message
+        })
+      }
+      console.log(this.state.data);
+    }
     const handleClick = (e) => {
       e.preventDefault();
       e.stopPropagation();
@@ -1402,7 +1439,7 @@ class CreateQuestionContextProvider extends Component {
           deleteSection,
           previewForm,
           handleClick,
-          
+          handleFormSave,
         }}
       >
         {this.props.children}
