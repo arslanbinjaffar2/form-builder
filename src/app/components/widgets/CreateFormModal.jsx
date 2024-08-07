@@ -42,13 +42,12 @@ const CreateFormModal = ({event_id, registration_form_id, open, close}) => {
                 </div>
             </div>
             <div className="ebs-create-form-modal-body">
-                <div className="ebs-input-response" style={{ position:"relative" }}>
-                    <input placeholder="Title" type="text" style={{maxWidth:'100%'}} onChange={(e)=>{setTitle(e.currentTarget.value)}}  />
-                    <span className='text-danger' style={{ position: "absolute",left: "6%",top: "14%",color:'red' }}>*</span>
+                <div className="ebs-input-response">
+                    <input placeholder="Title*" type="text" style={{maxWidth:'100%'}} onChange={(e)=>{setTitle(e.currentTarget.value)}}  />
+
                 </div>
-                <div className="ebs-input-response" style={{ position:"relative" }}>
-                    <textarea placeholder="description" type="text" style={{maxWidth:'100%'}} onChange={(e)=>{setDescription(e.currentTarget.value)}} />
-                    <span className='text-danger' style={{ position: "absolute",left: "14%",top: "4%",color:'red' }}>*</span>
+                <div className="ebs-input-response">
+                    <textarea placeholder="description*" type="text" style={{maxWidth:'100%'}} onChange={(e)=>{setDescription(e.currentTarget.value)}} />
                 </div>
                 {processError !== null &&  <div className="ebs-input-response">
                     { <span className="ebs-error-container">{processError}</span>}
