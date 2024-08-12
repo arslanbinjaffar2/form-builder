@@ -43,10 +43,11 @@ const CreateFormModal = ({event_id, registration_form_id, open, close}) => {
             </div>
             <div className="ebs-create-form-modal-body">
                 <div className="ebs-input-response">
-                    <input placeholder="Title" type="text" style={{maxWidth:'100%'}} onChange={(e)=>{setTitle(e.currentTarget.value)}}  />
+                    <input placeholder="Title*" type="text" style={{maxWidth:'100%'}} onChange={(e)=>{setTitle(e.currentTarget.value)}}  />
+
                 </div>
                 <div className="ebs-input-response">
-                    <textarea placeholder="description" type="text" style={{maxWidth:'100%'}} onChange={(e)=>{setDescription(e.currentTarget.value)}} />
+                    <textarea placeholder="description*" type="text" style={{maxWidth:'100%'}} onChange={(e)=>{setDescription(e.currentTarget.value)}} />
                 </div>
                 {processError !== null &&  <div className="ebs-input-response">
                     { <span className="ebs-error-container">{processError}</span>}

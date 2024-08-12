@@ -56,11 +56,11 @@ const FormItem = ({item, setCurrentForm, event_id, registration_form_id, changeS
               <img src={item.screenShot ? item.screenShot : require('img/template.svg') } alt="" />
             </div>
             <div className="ebs-desc-box">
-              {rename === false ? <h3>{item.title ? item.title : 'Untitled form'}</h3> :
+              {rename === false ? <h3 className='d-flex align-items-center'>{item.title ? item.title : 'Untitled form'} </h3> :
               <input type="text" value={title}  onChange={(e)=> setTitle(e.target.value)}  onKeyDown={onTitleChange} />}
               <div className="ebs-bottom-panel d-flex align-items-center">
                 <div className="ebs-timedate d-flex align-items-center w-100">
-                <span style={{color: 'rgba($black,0.1)'}} className="material-icons">description</span>
+                <span style={{color: 'rgba($black,0.1)'}} className="material-icons"> description </span>
                 Opened {lastModified(item.updated_at)}</div>
                 <div className="ebs-more-option-panel ebs-option-panel-medium ico-visible">
                   <button onClick={handleClick} className="ebs-btn tooltip-small">

@@ -112,6 +112,7 @@ const FormItem = ({item, setCurrentForm, event_id, registration_form_id, changeS
                                             <div className="ebs-bottom-panel d-flex align-items-center">
                                                 <div className="ebs-timedate d-flex align-items-center w-100">
                                                 <span style={{color: 'rgba($black,0.1)'}} className="material-icons">description</span>
+            
                                                 Opened {lastModified(item.updated_at)}</div>
                                                 <div className="ebs-more-option-panel ebs-option-panel-medium ico-visible">
                                                 <button onClick={handleClick} className="ebs-btn tooltip-small">
